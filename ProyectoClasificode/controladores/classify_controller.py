@@ -301,48 +301,6 @@ def classify_case_v1(case_id):
             'message': 'Error en la clasificación nacional',
             'details': str(e)
         }), 500
-        
-        # 10. Guardar embedding en índice vectorial
-        try:
-            embedding_vector = embedding.tolist()
-            vector_index.upsert(
-                owner_type='case',
-                owner_id=case_id,
-                vector=embedding_vector,
-                meta={
-                    'text': case_text[:1000],
-                    'provider': embedding_service.provider,
-                    'model': embedding_service.model,
-                    'case_id': case_id
-                }
-            )
-        except Exception as e:
-            print(f"Error guardando embedding: {e}")
-            # No es crítico si falla el guardado del embedding
-            pass
-        
-        results['candidates'] = candidates
-        results['summary'] = {
-            'total_candidates': len(candidates),
-            'nlp_category': nlp_analysis.get('category'),
-            'confidence_range': {
-                'min': min([c['confidence'] for c in candidates]) if candidates else 0,
-                'max': max([c['confidence'] for c in candidates]) if candidates else 0
-            }
-        }
-        
-        return jsonify({
-            'code': 200,
-            'message': 'Clasificación completada exitosamente',
-            'details': results
-        }), 200
-        
-    except Exception as e:
-        return jsonify({
-            'code': 500,
-            'message': 'Error en el pipeline de clasificación',
-            'details': str(e)
-        }), 500
 
 @bp.route('/explanations/<int:case_id>', methods=['GET'])
 @require_auth
@@ -393,9 +351,8 @@ def get_explanations(case_id):
         # Agregar información del embedding si existe
         if embedding:
             explanations['embedding_info'] = {
-                'provider': embedding['provider'],
-                'model': embedding['model'],
-                'dimensions': embedding['dim']
+                'provider': embedding.get('provider'),
+                'model': embedding.get('model')
             }
         
         return jsonify({

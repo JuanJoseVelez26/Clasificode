@@ -285,13 +285,12 @@ def embed_hs_catalog():
                 embedding = embedding_service.generate_embedding(item_text)
                 embedding_vector = embedding.tolist()
                 
-                # Guardar embedding
+                # Guardar embedding (sin columna dim)
                 success = embedding_repo.create_or_update_embedding(
                     owner_type='hs_item',
                     owner_id=item['id'],
                     provider='nlp_service',
                     model=GLOBAL_CONFIG['embedding_model'],
-                    dim=len(embedding_vector),
                     vector=json.dumps(embedding_vector),
                     text_norm=item_text[:1000]  # Primeros 1000 caracteres
                 )
@@ -325,6 +324,73 @@ def embed_hs_catalog():
         return jsonify({
             'code': 500,
             'message': 'Error en el procesamiento de embeddings',
+            'details': str(e)
+        }), 500
+
+@bp.route('/embeddings/rebuild', methods=['POST'])
+@require_auth
+@require_role('admin')
+def rebuild_embeddings_tariff_items():
+    """Re-embeddea todos los tariff_items con el proveedor/modelo actual sin reingestar PDF.
+    Body opcional: {"only_missing": true}
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        only_missing = bool(data.get('only_missing', False))
+
+        ing = DianIngestor(fetched_by='admin_rebuild')
+
+        # Obtener items: id y title desde tariff_items
+        items_df = ing.cc.ejecutar_consulta_sql("SELECT id, title FROM tariff_items ORDER BY id")
+        if items_df is None or items_df.empty:
+            return jsonify({
+                'code': 404,
+                'message': 'No hay tariff_items',
+                'details': 'La tabla tariff_items no tiene registros'
+            }), 404
+
+        processed = 0
+        skipped = 0
+        errors = 0
+        errors_details = []
+
+        for _, row in items_df.iterrows():
+            tid = int(row['id'])
+            title = (row.get('title') or '').strip()
+            if not title:
+                skipped += 1
+                continue
+            try:
+                if only_missing:
+                    q = ("SELECT 1 FROM embeddings WHERE owner_type='tariff_item' AND owner_id = :p0 "
+                         "AND provider = :p1 AND model = :p2 LIMIT 1")
+                    df = ing.cc.ejecutar_consulta_sql(q, (tid, ing.embed.provider, ing.embed.model))
+                    if df is not None and not df.empty:
+                        skipped += 1
+                        continue
+                ing._recalc_embedding_for_tariff_item(tid, title)
+                processed += 1
+            except Exception as ex:
+                errors += 1
+                errors_details.append({'item_id': tid, 'error': str(ex)})
+
+        return jsonify({
+            'code': 200,
+            'message': 'Re-embedding de tariff_items completado',
+            'details': {
+                'total_items': len(items_df),
+                'processed': processed,
+                'skipped': skipped,
+                'errors': errors,
+                'provider': ing.embed.provider,
+                'model': ing.embed.model,
+                'errors_details': errors_details[:50]
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'message': 'Error en re-embedding de tariff_items',
             'details': str(e)
         }), 500
 

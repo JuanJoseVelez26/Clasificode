@@ -284,21 +284,20 @@ class EmbeddingRepository(BaseRepository):
         df = self.control_conexion.ejecutar_consulta_sql(query, (owner_type, limit))
         return df.to_dict('records')
     
-    def create_or_update_embedding(self, owner_type: str, owner_id: int, provider: str, model: str, 
-                                 dim: int, vector: str, text_norm: str) -> bool:
+    def create_or_update_embedding(self, owner_type: str, owner_id: int, provider: str, model: str,
+                                   vector: str, text_norm: str) -> bool:
         """Crear o actualizar embedding"""
         query = """
-        INSERT INTO embeddings (owner_type, owner_id, provider, model, dim, vector, text_norm, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s::vector, %s, NOW(), NOW())
-        ON CONFLICT (owner_type, owner_id, provider, model) 
+        INSERT INTO embeddings (owner_type, owner_id, provider, model, vector, text_norm, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s::vector, %s, NOW(), NOW())
+        ON CONFLICT (owner_type, owner_id, provider, model)
         DO UPDATE SET 
-            dim = EXCLUDED.dim,
             vector = EXCLUDED.vector,
             text_norm = EXCLUDED.text_norm,
             updated_at = NOW()
         """
         try:
-            self.control_conexion.ejecutar_comando_sql(query, (owner_type, owner_id, provider, model, dim, vector, text_norm))
+            self.control_conexion.ejecutar_comando_sql(query, (owner_type, owner_id, provider, model, vector, text_norm))
             return True
         except Exception:
             return False

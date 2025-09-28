@@ -81,7 +81,7 @@ def create_case():
             }), 400
         
         # Obtener usuario del token
-        user_email = request.user
+        user_email = getattr(request, 'user_email', None)
         user = user_repo.find_by_email(user_email)
         if not user:
             return jsonify({
@@ -197,7 +197,7 @@ def validate_case(case_id):
             }), 400
         
         # Obtener usuario validador
-        user_email = request.user
+        user_email = getattr(request, 'user_email', None)
         user = user_repo.find_by_email(user_email)
         if not user:
             return jsonify({

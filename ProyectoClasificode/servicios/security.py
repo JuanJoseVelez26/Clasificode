@@ -83,19 +83,14 @@ def require_role(required_role: str):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            # Primero verificar autenticación
-            auth_result = require_auth(lambda: None)()
-            if auth_result is not None:
-                return auth_result
-            
-            # Verificar rol
+            # Asumimos que @require_auth ya corrió y pobló request.user_role
             user_role = getattr(request, 'user_role', None)
             if not user_role:
                 return jsonify({
-                    'code': 403,
-                    'message': 'Rol de usuario no disponible',
-                    'details': 'No se pudo determinar el rol del usuario'
-                }), 403
+                    'code': 401,
+                    'message': 'No autenticado',
+                    'details': 'Token no presente o inválido'
+                }), 401
             
             # Verificar si el rol es suficiente
             if not has_permission(user_role, required_role):

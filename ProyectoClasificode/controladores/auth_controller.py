@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from servicios.token_service import TokenService
-from servicios.security import hash_password, verify_password
+from servicios.security import hash_password, verify_password, validate_password_strength
 from servicios.repos import UserRepository
 import json
 
@@ -22,7 +22,7 @@ def register():
                 'details': 'Se requiere un JSON con email, password y name'
             }), 400
         
-        email = data.get('email')
+        email = (data.get('email') or '').strip().lower()
         password = data.get('password')
         name = data.get('name')
         
@@ -42,6 +42,15 @@ def register():
                 'details': f'El email {email} ya está registrado'
             }), 409
         
+        # Validar fortaleza de la contraseña
+        strength = validate_password_strength(password)
+        if not strength['valid']:
+            return jsonify({
+                'code': 400,
+                'message': 'Contraseña débil',
+                'details': {'errors': strength['errors'], 'strength': strength['strength']}
+            }), 400
+
         # Hash de la contraseña
         password_hash = hash_password(password)
         
