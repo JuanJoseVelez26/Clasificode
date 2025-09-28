@@ -1,0 +1,46 @@
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+.env/
+.env
+**/.env
+
+# VSCode and IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs and temp
+*.log
+logs/
+/tmp/
+.temp/
+.cache/
+
+# Build/dist artifacts
+build/
+dist/
+*.egg-info/
+
+# Data and generated content
+embeddings/
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local config (keep a template committed instead)
+# Uncomment the next line if your config contains secrets. If you keep a template, ensure it's named differently (e.g., config.template.json)
+# config/config.json
+
+# Node/npm (if present)
+node_modules/
