@@ -1,4 +1,11 @@
 # app.py (extracto)
+# Cargar variables desde .env ANTES de importar controladores (evita que servicios se inicialicen sin env)
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except Exception:
+    pass
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 from controladores.auth_controller import bp as auth_bp
@@ -8,20 +15,13 @@ from controladores.admin_controller import bp as admin_bp
 from controladores.health_controller import bp as health_bp
 import json
 from servicios.config_loader import load_config
-
-# Cargar variables desde .env si existe (opcional)
-try:
-    from dotenv import load_dotenv  # type: ignore
-    load_dotenv()
-except ImportError:
-    pass
 def create_app():
     """Crear y configurar la aplicación Flask"""
     app = Flask(__name__)
     
     # Configuración de CORS
     CORS(app, 
-         origins=['http://localhost:8080'],
+         origins=['http://localhost:8080', 'http://localhost:3000'],
          supports_credentials=True,
          methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
          allow_headers=['Content-Type', 'Authorization'])

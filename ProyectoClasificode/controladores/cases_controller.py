@@ -9,7 +9,7 @@ candidate_repo = CandidateRepository()
 validation_repo = ValidationRepository()
 user_repo = UserRepository()
 
-@bp.route('/cases', methods=['GET'])
+@bp.route('', methods=['GET'])
 @require_auth
 def get_cases():
     """Obtener lista de casos con filtros"""
@@ -57,7 +57,7 @@ def get_cases():
             'details': str(e)
         }), 500
 
-@bp.route('/cases', methods=['POST'])
+@bp.route('', methods=['POST'])
 @require_auth
 def create_case():
     """Crear nuevo caso"""
@@ -118,7 +118,7 @@ def create_case():
             'details': str(e)
         }), 500
 
-@bp.route('/cases/<int:case_id>', methods=['GET'])
+@bp.route('/<int:case_id>', methods=['GET'])
 @require_auth
 def get_case(case_id):
     """Obtener caso específico"""
@@ -154,7 +154,7 @@ def get_case(case_id):
             'details': str(e)
         }), 500
 
-@bp.route('/cases/<int:case_id>/validate', methods=['POST'])
+@bp.route('/<int:case_id>/validate', methods=['POST'])
 @require_auth
 @require_role('auditor')
 def validate_case(case_id):
@@ -234,7 +234,7 @@ def validate_case(case_id):
             'details': str(e)
         }), 500
 
-@bp.route('/cases/<int:case_id>/candidates', methods=['GET'])
+@bp.route('/<int:case_id>/candidates', methods=['GET'])
 @require_auth
 def get_case_candidates(case_id):
     """Obtener candidatos de un caso"""
@@ -267,7 +267,7 @@ def get_case_candidates(case_id):
             'details': str(e)
         }), 500
 
-@bp.route('/cases/<int:case_id>/candidates', methods=['POST'])
+@bp.route('/<int:case_id>/candidates', methods=['POST'])
 @require_auth
 def add_case_candidates(case_id):
     """Agregar candidatos a un caso"""

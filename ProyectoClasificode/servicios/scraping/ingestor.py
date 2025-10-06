@@ -99,7 +99,7 @@ class DianIngestor:
                              valid_from: Optional[str], valid_to: Optional[str]) -> bool:
         # Idempotencia por national_code
         q = (
-            "INSERT INTO tariff_items (hs_code6, national_code, title, legal_basis_id, valid_from, valid_to, created_at, updated_at) "
+            "INSERT INTO tariff_items (hs6, national_code, title, legal_basis_id, valid_from, valid_to, created_at, updated_at) "
             "VALUES (:p0, :p1, :p2, :p3, :p4, :p5, NOW(), NOW()) "
             "ON CONFLICT (national_code) DO UPDATE SET "
             "title = EXCLUDED.title, legal_basis_id = EXCLUDED.legal_basis_id, valid_from = EXCLUDED.valid_from, valid_to = EXCLUDED.valid_to, updated_at = NOW()"

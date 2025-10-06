@@ -13,15 +13,23 @@ class BaseRepository(Generic[T]):
         self.model_class = model_class
         self.control_conexion = ControlConexion()
     
+    def _table_name(self) -> str:
+        """Determina el nombre de la tabla a usar.
+        Si no se pasó model_class (None), intenta usar self.table_name definido por subclases.
+        """
+        if self.model_class is not None:
+            return getattr(self.model_class, "__tablename__", None) or getattr(self, "table_name")
+        return getattr(self, "table_name")
+    
     def find_by_id(self, id: int) -> Optional[Dict[str, Any]]:
         """Buscar por ID"""
-        query = f"SELECT * FROM {self.model_class.__tablename__} WHERE id = %s"
+        query = f"SELECT * FROM {self._table_name()} WHERE id = %s"
         df = self.control_conexion.ejecutar_consulta_sql(query, (id,))
         return df.iloc[0].to_dict() if not df.empty else None
     
     def find_all(self, limit: Optional[int] = None, offset: Optional[int] = None) -> List[Dict[str, Any]]:
         """Buscar todos los registros"""
-        query = f"SELECT * FROM {self.model_class.__tablename__}"
+        query = f"SELECT * FROM {self._table_name()}"
         if limit:
             query += f" LIMIT {limit}"
         if offset:
@@ -34,7 +42,7 @@ class BaseRepository(Generic[T]):
         """Crear nuevo registro"""
         columns = ', '.join(data.keys())
         placeholders = ', '.join(['%s'] * len(data))
-        query = f"INSERT INTO {self.model_class.__tablename__} ({columns}) VALUES ({placeholders}) RETURNING id"
+        query = f"INSERT INTO {self._table_name()} ({columns}) VALUES ({placeholders}) RETURNING id"
         
         result = self.control_conexion.ejecutar_comando_sql(query, tuple(data.values()))
         return result
@@ -42,7 +50,7 @@ class BaseRepository(Generic[T]):
     def update(self, id: int, data: Dict[str, Any]) -> bool:
         """Actualizar registro"""
         set_clause = ', '.join([f"{k} = %s" for k in data.keys()])
-        query = f"UPDATE {self.model_class.__tablename__} SET {set_clause} WHERE id = %s"
+        query = f"UPDATE {self._table_name()} SET {set_clause} WHERE id = %s"
         
         values = list(data.values()) + [id]
         result = self.control_conexion.ejecutar_comando_sql(query, tuple(values))
@@ -50,7 +58,7 @@ class BaseRepository(Generic[T]):
     
     def delete(self, id: int) -> bool:
         """Eliminar registro"""
-        query = f"DELETE FROM {self.model_class.__tablename__} WHERE id = %s"
+        query = f"DELETE FROM {self._table_name()} WHERE id = %s"
         result = self.control_conexion.ejecutar_comando_sql(query, (id,))
         return result > 0
 

@@ -17,6 +17,12 @@ class EmbeddingService:
     
     def _load_config(self):
         """Cargar configuración desde config.json o variables de entorno"""
+        # Asegura cargar .env incluso si Main no lo cargó aún
+        try:
+            from dotenv import load_dotenv  # type: ignore
+            load_dotenv()
+        except Exception:
+            pass
         try:
             # Intentar cargar desde config/config.json y luego configuracion/config.json (compatibilidad)
             config = None
@@ -27,9 +33,9 @@ class EmbeddingService:
                 with open('configuracion/config.json', 'r') as f:
                     config = json.load(f)
 
-            self.provider = config.get('EMBED_PROVIDER', 'openai')
+            self.provider = config.get('EMBED_PROVIDER', os.getenv('EMBED_PROVIDER', 'openai'))
             # Modelo por defecto actualizado a la serie text-embedding-3
-            self.model = config.get('EMBED_MODEL', 'text-embedding-3-small')
+            self.model = config.get('EMBED_MODEL', os.getenv('EMBED_MODEL', 'text-embedding-3-small'))
             
         except (FileNotFoundError, json.JSONDecodeError):
             # Fallback a variables de entorno
@@ -58,10 +64,12 @@ class EmbeddingService:
             else:
                 # Fallback a embeddings simulados
                 self._init_mock_client()
-                
+            # Log claro del estado
+            print(f"EmbeddingService -> provider: {self.provider}, model: {self.model}")
         except Exception as e:
             print(f"Error inicializando cliente de embeddings: {e}")
             self._init_mock_client()
+            print(f"EmbeddingService -> provider: {self.provider}, model: {self.model}")
     
     def _init_openai_client(self):
         """Inicializar cliente de OpenAI"""
@@ -75,22 +83,20 @@ class EmbeddingService:
                 import openai  # type: ignore
                 _client_ctor = getattr(openai, 'OpenAI')
             
-            # Obtener API key desde config o variable de entorno
-            api_key = None
-            try:
-                config = None
-                try:
-                    with open('config/config.json', 'r') as f:
-                        config = json.load(f)
-                except Exception:
-                    with open('configuracion/config.json', 'r') as f:
-                        config = json.load(f)
-                api_key = config.get('OPENAI_API_KEY')
-            except:
-                pass
-            
+            # Resolver API key (prioriza env, luego config)
+            api_key = os.getenv('OPENAI_API_KEY')
             if not api_key:
-                api_key = os.getenv('OPENAI_API_KEY')
+                try:
+                    config = None
+                    try:
+                        with open('config/config.json', 'r') as f:
+                            config = json.load(f)
+                    except Exception:
+                        with open('configuracion/config.json', 'r') as f:
+                            config = json.load(f)
+                    api_key = config.get('OPENAI_API_KEY')
+                except Exception:
+                    api_key = None
             
             if not api_key:
                 raise ValueError("OpenAI API key no encontrada")

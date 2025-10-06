@@ -38,21 +38,37 @@ CREATE TABLE IF NOT EXISTS legal_sources (
 );
 CREATE INDEX IF NOT EXISTS idx_legal_sources_ref ON legal_sources(ref_code);
 
--- 1.3 tariff_items
 CREATE TABLE IF NOT EXISTS tariff_items (
   id             BIGSERIAL PRIMARY KEY,
-  hs_code6       VARCHAR(6)  NOT NULL,
-  national_code  VARCHAR(10) NOT NULL,
+  hs6            VARCHAR(6)  NOT NULL,            -- prefijo HS6 (e.g., 871200)
+  national_code  VARCHAR(10) NOT NULL,            -- 10 dígitos, sin puntos
   title          TEXT        NOT NULL,
+  keywords       TEXT,
+  notes          TEXT,
   legal_basis_id BIGINT      REFERENCES legal_sources(id) ON DELETE SET NULL,
-  valid_from     TIMESTAMPTZ,
-  valid_to       TIMESTAMPTZ,
+  active         BOOLEAN     NOT NULL DEFAULT TRUE,
+  valid_from     DATE,
+  valid_to       DATE,
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (national_code)
 );
-CREATE INDEX IF NOT EXISTS idx_tariff_items_hs6 ON tariff_items(hs_code6);
+-- Compatibilidad con esquemas previos: si existe hs_code6, migrar a hs6
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'tariff_items' AND column_name = 'hs_code6'
+  ) THEN
+    ALTER TABLE tariff_items ADD COLUMN IF NOT EXISTS hs6 VARCHAR(6);
+    UPDATE tariff_items SET hs6 = COALESCE(hs6, hs_code6) WHERE hs6 IS NULL AND hs_code6 IS NOT NULL;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_tariff_items_hs6 ON tariff_items(hs6);
+CREATE INDEX IF NOT EXISTS idx_tariff_items_ncode ON tariff_items(national_code);
 CREATE INDEX IF NOT EXISTS idx_tariff_items_valid ON tariff_items(valid_from, valid_to);
+CREATE INDEX IF NOT EXISTS idx_tariff_items_active ON tariff_items(active);
 
 -- 1.4 embeddings (solo text-embedding-3-small, dim=1536)
 CREATE TABLE IF NOT EXISTS embeddings (
@@ -95,7 +111,33 @@ CREATE TABLE IF NOT EXISTS hs_items (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 1.7 rgi_rules
+-- 1.7 Notas legales HS (mínimo viable)
+CREATE TABLE IF NOT EXISTS hs_notes (
+  id SERIAL PRIMARY KEY,
+  scope TEXT NOT NULL,                -- 'section' | 'chapter' | 'heading' | 'subheading' ...
+  scope_code TEXT NOT NULL,           -- p.ej: '87', '8706'
+  note_number TEXT,                   -- p.ej: '1', '2a'
+  text TEXT NOT NULL,                 -- contenido de la nota
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 1.8 Vínculos RGI ↔ HS (para rastreo/explicación)
+CREATE TABLE IF NOT EXISTS rule_link_hs (
+  id SERIAL PRIMARY KEY,
+  rgi TEXT NOT NULL,                  -- p.ej: 'RGI1', 'RGI3b'
+  hs6 TEXT NOT NULL,                  -- p.ej: '870690'
+  priority INT DEFAULT 0,             -- desempate opcional
+  note_id INT REFERENCES hs_notes(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices de apoyo
+CREATE INDEX IF NOT EXISTS idx_hs_notes_scope ON hs_notes(scope, scope_code);
+CREATE INDEX IF NOT EXISTS idx_rule_link_hs_hs6 ON rule_link_hs(hs6);
+
+-- 1.9 rgi_rules (catálogo de reglas)
 CREATE TABLE IF NOT EXISTS rgi_rules (
   id          BIGSERIAL PRIMARY KEY,
   rgi         VARCHAR(20) NOT NULL UNIQUE,
@@ -104,7 +146,7 @@ CREATE TABLE IF NOT EXISTS rgi_rules (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 1.8 cases
+-- 1.10 cases
 CREATE TABLE IF NOT EXISTS cases (
   id            BIGSERIAL PRIMARY KEY,
   created_by    BIGINT      REFERENCES users(id) ON DELETE SET NULL,
@@ -132,10 +174,22 @@ CREATE INDEX IF NOT EXISTS idx_candidates_case ON candidates(case_id);
 
 -- 2) Vistas
 CREATE OR REPLACE VIEW v_current_tariff_items AS
-SELECT *
+SELECT
+  id,
+  national_code,
+  COALESCE(hs6, LEFT(REGEXP_REPLACE(national_code, '\\D', '', 'g'), 6)) AS hs6,
+  title,
+  keywords,
+  notes,
+  COALESCE(active, TRUE) AS active,
+  valid_from,
+  valid_to,
+  created_at,
+  updated_at
 FROM tariff_items
-WHERE valid_from <= NOW()
-  AND (valid_to IS NULL OR valid_to > NOW());
+WHERE COALESCE(active, TRUE) = TRUE
+  AND (valid_from IS NULL OR valid_from <= CURRENT_DATE)
+  AND (valid_to   IS NULL OR valid_to   >= CURRENT_DATE);
 
 -- 3) Seed
 
@@ -154,6 +208,31 @@ ON CONFLICT (email) DO NOTHING;
 ANALYZE embeddings;
 ANALYZE tariff_items;
 ANALYZE cases;
+
+-- 6) Normalización post-deploy (seguro si ya hay datos)
+-- Asegura national_code de 10 dígitos sin puntos y hs6 consistente
+UPDATE tariff_items
+SET national_code = REGEXP_REPLACE(national_code, '\\D', '', 'g')
+WHERE national_code ~ '[^0-9]';
+
+UPDATE tariff_items
+SET national_code = LPAD(national_code, 10, '0')
+WHERE national_code ~ '^\\d+$' AND LENGTH(national_code) < 10;
+
+UPDATE tariff_items
+SET hs6 = LEFT(national_code, 6)
+WHERE (hs6 IS NULL OR hs6 = '') AND national_code ~ '^\\d{10}$';
+
+UPDATE tariff_items
+SET active = TRUE
+WHERE active IS NULL;
+
+UPDATE tariff_items
+SET valid_from = CURRENT_DATE
+WHERE valid_from IS NULL;
+
+-- 7) Índices finales (idempotentes)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_tariff_items_national ON tariff_items(national_code);
 
 -- 4) Optional sample HS items (safe to keep for initial tests)
 INSERT INTO hs_items (hs_code, title, keywords, level, chapter, parent_code)
