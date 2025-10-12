@@ -40,6 +40,10 @@ class ControlConexion:
     def abrir_bd(self):
         """Método para abrir la base de datos usando SQLAlchemy."""
         try:
+            # Si ya hay una conexión activa, no crear otra
+            if self.engine and self.session:
+                return True
+                
             # Obtener el proveedor desde la configuración
             proveedor = self.configuracion.get("DatabaseProvider")
             if not proveedor:
@@ -50,28 +54,35 @@ class ControlConexion:
             if not cadena_conexion:
                 raise ValueError("La cadena de conexión es nula o vacía")
             
-            print(f"Intentando abrir conexión con el proveedor: {proveedor}")
-            # Evitar exponer contraseña en logs
-            try:
-                masked = cadena_conexion
-                if '://' in masked:
-                    # postgresql+psycopg://user:pass@host:port/db
-                    head, tail = masked.split('://', 1)
-                    if '@' in tail and ':' in tail.split('@')[0]:
-                        creds, rest = tail.split('@', 1)
-                        user = creds.split(':', 1)[0]
-                        masked = f"{head}://{user}:****@{rest}"
-                print(f"Cadena de conexión: {masked}")
-            except Exception:
-                print("Cadena de conexión: [oculta por seguridad]")
+            # Solo mostrar el log la primera vez
+            if not hasattr(self, '_logged_connection'):
+                print(f"Intentando abrir conexión con el proveedor: {proveedor}")
+                try:
+                    masked = cadena_conexion
+                    if '://' in masked:
+                        head, tail = masked.split('://', 1)
+                        if '@' in tail and ':' in tail.split('@')[0]:
+                            creds, rest = tail.split('@', 1)
+                            user = creds.split(':', 1)[0]
+                            masked = f"{head}://{user}:****@{rest}"
+                    print(f"Cadena de conexión: {masked}")
+                except Exception:
+                    print("Cadena de conexión: [oculta por seguridad]")
+                self._logged_connection = True
             
-            # Crear el motor de SQLAlchemy
-            self.engine = create_engine(cadena_conexion, echo=False)
+            # Crear el motor de SQLAlchemy con configuración mejorada
+            self.engine = create_engine(
+                cadena_conexion, 
+                echo=False,
+                pool_size=5,
+                max_overflow=10,
+                pool_pre_ping=True,
+                pool_recycle=3600
+            )
             
             # Crear una sesión
             self.session = Session(self.engine)
             
-            print("Conexión a la base de datos abierta exitosamente")
             return True
         except Exception as ex:
             print(f"Ocurrió una excepción: {str(ex)}")
@@ -160,40 +171,49 @@ class ControlConexion:
         Returns:
             any: Primer valor de la primera fila del resultado, o None si no hay filas.
         """
-        try:
-            if not self.session or not self.engine:
-                self.abrir_bd()
-
-            sql = text(consulta_sql)
-
-            params = {}
-            if parametros:
-                if isinstance(parametros, (tuple, list)):
-                    for i, valor in enumerate(parametros):
-                        params[f"p{i}"] = valor
-                    consulta_modificada = consulta_sql
-                    for i in range(consulta_modificada.count('?')):
-                        consulta_modificada = consulta_modificada.replace('?', f":p{i}", 1)
-                    idx = 0
-                    tmp = consulta_modificada
-                    while '%s' in tmp:
-                        tmp = tmp.replace('%s', f":p{idx}", 1)
-                        idx += 1
-                    sql = text(tmp)
-                else:
-                    params = parametros
-
-            result = self.session.execute(sql, params)
-            self.session.commit()
-            row = result.fetchone()
-            return row[0] if row and len(row) > 0 else None
-        except Exception as ex:
+        max_retries = 3
+        for attempt in range(max_retries):
             try:
-                self.session.rollback()
-            except Exception:
-                pass
-            print(f"Error al ejecutar consulta escalar: {str(ex)}")
-            raise
+                # Crear nueva sesión para evitar problemas de estado
+                if not self.engine:
+                    self.abrir_bd()
+                
+                # Usar una nueva sesión para cada operación
+                with Session(self.engine) as session:
+                    sql = text(consulta_sql)
+
+                    params = {}
+                    if parametros:
+                        if isinstance(parametros, (tuple, list)):
+                            for i, valor in enumerate(parametros):
+                                params[f"p{i}"] = valor
+                            consulta_modificada = consulta_sql
+                            for i in range(consulta_modificada.count('?')):
+                                consulta_modificada = consulta_modificada.replace('?', f":p{i}", 1)
+                            idx = 0
+                            tmp = consulta_modificada
+                            while '%s' in tmp:
+                                tmp = tmp.replace('%s', f":p{idx}", 1)
+                                idx += 1
+                            sql = text(tmp)
+                        else:
+                            params = parametros
+
+                    result = session.execute(sql, params)
+                    row = result.fetchone()
+                    session.commit()
+                    return row[0] if row and len(row) > 0 else None
+                
+            except Exception as ex:
+                # Si es un error de concurrencia, reintentar
+                if "concurrent operations are not permitted" in str(ex) and attempt < max_retries - 1:
+                    import time
+                    time.sleep(0.1 * (attempt + 1))  # Esperar un poco más en cada intento
+                    continue
+                
+                print(f"Error al ejecutar consulta escalar (intento {attempt + 1}): {str(ex)}")
+                if attempt == max_retries - 1:
+                    raise
     
     def ejecutar_consulta_sql(self, consulta_sql, parametros=None):
         """

@@ -25,11 +25,10 @@ national_classifier = NationalClassifier()
 @bp.route('/classify/<int:case_id>', methods=['POST'])
 @require_auth
 def classify_case(case_id):
-    """Orquestar pipeline de clasificación"""
+    """Clasifica devolviendo un único código final aplicando RGI y selección nacional.
+    Usa NationalClassifier (RGI -> HS6 -> 10 dígitos) y guarda un candidato rank=1.
+    """
     try:
-        # Parámetros
-        k = request.args.get('k', 3, type=int)
-        
         # Verificar que el caso existe
         case = case_repo.find_by_id(case_id)
         if not case:
@@ -38,217 +37,36 @@ def classify_case(case_id):
                 'message': 'Caso no encontrado',
                 'details': f'No existe un caso con ID {case_id}'
             }), 404
-        
-        # Verificar que el caso esté abierto
+
         if case.get('status') != 'open':
             return jsonify({
                 'code': 400,
                 'message': 'Caso no válido',
                 'details': 'Solo se pueden clasificar casos con estado "open"'
             }), 400
-        
-        # Obtener texto del caso
-        case_text = f"{case.get('product_title', '')} {case.get('product_desc', '')}".strip()
-        if not case_text:
-            return jsonify({
-                'code': 400,
-                'message': 'Texto insuficiente',
-                'details': 'El caso debe tener título o descripción para clasificar'
-            }), 400
-        
-        # Pipeline de clasificación
-        results = {
-            'case_id': case_id,
-            'text_analyzed': case_text,
-            'k': k,
-            'pipeline_steps': []
-        }
-        
-        # 1. Análisis NLP
-        nlp_analysis = nlp_service.classify_text(case_text)
-        results['pipeline_steps'].append({
-            'step': 'nlp_classification',
-            'result': nlp_analysis
-        })
-        
-        # 2. Análisis de sentimientos
-        sentiment = nlp_service.analyze_sentiment(case_text)
-        results['pipeline_steps'].append({
-            'step': 'sentiment_analysis',
-            'result': sentiment
-        })
-        
-        # 3. Extracción de entidades
-        entities = nlp_service.extract_entities(case_text)
-        results['pipeline_steps'].append({
-            'step': 'entity_extraction',
-            'result': entities
-        })
-        
-        # 4. Extracción de palabras clave
-        keywords = nlp_service.extract_keywords(case_text)
-        results['pipeline_steps'].append({
-            'step': 'keyword_extraction',
-            'result': keywords
-        })
-        
-        # 5. Evaluación de reglas RGI
-        rules_result = rule_engine.classify_with_rules(case_text)
-        results['pipeline_steps'].append({
-            'step': 'rgi_rules_evaluation',
-            'result': rules_result
-        })
-        
-        # 6. Generar embedding
-        embedding = embedding_service.generate_embedding(case_text)
-        
-        # 7. Búsqueda vectorial KNN
-        similar_hs_items = []
-        try:
-            # Buscar usando pgvector
-            knn_results = vector_index.knn_for_hs(
-                qvec=embedding,
-                provider=embedding_service.provider,
-                model=embedding_service.model,
-                k=k * 2  # Buscar más para luego re-ranking
-            )
-            
-            # Convertir resultados a formato esperado
-            for result in knn_results:
-                similar_hs_items.append({
-                    'hs_code': result['hs_code'],
-                    'title': result['title'],
-                    'keywords': result.get('keywords', ''),
-                    'distance': result['distance'],
-                    'owner_id': result['owner_id']
-                })
-            
-        except Exception as e:
-            print(f"Error en búsqueda KNN: {e}")
-            # Fallback: búsqueda por palabras clave
-            try:
-                for keyword in keywords[:5]:
-                    hs_items = hs_item_repo.search_by_keywords(keyword, limit=3)
-                    similar_hs_items.extend(hs_items)
-                
-                # Eliminar duplicados
-                seen_codes = set()
-                unique_items = []
-                for item in similar_hs_items:
-                    if item['hs_code'] not in seen_codes:
-                        seen_codes.add(item['hs_code'])
-                        unique_items.append(item)
-                
-                similar_hs_items = unique_items[:k * 2]
-                
-            except Exception as e2:
-                print(f"Error en fallback search: {e2}")
-                # Items de ejemplo como último recurso
-                similar_hs_items = [
-                    {
-                        'hs_code': '8471.30.00',
-                        'title': 'Computadoras portátiles',
-                        'keywords': 'computadora laptop portatil'
-                    },
-                    {
-                        'hs_code': '8517.12.00',
-                        'title': 'Teléfonos móviles',
-                        'keywords': 'telefono celular smartphone'
-                    }
-                ]
-        
-        # 8. Re-ranking híbrido
-        candidates = []
-        try:
-            # Aplicar re-ranking híbrido
-            ranked_candidates = re_ranker.re_rank_candidates(
-                query_text=case_text,
-                candidates=similar_hs_items,
-                query_attrs=case.get('attrs_json')
-            )
-            
-            # Tomar top-k candidatos
-            top_candidates = re_ranker.get_top_k(ranked_candidates, k)
-            
-            # Convertir a formato de candidatos
-            for i, candidate in enumerate(top_candidates):
-                candidates.append({
-                    'case_id': case_id,
-                    'hs_code': candidate['hs_code'],
-                    'title': candidate['title'],
-                    'confidence': candidate['confidence'],
-                    'rationale': candidate['rationale'],
-                    'legal_refs_json': candidate['legal_refs_json'],
-                    'rank': i + 1
-                })
-            
-        except Exception as e:
-            print(f"Error en re-ranking: {e}")
-            # Fallback: crear candidatos básicos
-            for i, item in enumerate(similar_hs_items[:k]):
-                candidates.append({
-                    'case_id': case_id,
-                    'hs_code': item['hs_code'],
-                    'title': item['title'],
-                    'confidence': item.get('confidence', 0.8 - (i * 0.1)),
-                    'rationale': f"Clasificación basada en análisis NLP y similitud con catálogo HS",
-                    'legal_refs_json': json.dumps({
-                        'nlp_category': nlp_analysis.get('category'),
-                        'rgi_rules': rules_result.get('matched_rules', []),
-                        'keywords': keywords[:3]
-                    }),
-                    'rank': i + 1
-                })
-        
-        # 9. Guardar candidatos en base de datos
-        if candidates:
-            success = candidate_repo.create_candidates_batch(candidates)
-            if not success:
-                return jsonify({
-                    'code': 500,
-                    'message': 'Error al guardar candidatos',
-                    'details': 'No se pudieron guardar los candidatos en la base de datos'
-                }), 500
 
-        # 10. Guardar embedding en índice vectorial (no crítico si falla)
-        try:
-            embedding_vector = embedding.tolist()
-            vector_index.upsert(
-                owner_type='case',
-                owner_id=case_id,
-                vector=embedding_vector,
-                meta={
-                    'text': case_text[:1000],
-                    'provider': embedding_service.provider,
-                    'model': embedding_service.model,
-                    'case_id': case_id
-                }
-            )
-        except Exception as e:
-            print(f"Error guardando embedding: {e}")
-            # No es crítico si falla el guardado del embedding
-            pass
-        
-        results['candidates'] = candidates
-        results['summary'] = {
-            'total_candidates': len(candidates),
-            'nlp_category': nlp_analysis.get('category'),
-            'confidence_range': {
-                'min': min([c['confidence'] for c in candidates]) if candidates else 0,
-                'max': max([c['confidence'] for c in candidates]) if candidates else 0
-            }
-        }
-        
+        # Ejecutar clasificador nacional (RGI + selección nacional)
+        result = national_classifier.classify(case)
+
         return jsonify({
             'code': 200,
-            'message': 'Clasificación completada exitosamente',
-            'details': results
+            'message': 'Clasificación completada',
+            'details': {
+                'case_id': case_id,
+                'hs6': result.get('hs6', ''),
+                'national_code': result.get('national_code', ''),
+                'title': result.get('title', ''),
+                'rgi_applied': result.get('rgi_applied', []) or [],
+                'legal_notes': result.get('legal_notes', []) or [],
+                'sources': result.get('sources', []) or [],
+                'rationale': result.get('rationale', '') or ''
+            }
         }), 200
-        
+
     except Exception as e:
         return jsonify({
             'code': 500,
-            'message': 'Error en el pipeline de clasificación',
+            'message': 'Error en clasificación',
             'details': str(e)
         }), 500
 

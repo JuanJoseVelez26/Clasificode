@@ -95,6 +95,26 @@ class DianIngestor:
         df = self.cc.ejecutar_consulta_sql(q_ins, params)
         return int(df.iloc[0]['id']) if df is not None and not df.empty else 0
 
+    def _upsert_hs_item(self, hs6: str, title: Optional[str], keywords: Optional[str], chapter: Optional[int]) -> bool:
+        """Crea/actualiza un item HS6 en hs_items. Idempotente por hs_code."""
+        if not hs6:
+            return False
+        q = (
+            "INSERT INTO hs_items (hs_code, title, keywords, level, chapter, created_at, updated_at) "
+            "VALUES (:p0, :p1, :p2, 6, :p3, NOW(), NOW()) "
+            "ON CONFLICT (hs_code) DO UPDATE SET "
+            "title = COALESCE(EXCLUDED.title, hs_items.title), "
+            "keywords = CONCAT(COALESCE(hs_items.keywords,''),' ',COALESCE(EXCLUDED.keywords,'')), "
+            "chapter = COALESCE(EXCLUDED.chapter, hs_items.chapter), "
+            "updated_at = NOW()"
+        )
+        try:
+            self.cc.ejecutar_comando_sql(q, (hs6, title or None, (keywords or '').lower(), chapter))
+            return True
+        except Exception as e:
+            _log('warn', 'hs_item_upsert_failed', hs6=hs6, error=str(e))
+            return False
+
     def _upsert_tariff_item(self, hs6: str, national_code: str, title: str, legal_basis_id: int,
                              valid_from: Optional[str], valid_to: Optional[str]) -> bool:
         # Idempotencia por national_code
@@ -172,6 +192,14 @@ class DianIngestor:
 
                     if not hs6 or not national:
                         continue
+
+                    # Mantener catálogo HS6 base utilizado por RGI
+                    try:
+                        chapter = int(hs6[:2]) if len(hs6) >= 2 and hs6[:2].isdigit() else None
+                        kw = (title or '').lower()
+                        self._upsert_hs_item(hs6, title, kw, chapter)
+                    except Exception as e:
+                        _log('warn', 'hs_item_enrich_failed', hs6=hs6, error=str(e))
 
                     ok = self._upsert_tariff_item(hs6, national, title, legal_source_id, vf, vt)
                     if ok:

@@ -163,12 +163,16 @@ CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
 CREATE TABLE IF NOT EXISTS candidates (
   id               BIGSERIAL PRIMARY KEY,
   case_id          BIGINT      NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
-  hs6              VARCHAR(6),
-  national_code    VARCHAR(10),
-  confidence       NUMERIC(6,5),
-  rationale        TEXT,
-  legal_refs_json  JSONB,
-  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  hs_code          VARCHAR(20),  -- Código HS completo (puede ser HS6 o nacional)
+  hs6              VARCHAR(6),   -- Código HS6
+  national_code    VARCHAR(10),  -- Código nacional de 10 dígitos
+  title            TEXT,         -- Título del item
+  confidence       NUMERIC(6,5), -- Confianza de la clasificación
+  rationale        TEXT,         -- Razonamiento de la clasificación
+  legal_refs_json  JSONB,        -- Referencias legales en JSON
+  rank             INTEGER DEFAULT 1, -- Ranking del candidato
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_candidates_case ON candidates(case_id);
 

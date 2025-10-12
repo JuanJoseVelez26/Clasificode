@@ -12,32 +12,32 @@ class CaseRepository:
 
     # Lecturas --------------------------------------------------------------
     def get_by_id(self, case_id: int) -> Optional[Dict[str, Any]]:
-        q = "SELECT * FROM cases WHERE id = :p0"
-        df = self.cc.ejecutar_consulta_sql(q, (case_id,))
+        q = "SELECT * FROM cases WHERE id = :id"
+        df = self.cc.ejecutar_consulta_sql(q, {"id": int(case_id)})
         return df.iloc[0].to_dict() if df is not None and not df.empty else None
 
     def list(self, limit: int = 50, offset: int = 0, status: Optional[str] = None) -> List[Dict[str, Any]]:
         if status:
-            q = "SELECT * FROM cases WHERE status = :p0 ORDER BY created_at DESC LIMIT :p1 OFFSET :p2"
-            df = self.cc.ejecutar_consulta_sql(q, (status, limit, offset))
+            q = "SELECT * FROM cases WHERE status = :status ORDER BY created_at DESC LIMIT :lim OFFSET :off"
+            df = self.cc.ejecutar_consulta_sql(q, {"status": status, "lim": int(limit), "off": int(offset)})
         else:
-            q = "SELECT * FROM cases ORDER BY created_at DESC LIMIT :p0 OFFSET :p1"
-            df = self.cc.ejecutar_consulta_sql(q, (limit, offset))
+            q = "SELECT * FROM cases ORDER BY created_at DESC LIMIT :lim OFFSET :off"
+            df = self.cc.ejecutar_consulta_sql(q, {"lim": int(limit), "off": int(offset)})
         return df.to_dict('records') if df is not None else []
 
     # Escrituras ------------------------------------------------------------
     def create(self, data: Dict[str, Any]) -> int:
         q = (
             "INSERT INTO cases (created_by, status, product_title, product_desc, attrs_json, created_at, updated_at) "
-            "VALUES (:p0, :p1, :p2, :p3, :p4, NOW(), NOW()) RETURNING id"
+            "VALUES (:created_by, :status, :product_title, :product_desc, :attrs_json, NOW(), NOW()) RETURNING id"
         )
-        params = (
-            int(data['created_by']),
-            data.get('status', 'open'),
-            data['product_title'],
-            data.get('product_desc'),
-            data.get('attrs_json'),
-        )
+        params = {
+            "created_by": int(data['created_by']),
+            "status": data.get('status', 'open'),
+            "product_title": data['product_title'],
+            "product_desc": data.get('product_desc'),
+            "attrs_json": data.get('attrs_json'),
+        }
         # ejecutar_comando_sql retorna filas afectadas; usamos consulta directa para RETURNING con pandas
         df = self.cc.ejecutar_consulta_sql(q, params)
         return int(df.iloc[0]['id']) if df is not None and not df.empty else 0
@@ -47,15 +47,16 @@ class CaseRepository:
         values: List[Any] = []
         for k in ['status', 'product_title', 'product_desc', 'attrs_json']:
             if k in data:
-                sets.append(f"{k} = :p{len(values)}")
-                values.append(data[k])
+                sets.append(f"{k} = :{k}")
+                values.append((k, data[k]))
         if not sets:
             return False
-        values.append(case_id)
-        q = f"UPDATE cases SET {', '.join(sets)}, updated_at = NOW() WHERE id = :p{len(values)-1}"
-        affected = self.cc.ejecutar_comando_sql(q, tuple(values))
+        params = {k: v for k, v in values}
+        params['id'] = int(case_id)
+        q = f"UPDATE cases SET {', '.join(sets)}, updated_at = NOW() WHERE id = :id"
+        affected = self.cc.ejecutar_comando_sql(q, params)
         return affected > 0
 
     def delete(self, case_id: int) -> bool:
-        q = "DELETE FROM cases WHERE id = :p0"
-        return self.cc.ejecutar_comando_sql(q, (case_id,)) > 0
+        q = "DELETE FROM cases WHERE id = :id"
+        return self.cc.ejecutar_comando_sql(q, {"id": int(case_id)}) > 0

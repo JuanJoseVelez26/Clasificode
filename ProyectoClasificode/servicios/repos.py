@@ -44,8 +44,8 @@ class BaseRepository(Generic[T]):
         placeholders = ', '.join(['%s'] * len(data))
         query = f"INSERT INTO {self._table_name()} ({columns}) VALUES ({placeholders}) RETURNING id"
         
-        result = self.control_conexion.ejecutar_comando_sql(query, tuple(data.values()))
-        return result
+        result = self.control_conexion.ejecutar_escalares(query, tuple(data.values()))
+        return result if result is not None else 0
     
     def update(self, id: int, data: Dict[str, Any]) -> bool:
         """Actualizar registro"""
@@ -297,7 +297,7 @@ class EmbeddingRepository(BaseRepository):
         """Crear o actualizar embedding"""
         query = """
         INSERT INTO embeddings (owner_type, owner_id, provider, model, vector, text_norm, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s::vector, %s, NOW(), NOW())
+        VALUES (:p0, :p1, :p2, :p3, CAST(:p4 AS vector), :p5, NOW(), NOW())
         ON CONFLICT (owner_type, owner_id, provider, model)
         DO UPDATE SET 
             vector = EXCLUDED.vector,

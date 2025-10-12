@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from servicios.control_conexion import ControlConexion
 from servicios.modeloPln.embedding_service import EmbeddingService
-from servicios.modeloPln.vector_index import VectorIndex
+from servicios.modeloPln.vector_index import PgVectorIndex as VectorIndex
 import json
 import numpy as np
 
@@ -100,66 +100,88 @@ def generate_hs_embeddings():
             embedding = embedding_service.generate_embedding(text)
             
             # Guardar en base de datos
+            print(f"Procesando ítem: {hs_item['hs_code']} - {hs_item['description']}")
+            
+            # Insertar o actualizar el ítem HS
             query = """
-            INSERT INTO hs_items (hs_code, description, chapter, section, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, NOW(), NOW())
+            INSERT INTO hs_items (
+                hs_code, 
+                title, 
+                keywords, 
+                level, 
+                chapter, 
+                parent_code,
+                created_at, 
+                updated_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW())
             ON CONFLICT (hs_code) DO UPDATE SET
-            description = EXCLUDED.description,
-            chapter = EXCLUDED.chapter,
-            section = EXCLUDED.section,
-            updated_at = NOW()
+                title = EXCLUDED.title,
+                keywords = EXCLUDED.keywords,
+                level = EXCLUDED.level,
+                chapter = EXCLUDED.chapter,
+                parent_code = EXCLUDED.parent_code,
+                updated_at = NOW()
             RETURNING id
             """
             
-            result = control_conexion.ejecutar_comando_sql(query, (
-                hs_item['hs_code'], hs_item['description'], 
-                hs_item['chapter'], hs_item['section']
-            ))
+            # Extraer el capítulo del código HS (primeros 2 dígitos)
+            chapter = hs_item['hs_code'].split('.')[0][:2] if 'hs_code' in hs_item else None
+            # El parent_code sería el código HS sin los últimos 3 caracteres (p.ej. 8471.30.00 -> 8471.30)
+            parent_code = '.'.join(hs_item['hs_code'].split('.')[:2]) if 'hs_code' in hs_item else None
             
-            # Guardar embedding
-            embedding_query = """
-            INSERT INTO embeddings (entity_type, entity_id, embedding_vector, model_version, dimension)
-            VALUES (%s, %s, %s, %s, %s)
-            ON CONFLICT (entity_type, entity_id) DO UPDATE SET
-            embedding_vector = EXCLUDED.embedding_vector,
-            model_version = EXCLUDED.model_version,
-            updated_at = NOW()
-            """
-            
-            control_conexion.ejecutar_comando_sql(embedding_query, (
-                'hs_item', result, json.dumps(embedding.tolist()), 'v1', len(embedding)
-            ))
-            
-            # Agregar al índice vectorial
-            vector_index.add_vector(
-                f"hs_{hs_item['hs_code']}", 
-                embedding, 
-                {
-                    'hs_code': hs_item['hs_code'],
-                    'description': hs_item['description'],
-                    'chapter': hs_item['chapter'],
-                    'section': hs_item['section']
-                }
+            params = (
+                hs_item.get('hs_code'), 
+                hs_item.get('description', ''),
+                '',  # keywords vacío por defecto
+                6,   # nivel 6 para códigos de 10 dígitos
+                chapter,
+                parent_code
             )
             
-            if i % 10 == 0:
-                print(f"Procesados {i}/{len(hs_catalog)} códigos HS")
+            try:
+                print(f"Ejecutando query con parámetros: {params}")
+                # Usar ejecutar_consulta_sql que devuelve un DataFrame
+                result = control_conexion.ejecutar_consulta_sql(query, params)
+                
+                if result.empty:
+                    print(f"Error: No se pudo insertar el ítem {hs_item['hs_code']}")
+                    continue
+                    
+                # Obtener el ID del primer resultado
+                item_id = result.iloc[0, 0]
+                print(f"Ítem insertado/actualizado con ID: {item_id}")
+                
+                # Guardar embedding usando PgVectorIndex
+                try:
+                    vector_index.upsert(
+                        owner_type='hs_item',
+                        owner_id=item_id,
+                        vector=embedding,
+                        meta={
+                            'hs_code': hs_item['hs_code'],
+                            'title': hs_item['description']
+                        }
+                    )
+                    print(f"  ✓ Embedding generado para {hs_item['hs_code']}")
+                    
+                except Exception as e:
+                    print(f"  ✗ Error guardando embedding para {hs_item['hs_code']}: {str(e)}")
+                    continue
+                
+            except Exception as e:
+                print(f"Error al procesar el ítem {hs_item['hs_code']}: {str(e)}")
+                continue
         
-        # Guardar índice vectorial
-        vector_index.save_index('data/hs_catalog_index.json')
-        
-        print(f"¡Embeddings generados exitosamente para {len(hs_catalog)} códigos HS!")
-        print(f"Índice vectorial guardado en data/hs_catalog_index.json")
-        
-        # Mostrar estadísticas
-        stats = vector_index.get_stats()
-        print(f"Estadísticas del índice: {stats}")
+        print(f"\n✅ Se generaron embeddings para {len(hs_catalog)} códigos HS")
         
     except Exception as e:
         print(f"Error generando embeddings: {str(e)}")
         raise
+    
     finally:
-        # Cerrar conexión
+        # Cerrar conexiones
+        if 'control_conexion' in locals():
+            control_conexion.cerrar_conexion()
         control_conexion.cerrar_bd()
 
 def search_similar_hs_codes(query_text: str, top_k: int = 5):

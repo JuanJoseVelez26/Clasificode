@@ -83,16 +83,141 @@ def _fetch_rgi_map(cc: ControlConexion) -> Dict[str, int]:
 
 
 def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List[Candidate]:
-    """Búsqueda simple por keywords sobre hs_items.title y hs_items.keywords."""
-    text = (text or '').strip()
+    """Búsqueda mejorada por keywords que maneja múltiples términos y sinónimos."""
+    text = (text or '').strip().lower()
     if not text:
         return []
-    q = (
-        "SELECT id, hs_code, title, keywords, level, chapter FROM hs_items "
-        "WHERE title ILIKE %s OR keywords ILIKE %s ORDER BY hs_code LIMIT %s"
-    )
-    df = _fetch_df(cc, q, (f"%{text}%", f"%{text}%", limit))
+    
+    # Dividir el texto en palabras individuales (palabras de más de 2 caracteres)
+    words = [word.strip() for word in text.split() if len(word.strip()) > 2]
+    
+    if not words:
+        return []
+    
+    # Mapeo de sinónimos comunes para mejorar la búsqueda
+    synonyms = {
+        'ternero': ['bovino', 'ganado', 'vaca', 'toro', 'animal', 'bovinos', 'terneros', 'bovino'],
+        'vivo': ['animal', 'ganado', 'bovino', 'vivos', 'animales', 'vivo'],
+        'camiseta': ['camisa', 'prenda', 'vestido', 'ropa', 'textil', 'camiseta'],
+        'algodon': ['algodón', 'textil', 'fibra', 'tela', 'algodon', '100%'],
+        'computadora': ['ordenador', 'pc', 'computador', 'equipo', 'computadora'],
+        'portatil': ['portátil', 'laptop', 'notebook', 'móvil', 'portatil'],
+        'telefono': ['teléfono', 'móvil', 'celular', 'smartphone', 'telefono'],
+        'automovil': ['automóvil', 'carro', 'vehículo', 'coche', 'automovil'],
+        'motocicleta': ['moto', 'motociclo', 'vehículo', 'motocicleta'],
+        'bicicleta': ['bici', 'ciclo', 'vehículo', 'bicicleta'],
+        'refrigerador': ['nevera', 'frigorífico', 'heladera', 'refrigerador'],
+        'lavadora': ['lavarropas', 'máquina', 'lavadora'],
+        'microondas': ['horno', 'microondas'],
+        'cafe': ['café', 'grano', 'semilla', 'cafe'],
+        'aceite': ['óleo', 'grasa', 'líquido', 'aceite'],
+        'chocolate': ['cacao', 'dulce', 'confitería', 'chocolate'],
+        'miel': ['abeja', 'dulce', 'natural', 'miel'],
+        'vino': ['bebida', 'alcohólico', 'uva', 'vino'],
+        'cerveza': ['bebida', 'alcohólico', 'malta', 'cerveza'],
+        'cemento': ['construcción', 'material', 'aglomerante', 'cemento'],
+        'ladrillo': ['construcción', 'material', 'cerámico', 'ladrillo'],
+        'pintura': ['color', 'revestimiento', 'acabado', 'pintura'],
+        'taladro': ['herramienta', 'perforar', 'taladrar', 'taladro'],
+        'martillo': ['herramienta', 'golpear', 'clavar', 'martillo'],
+        'destornillador': ['herramienta', 'atornillar', 'desatornillar', 'destornillador'],
+        'bloques': ['construcción', 'juguete', 'piezas', 'bloques'],
+        'muñeca': ['juguete', 'niña', 'figura', 'muñeca'],
+        'puzzle': ['rompecabezas', 'juego', 'piezas', 'puzzle'],
+        'pelota': ['balón', 'esfera', 'juego', 'pelota'],
+        'termometro': ['termómetro', 'temperatura', 'medir', 'termometro'],
+        'mascarilla': ['máscara', 'protección', 'filtro', 'mascarilla'],
+        'guantes': ['manos', 'protección', 'cubrir', 'guantes'],
+        'vendaje': ['venda', 'curación', 'herida', 'vendaje'],
+        'lapiz': ['lápiz', 'escribir', 'dibujar', 'lapiz'],
+        'cuaderno': ['libro', 'escribir', 'papel', 'cuaderno'],
+        'boligrafo': ['bolígrafo', 'escribir', 'pluma', 'boligrafo'],
+        'pincel': ['pintar', 'brocha', 'arte', 'pincel'],
+        'semillas': ['semilla', 'planta', 'germinar', 'semillas'],
+        'fertilizante': ['abono', 'nutriente', 'planta', 'fertilizante'],
+        'manguera': ['tubo', 'riego', 'agua', 'manguera'],
+        'maceta': ['macetero', 'planta', 'jardín', 'maceta'],
+        'tijeras': ['cortar', 'podar', 'herramienta', 'tijeras'],
+        'reloj': ['tiempo', 'pulsera', 'cronómetro', 'reloj'],
+        'perfume': ['fragancia', 'aroma', 'colonia', 'perfume'],
+        'collar': ['joya', 'cadena', 'adorno', 'collar'],
+        'gafas': ['lentes', 'protección', 'ver', 'gafas'],
+        'sierra': ['cortar', 'madera', 'herramienta', 'sierra'],
+        'nivel': ['medir', 'horizontal', 'vertical', 'nivel'],
+        'multimetro': ['multímetro', 'medir', 'eléctrico', 'multimetro'],
+        'mouse': ['ratón', 'mouse', 'periférico', 'dispositivo', 'gaming', 'óptico', 'inalámbrico'],
+        'gaming': ['juegos', 'gaming', 'gamer', 'videojuegos', 'entretenimiento'],
+        'teclado': ['keyboard', 'teclado', 'periférico', 'dispositivo', 'gaming'],
+        'auriculares': ['headphones', 'auriculares', 'audífonos', 'cascos', 'gaming'],
+        'monitor': ['pantalla', 'monitor', 'display', 'gaming', 'pantalla'],
+        'webcam': ['cámara', 'webcam', 'cámara web', 'videoconferencia'],
+        'microfono': ['micrófono', 'microphone', 'mic', 'grabación'],
+        'altavoces': ['speakers', 'altavoces', 'parlantes', 'sonido'],
+        'impresora': ['printer', 'impresora', 'tinta', 'láser'],
+        'escanner': ['scanner', 'escáner', 'digitalización', 'escanear'],
+        'tablet': ['tableta', 'tablet', 'ipad', 'android'],
+        'smartwatch': ['reloj inteligente', 'smartwatch', 'wearable'],
+        'drone': ['dron', 'drone', 'aeronave', 'vuelo'],
+        'bateria': ['batería', 'battery', 'pila', 'energía'],
+        'cargador': ['charger', 'cargador', 'carga', 'energía'],
+        'cable': ['cable', 'wire', 'conexión', 'usb', 'hdmi'],
+        'adaptador': ['adapter', 'adaptador', 'conversor', 'conexión']
+    }
+    
+    # Expandir palabras con sinónimos
+    expanded_words = set(words)
+    for word in words:
+        if word in synonyms:
+            expanded_words.update(synonyms[word])
+    
+    # Construir consulta que busque cualquiera de las palabras expandidas
+    conditions = []
+    params = {}
+    
+    # Priorizar búsquedas más específicas para productos de computación
+    computer_terms = ['mouse', 'ratón', 'gaming', 'teclado', 'keyboard', 'monitor', 'pantalla', 'auriculares', 'headphones']
+    has_computer_terms = any(term in text for term in computer_terms)
+    
+    if has_computer_terms:
+        # Buscar específicamente en capítulo 84 (máquinas) y 85 (aparatos eléctricos)
+        conditions.append("(chapter = 84 OR chapter = 85)")
+    
+    for i, word in enumerate(expanded_words):
+        param_title = f"word_title_{i}"
+        param_keywords = f"word_keywords_{i}"
+        conditions.append(f"(LOWER(title) ILIKE :{param_title} OR LOWER(keywords) ILIKE :{param_keywords})")
+        params[param_title] = f"%{word}%"
+        params[param_keywords] = f"%{word}%"
+    
+    # Si no hay condiciones, usar búsqueda más amplia
+    if not conditions:
+        conditions = ["(LOWER(title) ILIKE :text OR LOWER(keywords) ILIKE :text)"]
+        params["text"] = f"%{text}%"
+    
+    query = f"""
+        SELECT id, hs_code, title, keywords, level, chapter 
+        FROM hs_items 
+        WHERE {' AND '.join(conditions) if conditions else '1=1'}
+        ORDER BY 
+            CASE 
+                WHEN LOWER(title) ILIKE :exact_match THEN 1
+                WHEN LOWER(keywords) ILIKE :exact_match THEN 2
+                ELSE 3
+            END,
+            CASE 
+                WHEN chapter = 84 THEN 1
+                WHEN chapter = 85 THEN 2
+                ELSE 3
+            END,
+            hs_code 
+        LIMIT :lim
+    """
+    params["exact_match"] = f"%{text}%"
+    params["lim"] = int(limit)
+    
+    df = _fetch_df(cc, query, params)
     out: List[Candidate] = []
+    
     if not df.empty:
         for _, r in df.iterrows():
             hs_code = str(r['hs_code'])
@@ -107,6 +232,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
                     'keywords': r.get('keywords')
                 }
             })
+    
     return out
 
 
@@ -224,18 +350,49 @@ def apply_rgi2(description: str, candidates: List[Candidate], steps: List[TraceS
         incompleto = any(k in text for k in ['incompleto', 'desarmado', 'sin terminar', 'semiarmado'])
         mezcla = any(k in text for k in ['mezcla', 'mixto', 'conjunto', 'set', 'combinado'])
 
-        # Heurística: si es conjunto/mezcla y hay candidatos de distintos capítulos, 
-        # preferir el capítulo del título dominantes por mención repetida
+        # Heurística mejorada: priorizar capítulos más relevantes semánticamente
         new_cands = candidates[:]
-        if mezcla and candidates:
-            chapters = {}
-            for c in candidates:
-                ch = _hs_chapter(c['hs_code'])
-                chapters[ch] = chapters.get(ch, 0) + 1
-            if chapters:
-                dominant = max(chapters.items(), key=lambda x: x[1])[0]
-                new_cands = [c for c in candidates if _hs_chapter(c['hs_code']) == dominant]
-                decision.append(f"Prioriza capítulo dominante {dominant} (mezcla/conjunto)")
+        if candidates:
+            # Mapeo de palabras clave a capítulos preferidos
+            text_lower = text.lower()
+            preferred_chapters = []
+            
+            # Animales vivos (priorizar capítulo 01 para animales vivos)
+            if any(word in text_lower for word in ['ternero', 'vivo', 'animal', 'ganado', 'bovino', 'vaca', 'toro']):
+                if 'vivo' in text_lower:
+                    preferred_chapters.extend([1])  # Solo capítulo 01 para animales vivos
+                else:
+                    preferred_chapters.extend([1, 2, 3, 4, 5])  # Incluir carne si no especifica "vivo"
+            
+            # Textiles y prendas
+            if any(word in text_lower for word in ['camiseta', 'camisa', 'prenda', 'ropa', 'vestido', 'textil', 'algodón']):
+                preferred_chapters.extend([61, 62, 63])
+            
+            # Máquinas y equipos
+            if any(word in text_lower for word in ['computadora', 'máquina', 'equipo', 'motor', 'herramienta']):
+                preferred_chapters.extend([84, 85])
+            
+            # Alimentos
+            if any(word in text_lower for word in ['café', 'alimento', 'comida', 'bebida', 'carne']):
+                preferred_chapters.extend([16, 17, 18, 19, 20])
+            
+            # Si hay capítulos preferidos, filtrar por ellos
+            if preferred_chapters:
+                new_cands = [c for c in candidates if int(_hs_chapter(c['hs_code']) or '0') in preferred_chapters]
+                if new_cands:
+                    decision.append(f"Prioriza capítulos semánticamente relevantes: {preferred_chapters}")
+                else:
+                    new_cands = candidates[:]  # Si no hay coincidencias, mantener todos
+            elif mezcla and candidates:
+                # Lógica original para mezclas sin preferencias semánticas
+                chapters = {}
+                for c in candidates:
+                    ch = _hs_chapter(c['hs_code'])
+                    chapters[ch] = chapters.get(ch, 0) + 1
+                if chapters:
+                    dominant = max(chapters.items(), key=lambda x: x[1])[0]
+                    new_cands = [c for c in candidates if _hs_chapter(c['hs_code']) == dominant]
+                    decision.append(f"Prioriza capítulo dominante {dominant} (mezcla/conjunto)")
 
         if incompleto:
             decision.append("Tratar mercancía incompleta/desarmada como completa si conserva carácter esencial")
@@ -274,25 +431,45 @@ def apply_rgi3(candidates: List[Candidate], steps: List[TraceStep]) -> Tuple[Lis
             _trace(steps, 'RGI3', 'Sin candidatos', [], {'rgi_id': [rgi_map.get('RGI3A'), rgi_map.get('RGI3B'), rgi_map.get('RGI3C')], 'note_id': [], 'legal_source_id': []})
             return candidates, steps
 
-        # 3(a) y 3(b): puntaje por especificidad + densidad por heading
+        # 3(a) y 3(b): puntaje por especificidad + densidad por heading + relevancia semántica
         heading_freq = {}
         for c in candidates:
             hd = _hs_heading(c['hs_code'])
             heading_freq[hd] = heading_freq.get(hd, 0) + 1
 
-        def score(c: Candidate) -> Tuple[int, float, int]:
+        def score(c: Candidate) -> Tuple[int, float, int, int]:
+            # Priorizar por especificidad (HS6 completo)
             hs6_len = 1 if len(_hs6(c['hs_code'])) == 6 else 0
+            # Score original
             sc = float(c.get('score') or 0.0)
+            # Densidad por heading
             dens = heading_freq.get(_hs_heading(c['hs_code']), 0)
-            return (hs6_len, sc, dens)
+            # Priorizar capítulos más relevantes (textiles=61-63, animales=01-05, etc.)
+            chapter = int(_hs_chapter(c['hs_code']) or '0')
+            chapter_priority = 0
+            if chapter in [61, 62, 63]:  # Textiles
+                chapter_priority = 3
+            elif chapter in [1, 2, 3, 4, 5]:  # Animales vivos
+                chapter_priority = 3
+            elif chapter in [84, 85]:  # Máquinas
+                chapter_priority = 2
+            elif chapter in [16, 17, 18, 19, 20]:  # Alimentos
+                chapter_priority = 2
+            else:
+                chapter_priority = 1
+            
+            return (hs6_len, chapter_priority, sc, dens)
 
         # Escoge top-N por score para seguir (mantener algunos para RGI6)
         sorted_c = sorted(candidates, key=score, reverse=True)
-        top = sorted_c[:10] if len(sorted_c) > 10 else sorted_c
+        top = sorted_c[:5] if len(sorted_c) > 5 else sorted_c
 
         # 3(c) desempate final: última por numeración
-        max_code = max(top, key=lambda c: _hs6(c['hs_code']) or _hs_heading(c['hs_code']) or _hs_chapter(c['hs_code']))
-        final_list = [max_code]
+        if top:
+            max_code = max(top, key=lambda c: _hs6(c['hs_code']) or _hs_heading(c['hs_code']) or _hs_chapter(c['hs_code']))
+            final_list = [max_code]
+        else:
+            final_list = []
 
         _trace(
             steps,

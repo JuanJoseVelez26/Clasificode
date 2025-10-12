@@ -79,30 +79,50 @@ export const api = {
       similarities?: { id: string; title: string; snippet: string; hs: string; score: number }[]
       warnings?: string[]
     }> => {
-      // Create case
-      const title = payload.text.slice(0, 80)
-      const desc = payload.text.slice(80)
-      const caseRes = await apiClient.post("/cases", { product_title: title, product_desc: desc })
-      const caseId = caseRes.data?.details?.case_id || caseRes.data?.details?.id || caseRes.data?.case_id
-      // Classify using v1 (national code)
-      const classifyRes = await apiClient.post(`/api/v1/classify/${caseId}`, {})
-      const d = classifyRes.data?.details || classifyRes.data || {}
-      const national = d.national_code || d.hs6 || "0000000000"
-      const conf = 0.85
-      return {
-        topK: [
-          {
-            hs: national,
-            confidence: conf,
-            description: d.title || "",
+      try {
+        // Create case
+        const title = payload.text.slice(0, 80)
+        const desc = payload.text.slice(80)
+        const caseRes = await apiClient.post("/cases", { product_title: title, product_desc: desc })
+        
+        if (!caseRes.data) {
+          throw new Error("No se pudo crear el caso")
+        }
+        
+        const caseId = caseRes.data?.details?.case_id || caseRes.data?.details?.id || caseRes.data?.case_id
+        if (!caseId) {
+          throw new Error("ID de caso no válido")
+        }
+        
+        // Classify using v1 (national code)
+        const classifyRes = await apiClient.post(`/api/v1/classify/${caseId}`, {})
+        
+        if (!classifyRes.data) {
+          throw new Error("No se pudo clasificar el producto")
+        }
+        
+        const d = classifyRes.data?.details || classifyRes.data || {}
+        const national = d.national_code || d.hs6 || "0000000000"
+        const conf = d.confidence || 0.85
+        
+        return {
+          topK: [
+            {
+              hs: national,
+              confidence: conf,
+              description: d.title || "",
+            },
+          ],
+          explanation: {
+            rationale: d.rationale || "Clasificación basada en descripción del producto",
+            factors: (d.legal_notes || []).map((ln: any) => ({ name: ln?.title || "Nota", weight: 0.5, note: ln?.text || ln })),
           },
-        ],
-        explanation: {
-          rationale: d.rationale || "",
-          factors: (d.legal_notes || []).map((ln: any) => ({ name: ln?.title || "Nota", weight: 0.5, note: ln?.text || ln })),
-        },
-        similarities: [],
-        warnings: [],
+          similarities: [],
+          warnings: conf < 0.7 ? ["Clasificación de baja confianza"] : [],
+        }
+      } catch (error: any) {
+        console.error("Error en clasificación:", error)
+        throw new Error(error.message || "Error al procesar la clasificación")
       }
     },
     text: async (payload: { text: string; lang?: string }): Promise<ClassifyResponse> => {

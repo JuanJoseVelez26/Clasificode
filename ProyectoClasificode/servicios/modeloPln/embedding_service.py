@@ -211,9 +211,46 @@ class EmbeddingService:
         
         return np.array(embeddings)
     
-    def generate_embedding(self, text: str) -> np.ndarray:
-        """Generar embedding para un texto (alias para compatibilidad)"""
-        return self.embed(text)
+    def generate_embedding(self, text: str) -> List[float]:
+        """
+        Generar embedding para un texto.
+        
+        Args:
+            text: Texto a convertir en embedding
+            
+        Returns:
+            List[float]: Vector de embedding con dimensión fija
+        """
+        if not text or not text.strip():
+            return [0.0] * self.dimension
+            
+        try:
+            if self.provider == 'openai':
+                embedding = self._embed_openai([text])[0]
+            elif self.provider == 'huggingface':
+                embedding = self._embed_huggingface([text])[0]
+            else:
+                embedding = self._embed_mock([text])[0]
+            
+            # Asegurar que el embedding sea una lista de floats
+            if isinstance(embedding, np.ndarray):
+                embedding = embedding.tolist()
+            elif not isinstance(embedding, list):
+                embedding = list(embedding)
+                
+            # Asegurar la dimensión correcta
+            if len(embedding) != self.dimension:
+                print(f"Advertencia: Dimensión inesperada {len(embedding)}. Ajustando a {self.dimension}.")
+                if len(embedding) > self.dimension:
+                    embedding = embedding[:self.dimension]
+                else:
+                    embedding = list(embedding) + [0.0] * (self.dimension - len(embedding))
+            
+            return embedding
+            
+        except Exception as e:
+            print(f"Error generando embedding: {str(e)}")
+            return [0.0] * self.dimension
     
     def dim(self) -> int:
         """Obtener dimensión de los embeddings"""

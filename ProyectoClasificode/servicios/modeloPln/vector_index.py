@@ -10,6 +10,7 @@ class PgVectorIndex:
     def __init__(self):
         self.control_conexion = ControlConexion()
         self._ensure_vector_extension()
+        self._meta_supported = None  # cache para saber si existe la columna 'meta'
     
     def _ensure_vector_extension(self):
         """Asegurar que la extensión pgvector esté instalada"""
@@ -18,6 +19,21 @@ class PgVectorIndex:
             self.control_conexion.ejecutar_comando_sql(query)
         except Exception as e:
             print(f"Advertencia: No se pudo crear la extensión vector: {e}")
+    
+    def _supports_meta(self) -> bool:
+        """Detectar si la tabla embeddings tiene la columna 'meta'"""
+        if self._meta_supported is not None:
+            return self._meta_supported
+        try:
+            q = (
+                "SELECT 1 FROM information_schema.columns "
+                "WHERE table_schema='public' AND table_name='embeddings' AND column_name='meta'"
+            )
+            df = self.control_conexion.ejecutar_consulta_sql(q)
+            self._meta_supported = not df.empty
+        except Exception:
+            self._meta_supported = False
+        return self._meta_supported
     
     def upsert(self, owner_type: str, owner_id: int, vector: Union[np.ndarray, List[float]], 
                meta: Dict[str, Any] = None) -> bool:
@@ -32,35 +48,69 @@ class PgVectorIndex:
             # Convertir vector a formato pgvector
             vector_str = f"[{','.join(map(str, vector_list))}]"
             
-            # Preparar metadatos
-            meta_json = json.dumps(meta) if meta else None
+            # Preparar metadatos si el esquema lo soporta
+            meta_supported = self._supports_meta()
+            meta_json = json.dumps(meta) if (meta_supported and meta) else None
             
-            # Verificar si ya existe
+            # Verificar si ya existe (parámetros nombrados)
             check_query = """
             SELECT id FROM embeddings 
-            WHERE owner_type = %s AND owner_id = %s
+            WHERE owner_type = :owner_type AND owner_id = :owner_id
             """
-            df = self.control_conexion.ejecutar_consulta_sql(check_query, (owner_type, owner_id))
+            df = self.control_conexion.ejecutar_consulta_sql(
+                check_query,
+                {"owner_type": owner_type, "owner_id": int(owner_id)}
+            )
             
             if not df.empty:
                 # Actualizar existente
-                update_query = """
-                UPDATE embeddings 
-                SET vector = %s::vector, meta = %s, updated_at = NOW()
-                WHERE owner_type = %s AND owner_id = %s
-                """
-                self.control_conexion.ejecutar_comando_sql(
-                    update_query, (vector_str, meta_json, owner_type, owner_id)
-                )
+                if meta_supported:
+                    update_query = (
+                        "UPDATE embeddings SET vector = CAST(:vector AS vector), meta = :meta, "
+                        "updated_at = NOW() WHERE owner_type = :owner_type AND owner_id = :owner_id"
+                    )
+                    params = {
+                        "vector": vector_str,
+                        "meta": meta_json,
+                        "owner_type": owner_type,
+                        "owner_id": int(owner_id),
+                    }
+                else:
+                    update_query = (
+                        "UPDATE embeddings SET vector = CAST(:vector AS vector), updated_at = NOW() "
+                        "WHERE owner_type = :owner_type AND owner_id = :owner_id"
+                    )
+                    params = {
+                        "vector": vector_str,
+                        "owner_type": owner_type,
+                        "owner_id": int(owner_id),
+                    }
+                self.control_conexion.ejecutar_comando_sql(update_query, params)
             else:
                 # Insertar nuevo
-                insert_query = """
-                INSERT INTO embeddings (owner_type, owner_id, vector, meta, created_at, updated_at)
-                VALUES (%s, %s, %s::vector, %s, NOW(), NOW())
-                """
-                self.control_conexion.ejecutar_comando_sql(
-                    insert_query, (owner_type, owner_id, vector_str, meta_json)
-                )
+                if meta_supported:
+                    insert_query = (
+                        "INSERT INTO embeddings (owner_type, owner_id, vector, meta, created_at, updated_at) "
+                        "VALUES (:owner_type, :owner_id, CAST(:vector AS vector), :meta, NOW(), NOW())"
+                    )
+                    params = {
+                        "owner_type": owner_type,
+                        "owner_id": int(owner_id),
+                        "vector": vector_str,
+                        "meta": meta_json,
+                    }
+                else:
+                    # provider/model/text_norm tienen defaults o son nulos según db.sql
+                    insert_query = (
+                        "INSERT INTO embeddings (owner_type, owner_id, vector, created_at, updated_at) "
+                        "VALUES (:owner_type, :owner_id, CAST(:vector AS vector), NOW(), NOW())"
+                    )
+                    params = {
+                        "owner_type": owner_type,
+                        "owner_id": int(owner_id),
+                        "vector": vector_str,
+                    }
+                self.control_conexion.ejecutar_comando_sql(insert_query, params)
             
             return True
             
@@ -121,7 +171,8 @@ class PgVectorIndex:
                     'keywords': row['keywords'],
                     'owner_id': row['owner_id'],
                     'distance': float(row['distance']),
-                    'meta': json.loads(row['meta']) if row['meta'] else {}
+                    # meta puede no existir en el esquema
+                    'meta': {}
                 }
                 results.append(result)
             
@@ -172,6 +223,7 @@ class PgVectorIndex:
             else:
                 distance_expr = "vector <=> %s::vector"
             
+            # Selección sin 'meta' para compatibilidad
             query = f"""
             SELECT 
                 ev.owner_type,
@@ -179,7 +231,6 @@ class PgVectorIndex:
                 ev.provider,
                 ev.model,
                 ev.vector {distance_expr} AS distance,
-                ev.meta,
                 ev.created_at
             FROM embeddings ev 
             WHERE {where_clause}
@@ -201,7 +252,7 @@ class PgVectorIndex:
                     'provider': row['provider'],
                     'model': row['model'],
                     'distance': float(row['distance']),
-                    'meta': json.loads(row['meta']) if row['meta'] else {},
+                    'meta': {},
                     'created_at': row['created_at'].isoformat() if row['created_at'] else None
                 }
                 results.append(result)
@@ -252,12 +303,13 @@ class PgVectorIndex:
     def get_vector_info(self, owner_type: str, owner_id: int) -> Optional[Dict[str, Any]]:
         """Obtener información de un vector específico"""
         try:
+            # Selección sin 'meta' para compatibilidad
             query = """
-            SELECT owner_type, owner_id, provider, model, meta, created_at, updated_at
+            SELECT owner_type, owner_id, provider, model, created_at, updated_at
             FROM embeddings 
-            WHERE owner_type = %s AND owner_id = %s
+            WHERE owner_type = :owner_type AND owner_id = :owner_id
             """
-            df = self.control_conexion.ejecutar_consulta_sql(query, (owner_type, owner_id))
+            df = self.control_conexion.ejecutar_consulta_sql(query, {"owner_type": owner_type, "owner_id": int(owner_id)})
             
             if not df.empty:
                 row = df.iloc[0]
@@ -266,7 +318,7 @@ class PgVectorIndex:
                     'owner_id': row['owner_id'],
                     'provider': row['provider'],
                     'model': row['model'],
-                    'meta': json.loads(row['meta']) if row['meta'] else {},
+                    'meta': {},
                     'created_at': row['created_at'].isoformat() if row['created_at'] else None,
                     'updated_at': row['updated_at'].isoformat() if row['updated_at'] else None
                 }

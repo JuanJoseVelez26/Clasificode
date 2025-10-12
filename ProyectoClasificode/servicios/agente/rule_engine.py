@@ -13,8 +13,8 @@ class RuleEngine:
                 'name': 'Regla General de Interpretación 1',
                 'description': 'Los títulos de las Secciones, de los Capítulos o de los Subcapítulos solo tienen un valor indicativo',
                 'patterns': [
-                    r'\b(titulo|seccion|capitulo|subcapitulo)\b',
-                    r'\b(valor indicativo|clasificacion preliminar)\b'
+                    r'\b(titulo|seccion|capitulo|subcapitulo|clasificacion|producto|articulo)\b',
+                    r'\b(valor indicativo|clasificacion preliminar|descripcion)\b'
                 ],
                 'effect': 'neutral',
                 'weight': 0.1
@@ -23,8 +23,8 @@ class RuleEngine:
                 'name': 'Regla General de Interpretación 2A',
                 'description': 'Cualquier referencia a un artículo en una partida determinada alcanza al artículo incluso incompleto o sin terminar',
                 'patterns': [
-                    r'\b(incompleto|sin terminar|parcialmente terminado)\b',
-                    r'\b(partida determinada|articulo incompleto)\b'
+                    r'\b(incompleto|sin terminar|parcialmente terminado|semi|parte)\b',
+                    r'\b(partida determinada|articulo incompleto|producto|articulo)\b'
                 ],
                 'effect': 'bonus',
                 'weight': 0.3
@@ -33,8 +33,8 @@ class RuleEngine:
                 'name': 'Regla General de Interpretación 2B',
                 'description': 'Cualquier referencia a una materia en una partida determinada alcanza a dicha materia incluso mezclada o asociada',
                 'patterns': [
-                    r'\b(mezclado|asociado|combinado|mixto)\b',
-                    r'\b(materia mezclada|asociacion de materiales)\b'
+                    r'\b(mezclado|asociado|combinado|mixto|conjunto|set|kit)\b',
+                    r'\b(materia mezclada|asociacion de materiales|combinacion)\b'
                 ],
                 'effect': 'bonus',
                 'weight': 0.3
@@ -43,8 +43,9 @@ class RuleEngine:
                 'name': 'Regla General de Interpretación 3A',
                 'description': 'La partida más específica tendrá prioridad sobre las partidas más genéricas',
                 'patterns': [
-                    r'\b(especifico|especializado|particular|detallado)\b',
-                    r'\b(partida especifica|clasificacion detallada)\b'
+                    r'\b(especifico|especializado|particular|detallado|concreto|definido)\b',
+                    r'\b(partida especifica|clasificacion detallada|producto especifico)\b',
+                    r'\b(computadora|portatil|laptop|smartphone|telefono)\b'
                 ],
                 'effect': 'bonus',
                 'weight': 0.4

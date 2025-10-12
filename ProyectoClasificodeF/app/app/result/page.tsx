@@ -60,12 +60,27 @@ export default function ResultPage() {
           hs: response.topK[0].hs,
           confidence: response.topK[0].confidence,
           description: response.topK[0].description,
-          topK: [],
+          topK: response.topK || [],
         }
 
         setPrediction(simplifiedResponse)
-        setSimilarities(response.similarities)
+        setSimilarities(response.similarities || [])
         setExplanation(response.explanation)
+        
+        // Mostrar notificación de éxito
+        if (response.topK[0].confidence >= 0.7) {
+          toast({
+            title: "Clasificación exitosa",
+            description: `Producto clasificado con ${Math.round(response.topK[0].confidence * 100)}% de confianza`,
+            variant: "default"
+          })
+        } else {
+          toast({
+            title: "Baja confianza",
+            description: "La clasificación tiene baja confianza. Revisa los resultados cuidadosamente.",
+            variant: "destructive"
+          })
+        }
       } catch (error) {
         toast({
           variant: "destructive",
@@ -215,12 +230,22 @@ export default function ResultPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-center p-8 bg-primary/5 rounded-2xl border-2 border-primary/20">
-                <div className="text-5xl font-bold text-primary mb-3">{prediction.hs}</div>
-                <p className="text-lg text-muted-foreground mb-2">Código HS Definitivo</p>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  {prediction.description || "Clasificación basada en análisis de contenido"}
-                </p>
+              <div className="text-center p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border-2 border-primary/20 shadow-lg">
+                <div className="text-6xl font-bold text-primary mb-4 tracking-wider">{prediction.hs}</div>
+                <p className="text-xl text-muted-foreground mb-4 font-medium">Código HS Definitivo</p>
+                
+                {/* Descripción mejorada */}
+                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-6 border border-primary/10 shadow-inner">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2"></div>
+                    <div className="text-left">
+                      <h3 className="text-sm font-semibold text-primary mb-2 uppercase tracking-wide">Descripción del Producto</h3>
+                      <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                        {prediction.description || "Clasificación basada en análisis de contenido"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-3">

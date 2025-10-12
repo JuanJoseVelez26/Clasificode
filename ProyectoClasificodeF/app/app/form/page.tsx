@@ -29,7 +29,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.inputType === "text") {
-        return data.text && data.text.length >= 15
+        return data.text && data.text.length >= 10
       }
       if (data.inputType === "file") {
         return data.files && data.files.length > 0
@@ -37,9 +37,21 @@ const formSchema = z
       return false
     },
     {
-      message: "Debes proporcionar texto (mín. 15 caracteres) o subir al menos un archivo",
+      message: "Debes proporcionar texto (mín. 10 caracteres) o subir al menos un archivo",
     },
   )
+
+// Ejemplos de productos para ayudar al usuario
+const productExamples = [
+  "Computadora portátil de 15 pulgadas con procesador Intel i7, 16GB RAM, 512GB SSD",
+  "Camiseta de algodón 100%, talla M, color azul, manga corta",
+  "Café en grano tostado de Colombia, 500g, tueste medio",
+  "Automóvil eléctrico de 4 puertas, autonomía 400 km, carga rápida",
+  "Refrigerador de dos puertas, 350 litros, tecnología inverter, acero inoxidable",
+  "Gorra de béisbol de algodón, color rojo, logo bordado",
+  "Ternero vivo de tres meses",
+  "Aceite de oliva virgen extra, 1 litro, botella de vidrio, origen España"
+]
 
 type FormData = z.infer<typeof formSchema>
 
@@ -328,7 +340,7 @@ export default function FormPage() {
           <Button
             type="submit"
             size="lg"
-            disabled={isProcessing || (watchedInputType === "text" && (watchedText?.length || 0) < 15)}
+            disabled={isProcessing || (watchedInputType === "text" && (watchedText?.length || 0) < 10)}
             className="min-w-48"
           >
             {isProcessing && <Icons.Loader />}
@@ -336,6 +348,39 @@ export default function FormPage() {
           </Button>
         </div>
       </form>
+
+      {/* Ejemplos de productos */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icons.Lightbulb />
+            Ejemplos de productos para clasificar
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Haz clic en cualquier ejemplo para usarlo como plantilla
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {productExamples.map((example, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="h-auto p-4 text-left justify-start whitespace-normal"
+                onClick={() => {
+                  setValue("text", example)
+                  setValue("inputType", "text")
+                }}
+              >
+                <div className="text-sm">
+                  <div className="font-medium mb-1">Ejemplo {index + 1}</div>
+                  <div className="text-muted-foreground">{example}</div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

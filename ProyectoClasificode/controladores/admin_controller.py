@@ -4,6 +4,7 @@ from servicios.modeloPln.embedding_service import EmbeddingService
 from servicios.security import require_auth, require_role
 import json
 from servicios.scraping.ingestor import DianIngestor
+from servicios.control_conexion import ControlConexion
 
 bp = Blueprint('admin', __name__)
 hs_item_repo = HSItemRepository()
@@ -11,6 +12,7 @@ embedding_repo = EmbeddingRepository()
 rgi_rule_repo = RGIRuleRepository()
 legal_source_repo = LegalSourceRepository()
 embedding_service = EmbeddingService()
+cc = ControlConexion()
 
 
 # Configuración global (en producción esto debería estar en base de datos)
@@ -38,6 +40,45 @@ def get_params():
         return jsonify({
             'code': 500,
             'message': 'Error al obtener parámetros',
+            'details': str(e)
+        }), 500
+
+@bp.route('/backfill-hs-items', methods=['POST'])
+@require_auth
+@require_role('admin')
+def backfill_hs_items():
+    """Puebla hs_items a partir de tariff_items existentes (por HS6). Idempotente."""
+    try:
+        # Crear/actualizar hs_items agregando por hs6
+        sql = (
+            "INSERT INTO hs_items (hs_code, title, keywords, level, chapter, created_at, updated_at) "
+            "SELECT t.hs6 AS hs_code, MIN(NULLIF(t.title,'')) AS title, "
+            "       lower(string_agg(DISTINCT NULLIF(t.title,''), ' ')) AS keywords, "
+            "       6 AS level, CAST(SUBSTRING(t.hs6,1,2) AS integer) AS chapter, NOW(), NOW() "
+            "FROM tariff_items t GROUP BY t.hs6 "
+            "ON CONFLICT (hs_code) DO UPDATE SET "
+            "  title = COALESCE(EXCLUDED.title, hs_items.title), "
+            "  keywords = CONCAT(COALESCE(hs_items.keywords,''),' ',COALESCE(EXCLUDED.keywords,'')), "
+            "  chapter = COALESCE(EXCLUDED.chapter, hs_items.chapter), "
+            "  updated_at = NOW()"
+        )
+        cc.ejecutar_comando_sql(sql, ())
+
+        # Contar
+        df1 = cc.ejecutar_consulta_sql("SELECT COUNT(*) AS c FROM hs_items")
+        df2 = cc.ejecutar_consulta_sql("SELECT COUNT(DISTINCT hs6) AS c FROM tariff_items")
+        return jsonify({
+            'code': 200,
+            'message': 'Backfill de hs_items completado',
+            'details': {
+                'hs_items_count': int(df1.iloc[0]['c']) if df1 is not None and not df1.empty else 0,
+                'distinct_hs6_in_tariff_items': int(df2.iloc[0]['c']) if df2 is not None and not df2.empty else 0
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'message': 'Error en backfill de hs_items',
             'details': str(e)
         }), 500
 
@@ -285,12 +326,12 @@ def embed_hs_catalog():
                 embedding = embedding_service.generate_embedding(item_text)
                 embedding_vector = embedding.tolist()
                 
-                # Guardar embedding (sin columna dim)
+                # Guardar embedding con el mismo provider/model que usa PgVectorIndex
                 success = embedding_repo.create_or_update_embedding(
                     owner_type='hs_item',
                     owner_id=item['id'],
-                    provider='nlp_service',
-                    model=GLOBAL_CONFIG['embedding_model'],
+                    provider=embedding_service.provider,
+                    model=embedding_service.model,
                     vector=json.dumps(embedding_vector),
                     text_norm=item_text[:1000]  # Primeros 1000 caracteres
                 )

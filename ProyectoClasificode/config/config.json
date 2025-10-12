@@ -1,16 +1,16 @@
 {
   "DatabaseProvider": "Postgres",
   "ConnectionStrings": {
-    "Postgres": "postgresql+psycopg://postgres:Postres@127.0.0.1:5432/Bd_Clasificode"
+    "Postgres": "postgresql+psycopg2://postgres:Postres@127.0.0.1:5432/Bd_Clasificode"
   },
   "Jwt": {
-    "Key": "", 
+    "Key": "dev_secret_change_me",
     "Issuer": "clasificode",
     "Audience": "clasificode"
   },
   "EMBED_PROVIDER": "openai",
   "EMBED_MODEL": "text-embedding-3-small",
-  "OPENAI_API_KEY": "", 
+  "OPENAI_API_KEY": "",
   "HF_TOKEN": "",
   "Debug": false,
   "Host": "127.0.0.1",

@@ -131,8 +131,12 @@ def login():
                 'details': 'Email o contraseña incorrectos'
             }), 401
         
-        # Generar token JWT
-        token = token_service.generar_token(user['email'])
+        # Generar token JWT con claims completos (id, email, role)
+        token = token_service.generar_token({
+            'id': user['id'],
+            'email': user['email'],
+            'role': user['role']
+        })
         
         return jsonify({
             'code': 200,
