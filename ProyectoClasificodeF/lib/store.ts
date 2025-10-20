@@ -52,7 +52,12 @@ interface UploadedFile {
 interface Prediction {
   hs: string
   confidence: number
-  topK: Array<{ hs: string; confidence: number }>
+  topK: Array<{ 
+    hs: string; 
+    confidence: number;
+    description?: string;
+  }>
+  description?: string;
 }
 
 interface Similarity {

@@ -241,34 +241,13 @@ export default function ResultPage() {
                     <div className="text-left">
                       <h3 className="text-sm font-semibold text-primary mb-2 uppercase tracking-wide">Descripción del Producto</h3>
                       <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                        {prediction.description || "Clasificación basada en análisis de contenido"}
+                        {prediction.topK[0]?.description || "Clasificación basada en análisis de contenido"}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Nivel de Confianza</span>
-                  <span className="text-2xl font-bold">{Math.round(prediction.confidence * 100)}%</span>
-                </div>
-                <Progress
-                  value={prediction.confidence * 100}
-                  className={`h-4 ${
-                    isHighConfidence
-                      ? "[&>div]:bg-green-500"
-                      : isMediumConfidence
-                        ? "[&>div]:bg-yellow-500"
-                        : "[&>div]:bg-red-500"
-                  }`}
-                />
-                <div className="text-center">
-                  <Badge variant={isHighConfidence ? "default" : isMediumConfidence ? "secondary" : "destructive"}>
-                    {isHighConfidence ? "Alta Confianza" : isMediumConfidence ? "Confianza Media" : "Baja Confianza"}
-                  </Badge>
-                </div>
-              </div>
 
               {isLowConfidence && (
                 <div className="p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-2xl">
