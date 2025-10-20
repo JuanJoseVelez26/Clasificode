@@ -96,55 +96,31 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     
     # Mapeo de sinónimos comunes para mejorar la búsqueda
     synonyms = {
+        # Animales
         'ternero': ['bovino', 'ganado', 'vaca', 'toro', 'animal', 'bovinos', 'terneros', 'bovino'],
         'vivo': ['animal', 'ganado', 'bovino', 'vivos', 'animales', 'vivo'],
-        'camiseta': ['camisa', 'prenda', 'vestido', 'ropa', 'textil', 'camiseta'],
+        'cerdo': ['porcino', 'cochino', 'marrano', 'chancho', 'cerdo'],
+        'pollo': ['ave', 'gallina', 'gallinácea', 'pollo'],
+        'pescado': ['pez', 'marisco', 'crustáceo', 'molusco', 'pescado'],
+        
+        # Textiles y ropa
+        'camiseta': ['camisa', 'prenda', 'vestido', 'ropa', 'textil', 'playera', 'remera', 'tshirt', 't shirt', 'camiseta'],
         'algodon': ['algodón', 'textil', 'fibra', 'tela', 'algodon', '100%'],
+        'chaqueta': ['abrigo', 'parka', 'anorak', 'cazadora', 'impermeable', 'sobretodo', 'saco', 'chaqueta'],
+        'plumas': ['pluma', 'relleno de plumas', 'acolchado', 'plumas'],
+        'pantalon': ['pantalón', 'vaquero', 'jean', 'mezclilla', 'denim', 'pantalon'],
+        'zapatos': ['calzado', 'tenis', 'zapatillas', 'zapatos', 'deportivo', 'botin', 'bota', 'sandalia'],
+        'suela': ['piso', 'base', 'planta', 'suela'],
+        'malla': ['textil', 'tejido', 'red', 'transpirable', 'malla'],
+        'gorra': ['sombrero', 'casquete', 'boina', 'gorra'],
+        'guantes': ['manos', 'protección', 'cubrir', 'guantes'],
+        'bufanda': ['escarf', 'chal', 'bufanda'],
+        'cinturon': ['cinturón', 'correa', 'cinturon'],
+        
+        # Electrónicos y computación
         'computadora': ['ordenador', 'pc', 'computador', 'equipo', 'computadora'],
         'portatil': ['portátil', 'laptop', 'notebook', 'móvil', 'portatil'],
         'telefono': ['teléfono', 'móvil', 'celular', 'smartphone', 'telefono'],
-        'automovil': ['automóvil', 'carro', 'vehículo', 'coche', 'automovil'],
-        'motocicleta': ['moto', 'motociclo', 'vehículo', 'motocicleta'],
-        'bicicleta': ['bici', 'ciclo', 'vehículo', 'bicicleta'],
-        'refrigerador': ['nevera', 'frigorífico', 'heladera', 'refrigerador'],
-        'lavadora': ['lavarropas', 'máquina', 'lavadora'],
-        'microondas': ['horno', 'microondas'],
-        'cafe': ['café', 'grano', 'semilla', 'cafe'],
-        'aceite': ['óleo', 'grasa', 'líquido', 'aceite'],
-        'chocolate': ['cacao', 'dulce', 'confitería', 'chocolate'],
-        'miel': ['abeja', 'dulce', 'natural', 'miel'],
-        'vino': ['bebida', 'alcohólico', 'uva', 'vino'],
-        'cerveza': ['bebida', 'alcohólico', 'malta', 'cerveza'],
-        'cemento': ['construcción', 'material', 'aglomerante', 'cemento'],
-        'ladrillo': ['construcción', 'material', 'cerámico', 'ladrillo'],
-        'pintura': ['color', 'revestimiento', 'acabado', 'pintura'],
-        'taladro': ['herramienta', 'perforar', 'taladrar', 'taladro'],
-        'martillo': ['herramienta', 'golpear', 'clavar', 'martillo'],
-        'destornillador': ['herramienta', 'atornillar', 'desatornillar', 'destornillador'],
-        'bloques': ['construcción', 'juguete', 'piezas', 'bloques'],
-        'muñeca': ['juguete', 'niña', 'figura', 'muñeca'],
-        'puzzle': ['rompecabezas', 'juego', 'piezas', 'puzzle'],
-        'pelota': ['balón', 'esfera', 'juego', 'pelota'],
-        'termometro': ['termómetro', 'temperatura', 'medir', 'termometro'],
-        'mascarilla': ['máscara', 'protección', 'filtro', 'mascarilla'],
-        'guantes': ['manos', 'protección', 'cubrir', 'guantes'],
-        'vendaje': ['venda', 'curación', 'herida', 'vendaje'],
-        'lapiz': ['lápiz', 'escribir', 'dibujar', 'lapiz'],
-        'cuaderno': ['libro', 'escribir', 'papel', 'cuaderno'],
-        'boligrafo': ['bolígrafo', 'escribir', 'pluma', 'boligrafo'],
-        'pincel': ['pintar', 'brocha', 'arte', 'pincel'],
-        'semillas': ['semilla', 'planta', 'germinar', 'semillas'],
-        'fertilizante': ['abono', 'nutriente', 'planta', 'fertilizante'],
-        'manguera': ['tubo', 'riego', 'agua', 'manguera'],
-        'maceta': ['macetero', 'planta', 'jardín', 'maceta'],
-        'tijeras': ['cortar', 'podar', 'herramienta', 'tijeras'],
-        'reloj': ['tiempo', 'pulsera', 'cronómetro', 'reloj'],
-        'perfume': ['fragancia', 'aroma', 'colonia', 'perfume'],
-        'collar': ['joya', 'cadena', 'adorno', 'collar'],
-        'gafas': ['lentes', 'protección', 'ver', 'gafas'],
-        'sierra': ['cortar', 'madera', 'herramienta', 'sierra'],
-        'nivel': ['medir', 'horizontal', 'vertical', 'nivel'],
-        'multimetro': ['multímetro', 'medir', 'eléctrico', 'multimetro'],
         'mouse': ['ratón', 'mouse', 'periférico', 'dispositivo', 'gaming', 'óptico', 'inalámbrico'],
         'gaming': ['juegos', 'gaming', 'gamer', 'videojuegos', 'entretenimiento'],
         'teclado': ['keyboard', 'teclado', 'periférico', 'dispositivo', 'gaming'],
@@ -161,7 +137,125 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'bateria': ['batería', 'battery', 'pila', 'energía'],
         'cargador': ['charger', 'cargador', 'carga', 'energía'],
         'cable': ['cable', 'wire', 'conexión', 'usb', 'hdmi'],
-        'adaptador': ['adapter', 'adaptador', 'conversor', 'conexión']
+        'adaptador': ['adapter', 'adaptador', 'conversor', 'conexión'],
+        
+        # Vehículos
+        'automovil': ['automóvil', 'carro', 'vehículo', 'coche', 'automovil'],
+        'motocicleta': ['moto', 'motociclo', 'vehículo', 'motocicleta'],
+        'bicicleta': ['bici', 'ciclo', 'vehículo', 'bicicleta'],
+        'camion': ['camión', 'truck', 'vehículo pesado', 'camion'],
+        'bus': ['autobús', 'ómnibus', 'colectivo', 'bus'],
+        
+        # Electrodomésticos
+        'refrigerador': ['nevera', 'frigorífico', 'heladera', 'refrigerador'],
+        'lavadora': ['lavarropas', 'máquina', 'lavadora'],
+        'microondas': ['horno', 'microondas'],
+        'horno': ['horno eléctrico', 'horno de gas', 'horno'],
+        'licuadora': ['batidora', 'mezcladora', 'licuadora'],
+        'tostadora': ['tostador', 'tostadora'],
+        
+        # Alimentos y bebidas
+        'cafe': ['café', 'grano', 'semilla', 'cafe'],
+        'aceite': ['óleo', 'grasa', 'líquido', 'aceite'],
+        'chocolate': ['cacao', 'dulce', 'confitería', 'chocolate'],
+        'miel': ['abeja', 'dulce', 'natural', 'miel'],
+        'vino': ['bebida', 'alcohólico', 'uva', 'vino'],
+        'cerveza': ['bebida', 'alcohólico', 'malta', 'cerveza'],
+        'leche': ['lácteo', 'dairy', 'leche'],
+        'queso': ['lácteo', 'dairy', 'queso'],
+        'pan': ['panadería', 'bollería', 'pan'],
+        'arroz': ['cereal', 'grano', 'arroz'],
+        'azucar': ['azúcar', 'dulce', 'azucar'],
+        'sal': ['condimento', 'sal'],
+        'harina': ['cereal', 'grano', 'harina'],
+        
+        # Materiales de construcción
+        'cemento': ['construcción', 'material', 'aglomerante', 'cemento'],
+        'ladrillo': ['construcción', 'material', 'cerámico', 'ladrillo'],
+        'pintura': ['color', 'revestimiento', 'acabado', 'pintura'],
+        'madera': ['leño', 'tronco', 'tabla', 'madera'],
+        'acero': ['metal', 'hierro', 'acero'],
+        'vidrio': ['cristal', 'vidrio'],
+        'plastico': ['plástico', 'polímero', 'plastico'],
+        
+        # Herramientas
+        'taladro': ['herramienta', 'perforar', 'taladrar', 'taladro'],
+        'martillo': ['herramienta', 'golpear', 'clavar', 'martillo'],
+        'destornillador': ['herramienta', 'atornillar', 'desatornillar', 'destornillador'],
+        'sierra': ['cortar', 'madera', 'herramienta', 'sierra'],
+        'nivel': ['medir', 'horizontal', 'vertical', 'nivel'],
+        'multimetro': ['multímetro', 'medir', 'eléctrico', 'multimetro'],
+        'tijeras': ['cortar', 'podar', 'herramienta', 'tijeras'],
+        'llave': ['herramienta', 'tuerca', 'tornillo', 'llave'],
+        'alicate': ['herramienta', 'cortar', 'alicate'],
+        
+        # Juguetes
+        'bloques': ['construcción', 'juguete', 'piezas', 'bloques'],
+        'muñeca': ['juguete', 'niña', 'figura', 'muñeca'],
+        'puzzle': ['rompecabezas', 'juego', 'piezas', 'puzzle'],
+        'pelota': ['balón', 'esfera', 'juego', 'pelota'],
+        'tren': ['juguete', 'vehículo', 'tren'],
+        'carro': ['juguete', 'vehículo', 'carro'],
+        'oso': ['peluche', 'juguete', 'oso'],
+        
+        # Productos médicos y farmacéuticos
+        'termometro': ['termómetro', 'temperatura', 'medir', 'termometro'],
+        'mascarilla': ['máscara', 'protección', 'filtro', 'mascarilla'],
+        'vendaje': ['venda', 'curación', 'herida', 'vendaje'],
+        'jeringa': ['inyección', 'aguja', 'jeringa'],
+        'medicina': ['medicamento', 'fármaco', 'medicina'],
+        'vitamina': ['suplemento', 'nutriente', 'vitamina'],
+        'antibiotico': ['antibiótico', 'medicamento', 'antibiotico'],
+        
+        # Material de oficina y escolar
+        'lapiz': ['lápiz', 'escribir', 'dibujar', 'lapiz'],
+        'cuaderno': ['libro', 'escribir', 'papel', 'cuaderno'],
+        'boligrafo': ['bolígrafo', 'escribir', 'pluma', 'boligrafo'],
+        'pincel': ['pintar', 'brocha', 'arte', 'pincel'],
+        'papel': ['hoja', 'documento', 'papel'],
+        'goma': ['borrador', 'goma'],
+        'regla': ['medir', 'línea', 'regla'],
+        'calculadora': ['computar', 'calcular', 'calculadora'],
+        
+        # Jardinería y agricultura
+        'semillas': ['semilla', 'planta', 'germinar', 'semillas'],
+        'fertilizante': ['abono', 'nutriente', 'planta', 'fertilizante'],
+        'manguera': ['tubo', 'riego', 'agua', 'manguera'],
+        'maceta': ['macetero', 'planta', 'jardín', 'maceta'],
+        'pala': ['herramienta', 'cavar', 'pala'],
+        'rastrillo': ['herramienta', 'jardín', 'rastrillo'],
+        'tijeras': ['cortar', 'podar', 'herramienta', 'tijeras'],
+        
+        # Joyería y accesorios
+        'reloj': ['tiempo', 'pulsera', 'cronómetro', 'reloj'],
+        'perfume': ['fragancia', 'aroma', 'colonia', 'perfume'],
+        'collar': ['joya', 'cadena', 'adorno', 'collar'],
+        'anillo': ['joya', 'dedo', 'anillo'],
+        'aretes': ['pendientes', 'orejas', 'aretes'],
+        'pulsera': ['muñeca', 'joya', 'pulsera'],
+        
+        # Óptica y visión
+        'gafas': ['lentes', 'protección', 'ver', 'gafas'],
+        'lentes': ['gafas', 'óptica', 'lentes'],
+        'microscopio': ['lupa', 'magnificar', 'microscopio'],
+        'telescopio': ['astronomía', 'observar', 'telescopio'],
+        
+        # Deportes y recreación
+        'balon': ['balón', 'pelota', 'deporte', 'balon'],
+        'raqueta': ['tenis', 'deporte', 'raqueta'],
+        'bicicleta': ['bici', 'ciclo', 'vehículo', 'bicicleta'],
+        'patin': ['patín', 'ruedas', 'patin'],
+        'casco': ['protección', 'cabeza', 'casco'],
+        'guantes': ['manos', 'protección', 'cubrir', 'guantes'],
+        
+        # Productos químicos y limpieza
+        'detergente': ['limpieza', 'jabón', 'detergente'],
+        'jabon': ['jabón', 'limpieza', 'jabon'],
+        'shampoo': ['champú', 'cabello', 'shampoo'],
+        'crema': ['cosmético', 'piel', 'crema'],
+        'desodorante': ['axilas', 'perfume', 'desodorante'],
+        'pasta': ['dientes', 'dental', 'pasta'],
+        'cepillo': ['dientes', 'cabello', 'cepillo']
     }
     
     # Expandir palabras con sinónimos
@@ -174,13 +268,78 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     conditions = []
     params = {}
     
-    # Priorizar búsquedas más específicas para productos de computación
-    computer_terms = ['mouse', 'ratón', 'gaming', 'teclado', 'keyboard', 'monitor', 'pantalla', 'auriculares', 'headphones']
+    # Inferir dominios por palabras - Sistema mejorado
+    computer_terms = ['mouse', 'ratón', 'gaming', 'teclado', 'keyboard', 'monitor', 'pantalla', 'auriculares', 'headphones', 'computadora', 'laptop', 'smartphone', 'tablet', 'impresora', 'scanner']
+    garment_terms = ['camiseta', 'camisa', 'pantalon', 'chaqueta', 'abrigo', 'impermeable', 'prenda', 'ropa', 'algodon', 'poliester', 'tejido', 'bolso', 'gorra', 'vestido', 'falda', 'blusa']
+    footwear_terms = ['zapato', 'zapatilla', 'tenis', 'calzado', 'deportivo', 'botin', 'bota', 'sandalia', 'suela', 'malla', 'antideslizante', 'empeine', 'plantilla']
+    vehicle_terms = ['automovil', 'carro', 'vehiculo', 'moto', 'motocicleta', 'bicicleta', 'camion', 'bus', 'neumatico', 'llanta', 'chasis', 'faro']
+    medical_terms = ['tensiometro', 'termometro', 'oximetro', 'mascarilla', 'guantes', 'vendaje', 'venda', 'jeringa', 'medicina', 'medicamento', 'fármaco', 'vitamina', 'antibiótico', 'curación', 'herida']
+    mineral_terms = ['mineral', 'mena', 'concentrado', 'manganeso', 'hierro', 'cobre', 'turba', 'carbon']
+    food_terms = ['cafe', 'azucar', 'harina', 'bebida', 'alimento', 'chocolate', 'leche', 'queso', 'pan', 'arroz', 'aceite', 'miel', 'vino', 'cerveza']
+    tool_terms = ['taladro', 'martillo', 'destornillador', 'sierra', 'nivel', 'multímetro', 'tijeras', 'llave', 'alicate', 'herramienta']
+    toy_terms = ['juguete', 'muñeca', 'puzzle', 'pelota', 'tren', 'carro', 'oso', 'bloques', 'juego', 'rompecabezas']
+    construction_terms = ['cemento', 'ladrillo', 'pintura', 'madera', 'acero', 'vidrio', 'plástico', 'construcción', 'material']
+    office_terms = ['lápiz', 'cuaderno', 'bolígrafo', 'pincel', 'papel', 'goma', 'regla', 'calculadora', 'oficina', 'escolar']
+    garden_terms = ['semillas', 'fertilizante', 'manguera', 'maceta', 'pala', 'rastrillo', 'jardín', 'planta']
+    jewelry_terms = ['reloj', 'perfume', 'collar', 'anillo', 'aretes', 'pulsera', 'joya', 'joyería']
+    optical_terms = ['gafas', 'lentes', 'microscopio', 'telescopio', 'óptica', 'visión']
+    sport_terms = ['balón', 'raqueta', 'patín', 'casco', 'deporte', 'recreación']
+    cleaning_terms = ['detergente', 'jabón', 'shampoo', 'crema', 'desodorante', 'pasta', 'cepillo', 'limpieza', 'cosmético']
+    animal_terms = ['ternero', 'vivo', 'cerdo', 'pollo', 'pescado', 'animal', 'ganado', 'bovino']
+
     has_computer_terms = any(term in text for term in computer_terms)
-    
+    has_garment_terms = any(term in text for term in garment_terms)
+    has_footwear_terms = any(term in text for term in footwear_terms)
+    has_vehicle_terms = any(term in text for term in vehicle_terms)
+    has_medical_terms = any(term in text for term in medical_terms)
+    has_mineral_terms = any(term in text for term in mineral_terms)
+    has_food_terms = any(term in text for term in food_terms)
+    has_tool_terms = any(term in text for term in tool_terms)
+    has_toy_terms = any(term in text for term in toy_terms)
+    has_construction_terms = any(term in text for term in construction_terms)
+    has_office_terms = any(term in text for term in office_terms)
+    has_garden_terms = any(term in text for term in garden_terms)
+    has_jewelry_terms = any(term in text for term in jewelry_terms)
+    has_optical_terms = any(term in text for term in optical_terms)
+    has_sport_terms = any(term in text for term in sport_terms)
+    has_cleaning_terms = any(term in text for term in cleaning_terms)
+    has_animal_terms = any(term in text for term in animal_terms)
+
+    # Filtros por capítulo cuando la intención es clara
     if has_computer_terms:
-        # Buscar específicamente en capítulo 84 (máquinas) y 85 (aparatos eléctricos)
         conditions.append("(chapter = 84 OR chapter = 85)")
+    if has_garment_terms:
+        conditions.append("(chapter IN (61,62,63))")
+    if has_footwear_terms:
+        conditions.append("(chapter = 64)")
+    if has_vehicle_terms:
+        conditions.append("(chapter = 87)")
+    if has_medical_terms:
+        conditions.append("(chapter IN (30,90))")
+    if has_mineral_terms:
+        conditions.append("(chapter IN (25,26,27))")
+    if has_food_terms:
+        conditions.append("(chapter BETWEEN 16 AND 22)")
+    if has_tool_terms:
+        conditions.append("(chapter = 82)")
+    if has_toy_terms:
+        conditions.append("(chapter = 95)")
+    if has_construction_terms:
+        conditions.append("(chapter BETWEEN 25 AND 27 OR chapter = 68 OR chapter = 69)")
+    if has_office_terms:
+        conditions.append("(chapter = 96)")
+    if has_garden_terms:
+        conditions.append("(chapter = 12 OR chapter = 14)")
+    if has_jewelry_terms:
+        conditions.append("(chapter = 71)")
+    if has_optical_terms:
+        conditions.append("(chapter = 90)")
+    if has_sport_terms:
+        conditions.append("(chapter = 95)")
+    if has_cleaning_terms:
+        conditions.append("(chapter = 34)")
+    if has_animal_terms:
+        conditions.append("(chapter = 1 OR chapter = 2 OR chapter = 3)")
     
     for i, word in enumerate(expanded_words):
         param_title = f"word_title_{i}"
@@ -194,6 +353,28 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         conditions = ["(LOWER(title) ILIKE :text OR LOWER(keywords) ILIKE :text)"]
         params["text"] = f"%{text}%"
     
+    # Construir prioridad de capítulos dinámica
+    chapter_priority = []
+    if has_garment_terms:
+        chapter_priority.extend([(61, 1), (62, 2), (63, 3)])
+    if has_footwear_terms:
+        chapter_priority.append((64, 1))
+    if has_vehicle_terms:
+        chapter_priority.append((87, 1))
+    if has_computer_terms:
+        chapter_priority.extend([(84, 1), (85, 2)])
+    if has_medical_terms:
+        chapter_priority.extend([(30, 1), (90, 2)])
+    if has_mineral_terms:
+        chapter_priority.extend([(25, 1), (26, 2), (27, 3)])
+    if has_food_terms:
+        chapter_priority.extend([(16, 1), (17, 2), (18, 3), (19, 4), (20, 5), (21, 6), (22, 7)])
+
+    case_lines = []
+    for ch, pri in chapter_priority:
+        case_lines.append(f"WHEN chapter = {int(ch)} THEN {int(pri)}")
+    case_expr = ("CASE " + " ".join(case_lines) + " ELSE 99 END,") if case_lines else ""
+
     query = f"""
         SELECT id, hs_code, title, keywords, level, chapter 
         FROM hs_items 
@@ -204,11 +385,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
                 WHEN LOWER(keywords) ILIKE :exact_match THEN 2
                 ELSE 3
             END,
-            CASE 
-                WHEN chapter = 84 THEN 1
-                WHEN chapter = 85 THEN 2
-                ELSE 3
-            END,
+            {case_expr}
             hs_code 
         LIMIT :lim
     """

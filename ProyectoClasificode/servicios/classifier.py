@@ -1,5 +1,9 @@
 from typing import Dict, Any, List
 import json
+import numpy as np
+from rapidfuzz import fuzz
+import unicodedata
+import os
 
 from .control_conexion import ControlConexion
 from .modeloPln.embedding_service import EmbeddingService
@@ -70,51 +74,138 @@ class NationalClassifier:
             'animales': ['ternero', 'vivo', 'animal', 'ganado', 'bovino', 'vaca', 'toro']
         }
         
+        # Pre-calcular embedding del texto del caso
+        try:
+            qvec = np.array(self.embed.generate_embedding(text))
+        except Exception:
+            qvec = None
+
+        # Inferir dominio del texto para sesgos controlados
+        domain = self._infer_domain(text_lower)
+
+        # Pre-cargar embeddings existentes para las opciones (owner_type=tariff_item)
+        option_ids = [int(o.get('id')) for o in options if o.get('id') is not None]
+        emb_map: Dict[int, np.ndarray] = {}
+        if option_ids:
+            try:
+                in_clause = '(' + ','.join([str(i) for i in option_ids]) + ')'
+                q = (
+                    "SELECT owner_id, vector FROM embeddings "
+                    "WHERE owner_type = 'tariff_item' AND owner_id IN " + in_clause
+                )
+                df_emb = self.cc.ejecutar_consulta_sql(q)
+                for _, row in df_emb.iterrows():
+                    vec_str = row['vector']
+                    try:
+                        emb_map[int(row['owner_id'])] = np.array(json.loads(vec_str))
+                    except Exception:
+                        s = str(vec_str).strip().strip('[]{}')
+                        parts = [p for p in s.replace('{','').replace('}','').split(',') if p.strip()]
+                        emb_map[int(row['owner_id'])] = np.array([float(p) for p in parts]) if parts else None
+            except Exception:
+                emb_map = {}
+
+        # Recorrer opciones y calcular puntajes combinados
+        scores: List[Dict[str, Any]] = []
         for opt in options:
             title = str(opt.get('title', '')).lower()
             keywords = str(opt.get('keywords', '')).lower()
             description = str(opt.get('description', '')).lower()
-            
-            # Combinar todo el texto del item
-            item_text = f"{title} {keywords} {description}"
-            
-            # Calcular score basado en coincidencias de palabras
-            score = 0
-            text_words = set([w for w in text_lower.split() if len(w) > 2])
-            item_words = set([w for w in item_text.split() if len(w) > 2])
-            
-            # Coincidencias exactas
-            exact_matches = text_words.intersection(item_words)
-            score += len(exact_matches) * 15
-            
-            # Coincidencias parciales (substrings)
-            for text_word in text_words:
-                for item_word in item_words:
-                    if text_word in item_word or item_word in text_word:
-                        score += 3
-            
-            # Bonus por categorías específicas
-            for category, keywords_list in category_keywords.items():
+            item_text = f"{title} {keywords} {description}".strip()
+
+            # 1) Puntaje léxico con RapidFuzz (0..100)
+            lex_score = fuzz.token_set_ratio(text_lower, item_text)  # 0..100
+            lex_norm = lex_score / 100.0
+
+            # 2) Bonus por categorías específicas
+            cat_bonus = 0.0
+            for _, keywords_list in category_keywords.items():
                 text_has_category = any(word in text_lower for word in keywords_list)
                 item_has_category = any(word in item_text for word in keywords_list)
-                
                 if text_has_category and item_has_category:
-                    score += 25  # Bonus alto por coincidencia de categoría
-            
-            # Penalizar items que claramente no coinciden
-            if any(word in item_text for word in ['mineral', 'laca', 'colorante', 'manganeso', 'turba']):
-                if not any(word in text_lower for word in ['mineral', 'laca', 'colorante', 'manganeso', 'turba']):
-                    score -= 50  # Penalización alta
-            
+                    cat_bonus += 0.1  # bonus pequeño acumulable
+
+            # 3) Puntaje semántico si hay embeddings para el item
+            sem_norm = 0.0
+            if qvec is not None:
+                v = emb_map.get(int(opt.get('id', -1)))
+                if v is not None and v.size > 0:
+                    denom = (np.linalg.norm(qvec) * np.linalg.norm(v))
+                    if denom:
+                        sim = float(np.dot(qvec, v) / denom)  # -1..1
+                        sem_norm = (sim + 1.0) / 2.0          # 0..1
+
+            # 4) Penalización por palabras claramente ajenas (evitar minerales para ropa, etc.)
+            negative_words = ['mineral', 'minerales', 'manganeso', 'mena', 'concentrado', 'turba', 'colorante industrial']
+            neg_penalty = 0.0
+            if any(w in item_text for w in negative_words) and not any(w in text_lower for w in negative_words):
+                neg_penalty = 0.25  # resta al score final
+
+            # 5) Señal full-text (ts_rank) sobre tariff_items sin cambiar la BD (on-the-fly)
+            ft_norm = 0.0
+            try:
+                oid = int(opt.get('id', -1))
+                if oid != -1:
+                    q = (
+                        "SELECT id, ts_rank_cd("
+                        "to_tsvector('spanish', coalesce(title,'')||' '||coalesce(keywords,'')||' '||coalesce(notes,'')),"
+                        "plainto_tsquery('spanish', :q)) AS r FROM tariff_items WHERE id = :oid"
+                    )
+                    df_rank = self.cc.ejecutar_consulta_sql(q, {"q": text, "oid": oid})
+                    if not df_rank.empty:
+                        r = float(df_rank.iloc[0]['r'] or 0.0)
+                        # Normalización tosca: ts_rank suele ~[0..1]
+                        ft_norm = max(0.0, min(1.0, r))
+            except Exception:
+                ft_norm = 0.0
+
+            # 6) Score combinado (pesos ajustables)
+            w_sem = float(os.getenv('CLS_W_SEM', '0.45'))
+            w_lex = float(os.getenv('CLS_W_LEX', '0.35'))
+            w_cat = float(os.getenv('CLS_W_CAT', '0.20'))
+            w_ft = float(os.getenv('CLS_W_FT', '0.35'))
+            # Rebalancear manteniendo suma aprox. 1: combinar ft con los otros pesos proporcionalmente
+            score = (w_sem * sem_norm + w_lex * lex_norm + w_cat * max(0.0, min(1.0, cat_bonus)) + w_ft * ft_norm) - neg_penalty
+
+            # 6) Sesgo por dominio usando prefijos de capítulos de national_code/hs6
+            code_digits = ''.join([c for c in str(opt.get('national_code') or '') if c.isdigit()])
+            if len(code_digits) < 2:
+                code_digits = ''.join([c for c in str(opt.get('hs6') or '') if c.isdigit()])
+            ch = code_digits[:2] if len(code_digits) >= 2 else ''
+            boost = float(os.getenv('CLS_W_DOMAIN_BOOST', '0.1'))
+            boost_e = float(os.getenv('CLS_W_DOMAIN_BOOST_E', '0.08'))
+            boost_m = float(os.getenv('CLS_W_DOMAIN_BOOST_M', '0.06'))
+            boost_min = float(os.getenv('CLS_W_DOMAIN_BOOST_MIN', '0.08'))
+            if domain == 'textiles' and ch in ('61', '62'):
+                score += boost
+            elif domain == 'vehiculos' and ch == '87':
+                score += boost
+            elif domain == 'electronicos' and ch in ('84','85'):
+                score += boost_e
+            elif domain == 'medico' and ch in ('30','90'):
+                score += boost_m
+            elif domain == 'minerales' and ch in ('25','26','27'):
+                score += boost_min
+            elif domain == 'herramientas' and ch == '82':
+                score += boost
+            elif domain == 'calzado' and ch == '64':
+                score += boost
+
+            opt_scored = dict(opt)
+            opt_scored['_score'] = float(score)
+            scores.append(opt_scored)
             if score > best_score:
                 best_score = score
                 best_match = opt
         
         # Si encontramos una buena coincidencia por palabras clave, usarla
         if best_match and best_score > 10:
+            # Attach ranked list for later (top-3)
+            scores_sorted = sorted(scores, key=lambda o: o.get('_score', 0.0), reverse=True)
+            self._last_ranked_options = scores_sorted[:3]
             return best_match
         
-        # Si no, intentar con embeddings como respaldo
+        # Si no, intentar con embeddings/lexical como respaldo adicional (fallback antiguo)
         try:
             # Construir embedding del texto del caso
             qvec = self.embed.generate_embedding(text)
@@ -140,7 +231,6 @@ class NationalClassifier:
                 return options[0]
 
             # Convertir a vectores numpy
-            import numpy as np
             best = None
             best_sim = -1e9
             # qvec puede venir como np.ndarray shape (1,dim) según servicio
@@ -171,36 +261,57 @@ class NationalClassifier:
                         return opt
             
             # Si los embeddings fallan, usar la primera opción
+            scores_sorted = sorted(scores, key=lambda o: o.get('_score', 0.0), reverse=True)
+            self._last_ranked_options = scores_sorted[:3]
             return options[0]
             
         except Exception:
             # Si todo falla, usar la primera opción
+            scores_sorted = sorted(scores, key=lambda o: o.get('_score', 0.0), reverse=True)
+            self._last_ranked_options = scores_sorted[:3] if scores_sorted else []
             return options[0]
 
     def _try_specific_rules(self, text: str) -> Dict[str, Any]:
         """Intentar aplicar reglas específicas para productos comunes"""
-        text_lower = text.lower()
+        def _norm(s: str) -> str:
+            s = s.lower()
+            s = ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+            for ch in [',', '.', ';', ':', '(', ')', '[', ']', '{', '}', '/', '\\', '-', '_']:
+                s = s.replace(ch, ' ')
+            s = ' '.join(s.split())
+            return s
+
+        text_norm = _norm(text)
         
-        # Buscar coincidencias exactas primero
+        # Reglas y sinónimos para camiseta de algodón
+        synonyms = [
+            'camiseta algodon', 'camiseta de algodon', 'camiseta 100 algodon', 'playera algodon',
+            'remera algodon', 'polera algodon', 'tshirt algodon', 't shirt algodon'
+        ]
+        for patt in synonyms:
+            if patt in text_norm:
+                return self.specific_rules.get('camiseta algodon')
+
+        # Buscar coincidencias exactas de patrones existentes (normalizados)
         for pattern, rule in self.specific_rules.items():
-            if pattern in text_lower:
+            if _norm(pattern) in text_norm:
                 return rule
         
         # Buscar coincidencias parciales para productos de computación
-        if any(word in text_lower for word in ['mouse', 'ratón', 'gaming', 'óptico', 'dpi']):
-            if 'mouse' in text_lower or 'ratón' in text_lower:
+        if any(word in text_norm for word in ['mouse', 'raton', 'gaming', 'optico', 'dpi']):
+            if 'mouse' in text_norm or 'raton' in text_norm:
                 return self.specific_rules['mouse gaming']
         
-        if any(word in text_lower for word in ['teclado', 'keyboard', 'gaming']):
-            if 'teclado' in text_lower or 'keyboard' in text_lower:
+        if any(word in text_norm for word in ['teclado', 'keyboard', 'gaming']):
+            if 'teclado' in text_norm or 'keyboard' in text_norm:
                 return self.specific_rules['teclado gaming']
         
-        if any(word in text_lower for word in ['auriculares', 'headphones', 'gaming']):
-            if 'auriculares' in text_lower or 'headphones' in text_lower:
+        if any(word in text_norm for word in ['auriculares', 'headphones', 'gaming']):
+            if 'auriculares' in text_norm or 'headphones' in text_norm:
                 return self.specific_rules['auriculares gaming']
         
-        if any(word in text_lower for word in ['monitor', 'pantalla', 'gaming']):
-            if 'monitor' in text_lower or 'pantalla' in text_lower:
+        if any(word in text_norm for word in ['monitor', 'pantalla', 'gaming']):
+            if 'monitor' in text_norm or 'pantalla' in text_norm:
                 return self.specific_rules['monitor gaming']
         
         return None
@@ -213,20 +324,32 @@ class NationalClassifier:
             attrs = json.loads(attrs_raw) if isinstance(attrs_raw, str) else (attrs_raw or {})
         except Exception:
             attrs = {}
+        
+        # Preprocesar y normalizar texto
+        text = self._preprocess_text(text)
+        
+        # Extraer características para explicación
+        features = self._extract_features(text)
 
         # 0) Intentar reglas específicas primero (mejora de precisión)
         specific_result = self._try_specific_rules(text)
         if specific_result:
             # Guardar candidato con regla específica
             try:
-                self.candidate_repo.upsert_top1(
-                    case['id'],
-                    specific_result['hs6'],
-                    specific_result['title'],
-                    0.95,  # Alta confianza para reglas específicas
-                    f"Clasificación por regla específica: {specific_result['title']}",
-                    json.dumps({'method': 'specific_rule', 'pattern': 'matched'})
-                )
+                rationale = f"Clasificación por regla específica: {specific_result['title']}"
+                self.candidate_repo.create_candidates_batch([
+                    {
+                        'case_id': case['id'],
+                        'hs_code': specific_result['national_code'] or specific_result['hs6'],
+                        'hs6': specific_result['hs6'],
+                        'national_code': specific_result['national_code'],
+                        'title': specific_result['title'],
+                        'confidence': 0.95,
+                        'rationale': rationale,
+                        'legal_refs_json': json.dumps({'method': 'specific_rule', 'pattern': 'matched'}),
+                        'rank': 1,
+                    }
+                ])
             except Exception as e:
                 print(f"Error guardando candidato: {e}")
                 # Continuar sin fallar si no se puede guardar
@@ -247,6 +370,10 @@ class NationalClassifier:
         hs6 = rgi_result.get('hs6')
         trace = rgi_result.get('trace', [])
 
+        # Fallback HS6 si RGI no lo determinó
+        if not hs6:
+            hs6 = self._fallback_hs6(text)
+
         # 2) Obtener aperturas nacionales vigentes
         options = self._fetch_tariff_options(hs6) if hs6 else []
         if not options:
@@ -258,7 +385,8 @@ class NationalClassifier:
                 'rgi_applied': [s.get('rgi') for s in trace],
                 'legal_notes': self._collect_notes(trace),
                 'sources': self._collect_sources(trace),
-                'rationale': 'No hay aperturas nacionales vigentes para el HS6 identificado' if hs6 else 'No se pudo determinar un HS6 con las RGI',
+                'rationale': (("Identificación: " + str(features) + " | ") if features else '') + ('No hay aperturas nacionales vigentes para el HS6 identificado' if hs6 else 'No se pudo determinar un HS6 (RGI + fallback)'),
+                'analysis': {'features': features},
             }
 
         # 3) Seleccionar exactamente un national_code
@@ -314,8 +442,105 @@ class NationalClassifier:
             'rgi_applied': [s.get('rgi') for s in trace],
             'legal_notes': self._collect_notes(trace),
             'sources': self._collect_sources(trace),
-            'rationale': self._build_rationale(trace),
+            'rationale': (("Identificación: " + str(features) + " | ") if features else '') + self._build_rationale(trace),
+            'analysis': {'features': features},
         }
+
+    def _fallback_hs6(self, text: str) -> str:
+        """Intentar proponer un HS6 cuando RGI no lo determinó, combinando búsqueda léxica y semántica sobre hs_items."""
+        try:
+            # 1) Recuperar candidatos hs_items filtrando por tokens relevantes para limitar el set
+            tokens = [t for t in set(text.lower().replace(',', ' ').split()) if len(t) > 3]
+            like_filters = ' OR '.join([f"title ILIKE '%{t}%'" for t in tokens[:6]])
+            base_q = "SELECT id, hs_code, title, keywords FROM hs_items"
+            q = base_q + (f" WHERE {like_filters} LIMIT 200" if like_filters else " LIMIT 200")
+            df = self.cc.ejecutar_consulta_sql(q)
+            if df.empty:
+                return ''
+
+            # 2) Pre-calcular embedding del texto
+            try:
+                qvec = np.array(self.embed.generate_embedding(text))
+            except Exception:
+                qvec = None
+
+            # 3) Traer embeddings para hs_items candidatos
+            emb_map = {}
+            try:
+                ids = [int(r['id']) for _, r in df.iterrows() if r.get('id') is not None]
+                if ids:
+                    in_clause = '(' + ','.join([str(i) for i in ids]) + ')'
+                    qe = (
+                        "SELECT owner_id, vector FROM embeddings "
+                        "WHERE owner_type='hs_item' AND owner_id IN " + in_clause
+                    )
+                    df_emb = self.cc.ejecutar_consulta_sql(qe)
+                    for _, row in df_emb.iterrows():
+                        vec_str = row['vector']
+                        try:
+                            emb_map[int(row['owner_id'])] = np.array(json.loads(vec_str))
+                        except Exception:
+                            s = str(vec_str).strip().strip('[]{}')
+                            parts = [p for p in s.replace('{','').replace('}','').split(',') if p.strip()]
+                            emb_map[int(row['owner_id'])] = np.array([float(p) for p in parts]) if parts else None
+            except Exception:
+                emb_map = {}
+
+            # 4) Calcular score combinado (semántico + léxico) y elegir mejor hs6, con sesgo por dominio
+            garment_terms = ['chaqueta', 'abrigo', 'parka', 'anorak', 'cazadora', 'impermeable', 'prenda', 'ropa', 'sobretodo', 'saco']
+            garment_intent = any(t in text.lower() for t in garment_terms)
+            domain = self._infer_domain(text.lower())
+
+            best_hs6 = ''
+            best_score = -1.0
+            for _, row in df.iterrows():
+                item_text = f"{str(row.get('title') or '')} {str(row.get('keywords') or '')}"
+                lex = fuzz.token_set_ratio(text, item_text) / 100.0
+                sem = 0.0
+                if qvec is not None:
+                    v = emb_map.get(int(row['id']))
+                    if v is not None and v.size > 0:
+                        denom = (np.linalg.norm(qvec) * np.linalg.norm(v))
+                        if denom:
+                            sim = float(np.dot(qvec, v) / denom)
+                            sem = (sim + 1.0) / 2.0
+                w_sem_fb = float(os.getenv('CLS_FB_W_SEM', '0.6'))
+                w_lex_fb = float(os.getenv('CLS_FB_W_LEX', '0.4'))
+                score = w_sem_fb * sem + w_lex_fb * lex
+
+                # Ajuste por dominio prendas de vestir
+                hs = ''.join([c for c in str(row.get('hs_code') or '') if c.isdigit()])
+                ch = hs[:2] if len(hs) >= 2 else ''
+                if garment_intent or domain == 'textiles':
+                    if ch in ('61', '62'):
+                        score += float(os.getenv('CLS_W_GARMENT_BOOST', '0.15'))  # boost por capítulo de prendas
+                    elif ch in ('05', '67'):
+                        score -= float(os.getenv('CLS_W_GARMENT_PENALTY', '0.25'))  # penalización por materias primas (plumas)
+                elif domain == 'vehiculos':
+                    if ch == '87':
+                        score += float(os.getenv('CLS_W_DOM_VEH', '0.12'))
+                elif domain == 'electronicos':
+                    if ch in ('84','85'):
+                        score += float(os.getenv('CLS_W_DOM_ELEC', '0.10'))
+                elif domain == 'minerales':
+                    if ch in ('25','26','27'):
+                        score += float(os.getenv('CLS_W_DOM_MIN', '0.10'))
+                elif domain == 'herramientas':
+                    if ch == '82':
+                        score += float(os.getenv('CLS_W_DOM_TOOL', '0.12'))
+                elif domain == 'calzado':
+                    if ch == '64':
+                        score += float(os.getenv('CLS_W_DOM_SHOE', '0.12'))
+
+                if score > best_score:
+                    hs6 = hs[:6] if len(hs) >= 6 else ''
+                    if hs6:
+                        best_score = score
+                        best_hs6 = hs6
+
+            return best_hs6
+        except Exception:
+            return ''
 
     @staticmethod
     def _collect_notes(trace: List[Dict[str, Any]]) -> List[int]:
@@ -327,13 +552,48 @@ class NationalClassifier:
         return note_ids
 
     @staticmethod
-    def _collect_sources(trace: List[Dict[str, Any]]) -> List[int]:
-        src_ids: List[int] = []
+    def _collect_sources(trace: List[Dict[str, Any]]) -> List[str]:
+        srcs: List[str] = []
         for step in trace:
-            for sid in step.get('legal_refs', {}).get('legal_source_id', []) or []:
-                if sid not in src_ids:
-                    src_ids.append(sid)
-        return src_ids
+            for s in step.get('sources', []) or []:
+                if s not in srcs:
+                    srcs.append(s)
+        return srcs
+
+    @staticmethod
+    def _preprocess_text(text: str) -> str:
+        """Normaliza y limpia el texto de entrada."""
+        if not text:
+            return ''
+        # Convertir a minúsculas
+        text = text.lower()
+        # Normalizar espacios múltiples
+        text = ' '.join(text.split())
+        # Remover caracteres extraños pero mantener acentos y ñ
+        import re as _re
+        text = _re.sub(r'[^a-záéíóúüñ\s\d\.,%-]', ' ', text)
+        text = ' '.join(text.split())
+        return text
+    
+    @staticmethod
+    def _infer_domain(text_lower: str) -> str:
+        """Inferir un dominio general a partir del texto para aplicar sesgos suaves.
+        Dominios: textiles, vehiculos, electronicos, medico, minerales, alimentos.
+        """
+        groups = {
+            'textiles': ['camiseta','camisa','pantalon','chaqueta','abrigo','prenda','ropa','algodon','poliester','lana','tejido','cuero','zapato','bolso','gorra','plumas','impermeable'],
+            'vehiculos': ['automovil','carro','vehiculo','moto','motocicleta','bicicleta','camion','bus','neumatico','llanta','chasis'],
+            'electronicos': ['monitor','teclado','mouse','consola','led','bateria','refrigerador','lavadora','microondas','acondicionado','aspiradora','licuadora','plancha','sensor'],
+            'medico': ['tensiometro','termometro','oximetro','mascarilla','guantes','vendaje','quirurgico','clinico'],
+            'minerales': ['mineral','mena','concentrado','manganeso','hierro','cobre','turba','carbon'],
+            'alimentos': ['cafe','azucar','harina','bebida','alimento','chocolate','leche'],
+            'herramientas': ['martillo','taladro','destornillador','llave inglesa','sierra','cinta metrica','cuchillo','alicate'],
+            'calzado': ['zapato','zapatilla','tenis','botin','bota','calzado','sandalia','deportivo','suela','antideslizante','malla']
+        }
+        for dom, kws in groups.items():
+            if any(k in text_lower for k in kws):
+                return dom
+        return ''
 
     @staticmethod
     def _build_rationale(trace: List[Dict[str, Any]]) -> str:
@@ -341,3 +601,65 @@ class NationalClassifier:
         for step in trace:
             msgs.append(f"{step.get('rgi')}: {step.get('decision')}")
         return ' | '.join(msgs) if msgs else 'Clasificación basada en RGI y vigencia DIAN'
+
+    @staticmethod
+    def _preprocess_text(text: str) -> str:
+        """Normaliza y limpia el texto de entrada."""
+        if not text:
+            return ''
+        # Convertir a minúsculas
+        text = text.lower()
+        # Normalizar espacios múltiples
+        text = ' '.join(text.split())
+        # Remover caracteres extraños pero mantener acentos y ñ
+        import re as _re
+        text = _re.sub(r'[^a-záéíóúüñ\s\d\.,%-]', ' ', text)
+        text = ' '.join(text.split())
+        return text
+
+    @staticmethod
+    def _extract_features(text: str) -> Dict[str, Any]:
+        """Extrae características clave del texto: tipo, materiales, medidas, uso."""
+        import re as _re
+        t = (text or '').lower()
+        # Normalizar acentos
+        t_norm = ''.join(c for c in unicodedata.normalize('NFD', t) if unicodedata.category(c) != 'Mn')
+        feats: Dict[str, Any] = {}
+        
+        # 1. Materiales
+        mats = []
+        mat_kws = ['acero','aluminio','madera','plastico','algodon','poliester','cuero','vidrio','caucho','goma','sintetico','malla','textil','ceramica','hierro','cobre']
+        for m in mat_kws:
+            if m in t_norm:
+                mats.append(m)
+        if mats:
+            feats['material'] = ','.join(mats)
+        
+        # 2. Tipo de producto (palabras clave)
+        tipo_kws = [
+            'martillo','taladro','destornillador','chaqueta','camiseta','pantalon','zapato','zapatilla','tenis','calzado',
+            'refrigerador','lavadora','microondas','bateria','faro','neumatico','filtro','aceite','bujia','bomba',
+            'cafe','chocolate','miel','cerveza','vino','aceite','cemento','ladrillo'
+        ]
+        for kw in tipo_kws:
+            if kw in t_norm:
+                feats['tipo'] = kw
+                break
+        
+        # 3. Medidas y unidades
+        medidas = _re.findall(r"(\d+(?:[\.\,]\d+)?)(?:\s*)(kg|g|l|ml|mm|cm|m|btu|w|kw|v|ah|cc|pulgadas)", t_norm)
+        if medidas:
+            feats['medidas'] = [f"{m[0]}{m[1]}" for m in medidas]
+        
+        # 4. Uso/función
+        uso_kws = ['deportivo','industrial','medico','construccion','carpintero','cocina','hogar','automotriz','infantil']
+        for u in uso_kws:
+            if u in t_norm:
+                feats['uso'] = u
+                break
+        
+        # 5. Partes vs. completo (RGI 2a)
+        if any(w in t_norm for w in ['parte','repuesto','componente','accesorio']):
+            feats['es_parte'] = True
+        
+        return feats
