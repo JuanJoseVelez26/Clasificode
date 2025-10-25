@@ -47,6 +47,7 @@ export default function LoginPage() {
     try {
       const response = await api.auth.login(data)
       login(response.user, response.token)
+      router.push('/')
 
       // Create audit log entry for session authorization
       console.log("[ClasifiCode] Autoriza sesión:", response.user.email)
@@ -55,8 +56,7 @@ export default function LoginPage() {
         title: t("common.success"),
         description: `Bienvenido, ${response.user.name}`,
       })
-
-      router.push("/app/form")
+      router.push("/dashboard")
     } catch (error) {
       toast({
         variant: "destructive",
