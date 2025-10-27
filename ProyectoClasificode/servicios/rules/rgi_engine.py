@@ -94,10 +94,10 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     if not words:
         return []
     
-    # Mapeo de sinónimos comunes para mejorar la búsqueda
+    # Mapeo de sinónimos comunes para mejorar la búsqueda (expandido)
     synonyms = {
         # Animales
-        'ternero': ['bovino', 'ganado', 'vaca', 'toro', 'animal', 'bovinos', 'terneros', 'bovino'],
+        'ternero': ['bovino', 'ganado', 'vaca', 'toro', 'animal', 'bovinos', 'terneros', 'bovino', 'vivo', 'cría'],
         'vivo': ['animal', 'ganado', 'bovino', 'vivos', 'animales', 'vivo'],
         'cerdo': ['porcino', 'cochino', 'marrano', 'chancho', 'cerdo'],
         'pollo': ['ave', 'gallina', 'gallinácea', 'pollo'],
@@ -106,7 +106,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         # Textiles y ropa
         'camiseta': ['camisa', 'prenda', 'vestido', 'ropa', 'textil', 'playera', 'remera', 'tshirt', 't shirt', 'camiseta'],
         'algodon': ['algodón', 'textil', 'fibra', 'tela', 'algodon', '100%'],
-        'chaqueta': ['abrigo', 'parka', 'anorak', 'cazadora', 'impermeable', 'sobretodo', 'saco', 'chaqueta'],
+        'chaqueta': ['abrigo', 'parka', 'anorak', 'cazadora', 'impermeable', 'sobretodo', 'saco', 'chaqueta', 'cuero', 'leather'],
         'plumas': ['pluma', 'relleno de plumas', 'acolchado', 'plumas'],
         'pantalon': ['pantalón', 'vaquero', 'jean', 'mezclilla', 'denim', 'pantalon'],
         'zapatos': ['calzado', 'tenis', 'zapatillas', 'zapatos', 'deportivo', 'botin', 'bota', 'sandalia'],
@@ -116,33 +116,55 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'guantes': ['manos', 'protección', 'cubrir', 'guantes'],
         'bufanda': ['escarf', 'chal', 'bufanda'],
         'cinturon': ['cinturón', 'correa', 'cinturon'],
+        'vestido': ['vestido', 'dress', 'prenda', 'verano', 'summer', 'poliéster', 'poliester'],
         
         # Electrónicos y computación
-        'computadora': ['ordenador', 'pc', 'computador', 'equipo', 'computadora'],
-        'portatil': ['portátil', 'laptop', 'notebook', 'móvil', 'portatil'],
-        'telefono': ['teléfono', 'móvil', 'celular', 'smartphone', 'telefono'],
-        'mouse': ['ratón', 'mouse', 'periférico', 'dispositivo', 'gaming', 'óptico', 'inalámbrico'],
+        'computadora': ['ordenador', 'pc', 'computador', 'equipo', 'computadora', 'laptop', 'notebook', 'desktop', 'escritorio'],
+        'portatil': ['portátil', 'laptop', 'notebook', 'móvil', 'portatil', 'macbook', 'dell', 'hp', 'lenovo', 'asus', 'acer'],
+        'telefono': ['teléfono', 'móvil', 'celular', 'smartphone', 'telefono', 'iphone', 'samsung', 'huawei', 'xiaomi', 'android'],
+        'mouse': ['ratón', 'mouse', 'periférico', 'dispositivo', 'gaming', 'óptico', 'inalámbrico', 'dpi'],
         'gaming': ['juegos', 'gaming', 'gamer', 'videojuegos', 'entretenimiento'],
         'teclado': ['keyboard', 'teclado', 'periférico', 'dispositivo', 'gaming'],
-        'auriculares': ['headphones', 'auriculares', 'audífonos', 'cascos', 'gaming'],
-        'monitor': ['pantalla', 'monitor', 'display', 'gaming', 'pantalla'],
+        'auriculares': ['headphones', 'auriculares', 'audífonos', 'cascos', 'gaming', 'bluetooth'],
+        'monitor': ['pantalla', 'monitor', 'display', 'gaming', 'pantalla', 'lcd', 'led', 'ips'],
         'webcam': ['cámara', 'webcam', 'cámara web', 'videoconferencia'],
         'microfono': ['micrófono', 'microphone', 'mic', 'grabación'],
-        'altavoces': ['speakers', 'altavoces', 'parlantes', 'sonido'],
+        'altavoces': ['speakers', 'altavoces', 'parlantes', 'sonido', 'audio', 'bluetooth', 'portátil', 'portatil'],
+        'parlante': ['speaker', 'altavoz', 'parlante', 'sonido', 'audio', 'bluetooth', 'portátil', 'portatil'],
         'impresora': ['printer', 'impresora', 'tinta', 'láser'],
         'escanner': ['scanner', 'escáner', 'digitalización', 'escanear'],
         'tablet': ['tableta', 'tablet', 'ipad', 'android'],
         'smartwatch': ['reloj inteligente', 'smartwatch', 'wearable'],
         'drone': ['dron', 'drone', 'aeronave', 'vuelo'],
-        'bateria': ['batería', 'battery', 'pila', 'energía'],
-        'cargador': ['charger', 'cargador', 'carga', 'energía'],
-        'cable': ['cable', 'wire', 'conexión', 'usb', 'hdmi'],
+        'bateria': ['batería', 'battery', 'pila', 'energía', 'power'],
+        
+        # Productos adicionales comunes
+        'cafe': ['café', 'coffee', 'grano', 'tostado', 'molido', 'colombia', 'brasil'],
+        'chocolate': ['cacao', 'cocoa', 'hershey', 'nestle', 'ferrero'],
+        'zapato': ['zapatos', 'zapatilla', 'zapatillas', 'tenis', 'sneakers', 'calzado', 'shoe', 'shoes'],
+        'carro': ['auto', 'coche', 'vehiculo', 'vehículo', 'automovil', 'automóvil', 'car', 'vehicle'],
+        'moto': ['motocicleta', 'motorcycle', 'scooter', 'moto'],
+        'bici': ['bicicleta', 'bicycle', 'bike', 'bici'],
+        'mesa': ['table', 'mesa', 'escritorio', 'desk'],
+        'silla': ['chair', 'silla', 'asiento', 'seat'],
+        'cama': ['bed', 'cama', 'colchon', 'colchón', 'mattress'],
+        'herramienta': ['tool', 'herramienta', 'taladro', 'martillo', 'destornillador', 'llave', 'cuchillo'],
+        'juguete': ['toy', 'juguete', 'juego', 'game', 'muñeca', 'pelota', 'balón'],
+        'arroz': ['rice', 'arroz', 'grano'],
+        'azucar': ['sugar', 'azúcar', 'azucar', 'dulce'],
+        'aceite': ['oil', 'aceite', 'oliva', 'girasol'],
+        'leche': ['milk', 'leche', 'lacteo', 'lácteo'],
+        'pan': ['bread', 'pan', 'hogaza', 'baguette'],
+        'cargador': ['charger', 'cargador', 'carga', 'energía', 'power'],
+        'cable': ['cable', 'wire', 'conexión', 'usb', 'hdmi', 'auxiliar', 'aux'],
         'adaptador': ['adapter', 'adaptador', 'conversor', 'conexión'],
         
         # Vehículos
         'automovil': ['automóvil', 'carro', 'vehículo', 'coche', 'automovil'],
         'motocicleta': ['moto', 'motociclo', 'vehículo', 'motocicleta'],
         'bicicleta': ['bici', 'ciclo', 'vehículo', 'bicicleta'],
+        'neumatico': ['neumático', 'llanta', 'tire', 'neumatico'],
+        'faro': ['luz', 'farola', 'led', 'faro'],
         'camion': ['camión', 'truck', 'vehículo pesado', 'camion'],
         'bus': ['autobús', 'ómnibus', 'colectivo', 'bus'],
         
@@ -153,12 +175,13 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'horno': ['horno eléctrico', 'horno de gas', 'horno'],
         'licuadora': ['batidora', 'mezcladora', 'licuadora'],
         'tostadora': ['tostador', 'tostadora'],
+        'plancha': ['plancha', 'planchado', 'ropa', 'plancha', 'vapor', 'steam'],
         
         # Alimentos y bebidas
         'cafe': ['café', 'grano', 'semilla', 'cafe'],
-        'aceite': ['óleo', 'grasa', 'líquido', 'aceite'],
-        'chocolate': ['cacao', 'dulce', 'confitería', 'chocolate'],
-        'miel': ['abeja', 'dulce', 'natural', 'miel'],
+        'aceite': ['óleo', 'grasa', 'líquido', 'aceite', 'oliva', 'olive'],
+        'chocolate': ['cacao', 'dulce', 'confitería', 'chocolate', 'negro', 'dark'],
+        'miel': ['abeja', 'dulce', 'natural', 'miel', 'bee'],
         'vino': ['bebida', 'alcohólico', 'uva', 'vino'],
         'cerveza': ['bebida', 'alcohólico', 'malta', 'cerveza'],
         'leche': ['lácteo', 'dairy', 'leche'],
@@ -173,9 +196,9 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'cemento': ['construcción', 'material', 'aglomerante', 'cemento'],
         'ladrillo': ['construcción', 'material', 'cerámico', 'ladrillo'],
         'pintura': ['color', 'revestimiento', 'acabado', 'pintura'],
-        'madera': ['leño', 'tronco', 'tabla', 'madera'],
+        'madera': ['leño', 'tronco', 'tabla', 'madera', 'pino', 'pine'],
         'acero': ['metal', 'hierro', 'acero'],
-        'vidrio': ['cristal', 'vidrio'],
+        'vidrio': ['cristal', 'vidrio', 'templado', 'tempered'],
         'plastico': ['plástico', 'polímero', 'plastico'],
         
         # Herramientas
@@ -183,7 +206,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'martillo': ['herramienta', 'golpear', 'clavar', 'martillo'],
         'destornillador': ['herramienta', 'atornillar', 'desatornillar', 'destornillador'],
         'sierra': ['cortar', 'madera', 'herramienta', 'sierra'],
-        'nivel': ['medir', 'horizontal', 'vertical', 'nivel'],
+        'nivel': ['medir', 'horizontal', 'vertical', 'nivel', 'burbuja', 'bubble'],
         'multimetro': ['multímetro', 'medir', 'eléctrico', 'multimetro'],
         'tijeras': ['cortar', 'podar', 'herramienta', 'tijeras'],
         'llave': ['herramienta', 'tuerca', 'tornillo', 'llave'],
@@ -192,7 +215,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         # Juguetes
         'bloques': ['construcción', 'juguete', 'piezas', 'bloques'],
         'muñeca': ['juguete', 'niña', 'figura', 'muñeca'],
-        'puzzle': ['rompecabezas', 'juego', 'piezas', 'puzzle'],
+        'puzzle': ['rompecabezas', 'juego', 'piezas', 'puzzle', '1000'],
         'pelota': ['balón', 'esfera', 'juego', 'pelota'],
         'tren': ['juguete', 'vehículo', 'tren'],
         'carro': ['juguete', 'vehículo', 'carro'],
@@ -203,6 +226,7 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'mascarilla': ['máscara', 'protección', 'filtro', 'mascarilla'],
         'vendaje': ['venda', 'curación', 'herida', 'vendaje'],
         'jeringa': ['inyección', 'aguja', 'jeringa'],
+        'oximetro': ['oxímetro', 'pulso', 'saturación', 'oximetro'],
         'medicina': ['medicamento', 'fármaco', 'medicina'],
         'vitamina': ['suplemento', 'nutriente', 'vitamina'],
         'antibiotico': ['antibiótico', 'medicamento', 'antibiotico'],
@@ -216,6 +240,16 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         'goma': ['borrador', 'goma'],
         'regla': ['medir', 'línea', 'regla'],
         'calculadora': ['computar', 'calcular', 'calculadora'],
+        
+        # Productos químicos y limpieza
+        'detergente': ['jabón', 'limpiador', 'detergente', 'liquid', 'líquido'],
+        'jabon': ['jabón', 'soap', 'limpiador', 'jabon', 'tocador', 'barra'],
+        'shampoo': ['champú', 'shampoo', 'cabello', 'pelo', 'hair'],
+        'crema': ['loción', 'ungüento', 'pomada', 'crema', 'hidratante', 'moisturizer'],
+        'pasta': ['pasta', 'pasta dental', 'dentífrico', 'dental', 'toothpaste'],
+        'desodorante': ['desodorante', 'antitranspirante', 'deodorant'],
+        'perfume': ['perfume', 'fragancia', 'colonia'],
+        'cosmetico': ['cosmético', 'maquillaje', 'makeup'],
         
         # Jardinería y agricultura
         'semillas': ['semilla', 'planta', 'germinar', 'semillas'],
@@ -269,7 +303,8 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     params = {}
     
     # Inferir dominios por palabras - Sistema mejorado
-    computer_terms = ['mouse', 'ratón', 'gaming', 'teclado', 'keyboard', 'monitor', 'pantalla', 'auriculares', 'headphones', 'computadora', 'laptop', 'smartphone', 'tablet', 'impresora', 'scanner']
+    computer_terms = ['mouse', 'ratón', 'gaming', 'teclado', 'keyboard', 'monitor', 'pantalla', 'auriculares', 'headphones', 'computadora', 'laptop', 'smartphone', 'tablet', 'impresora', 'scanner', 'parlante', 'altavoz', 'speaker', 'microfono', 'micrófono', 'webcam', 'cámara', 'camera', 'televisor', 'tv', 'radio', 'bateria', 'batería', 'cargador', 'cable', 'adaptador']
+    audio_terms = ['parlante', 'altavoz', 'speaker', 'sonido', 'audio', 'bluetooth', 'inalámbrico', 'wireless', 'auriculares', 'headphones', 'microfono', 'micrófono', 'amplificador', 'amplifier']
     garment_terms = ['camiseta', 'camisa', 'pantalon', 'chaqueta', 'abrigo', 'impermeable', 'prenda', 'ropa', 'algodon', 'poliester', 'tejido', 'bolso', 'gorra', 'vestido', 'falda', 'blusa']
     footwear_terms = ['zapato', 'zapatilla', 'tenis', 'calzado', 'deportivo', 'botin', 'bota', 'sandalia', 'suela', 'malla', 'antideslizante', 'empeine', 'plantilla']
     vehicle_terms = ['automovil', 'carro', 'vehiculo', 'moto', 'motocicleta', 'bicicleta', 'camion', 'bus', 'neumatico', 'llanta', 'chasis', 'faro']
@@ -284,10 +319,11 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     jewelry_terms = ['reloj', 'perfume', 'collar', 'anillo', 'aretes', 'pulsera', 'joya', 'joyería']
     optical_terms = ['gafas', 'lentes', 'microscopio', 'telescopio', 'óptica', 'visión']
     sport_terms = ['balón', 'raqueta', 'patín', 'casco', 'deporte', 'recreación']
-    cleaning_terms = ['detergente', 'jabón', 'shampoo', 'crema', 'desodorante', 'pasta', 'cepillo', 'limpieza', 'cosmético']
+    cleaning_terms = ['detergente', 'jabón', 'shampoo', 'crema', 'desodorante', 'pasta', 'cepillo', 'limpieza', 'cosmético', 'jabon', 'tocador', 'hidratante', 'dental']
     animal_terms = ['ternero', 'vivo', 'cerdo', 'pollo', 'pescado', 'animal', 'ganado', 'bovino']
 
     has_computer_terms = any(term in text for term in computer_terms)
+    has_audio_terms = any(term in text for term in audio_terms)
     has_garment_terms = any(term in text for term in garment_terms)
     has_footwear_terms = any(term in text for term in footwear_terms)
     has_vehicle_terms = any(term in text for term in vehicle_terms)
@@ -308,6 +344,8 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
     # Filtros por capítulo cuando la intención es clara
     if has_computer_terms:
         conditions.append("(chapter = 84 OR chapter = 85)")
+    if has_audio_terms:
+        conditions.append("(chapter = 85)")  # Capítulo 85 para equipos de audio
     if has_garment_terms:
         conditions.append("(chapter IN (61,62,63))")
     if has_footwear_terms:
@@ -363,6 +401,8 @@ def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List
         chapter_priority.append((87, 1))
     if has_computer_terms:
         chapter_priority.extend([(84, 1), (85, 2)])
+    if has_audio_terms:
+        chapter_priority.append((85, 1))  # Prioridad alta para audio en capítulo 85
     if has_medical_terms:
         chapter_priority.extend([(30, 1), (90, 2)])
     if has_mineral_terms:
@@ -570,6 +610,8 @@ def apply_rgi2(description: str, candidates: List[Candidate], steps: List[TraceS
                     dominant = max(chapters.items(), key=lambda x: x[1])[0]
                     new_cands = [c for c in candidates if _hs_chapter(c['hs_code']) == dominant]
                     decision.append(f"Prioriza capítulo dominante {dominant} (mezcla/conjunto)")
+                else:
+                    new_cands = candidates[:]  # Si no hay capítulos, mantener todos
 
         if incompleto:
             decision.append("Tratar mercancía incompleta/desarmada como completa si conserva carácter esencial")
@@ -594,12 +636,16 @@ def apply_rgi2(description: str, candidates: List[Candidate], steps: List[TraceS
 
 
 # RGI 3 -------------------------------------------------------------------
-def apply_rgi3(candidates: List[Candidate], steps: List[TraceStep]) -> Tuple[List[Candidate], List[TraceStep]]:
+def apply_rgi3(candidates: List[Candidate], steps: List[TraceStep], features: Dict[str, Any] = None) -> Tuple[List[Candidate], List[TraceStep]]:
     """
     Aplica RGI 3(a)-(c):
     - 3(a) preferir partida más específica: se aproxima por mayor nivel de detalle (HS6 sobre HS4/HS2) y mejor score.
     - 3(b) carácter esencial: como aproximación, mantener el heading con mayor densidad de candidatos.
     - 3(c) si persiste empate, la última por orden de numeración.
+    
+    --- MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
+    Incorpora banderas contextuales (features) para priorizar según tipo_de_bien, uso_principal y nivel_procesamiento.
+    --- FIN MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
     """
     cc = ControlConexion()
     try:
@@ -614,13 +660,76 @@ def apply_rgi3(candidates: List[Candidate], steps: List[TraceStep]) -> Tuple[Lis
             hd = _hs_heading(c['hs_code'])
             heading_freq[hd] = heading_freq.get(hd, 0) + 1
 
-        def score(c: Candidate) -> Tuple[int, float, int, int]:
+        def score(c: Candidate) -> Tuple[int, float, int, int, float]:
             # Priorizar por especificidad (HS6 completo)
             hs6_len = 1 if len(_hs6(c['hs_code'])) == 6 else 0
             # Score original
             sc = float(c.get('score') or 0.0)
             # Densidad por heading
             dens = heading_freq.get(_hs_heading(c['hs_code']), 0)
+            
+            # --- MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
+            # Score de contexto basado en features
+            score_contexto = 0.0
+            if features:
+                title_lower = (c.get('title') or '').lower()
+                
+                # Penalizar "partes y accesorios" si el producto es terminado
+                if features.get('tipo_de_bien') == 'producto_terminado':
+                    if any(term in title_lower for term in ['parte', 'partes', 'accesorio', 'accesorios', 'componente']):
+                        score_contexto -= 50.0  # Penalización fuerte
+                
+                # Priorizar materia_prima en capítulos 1-27
+                if features.get('tipo_de_bien') == 'materia_prima':
+                    chapter = int(_hs_chapter(c['hs_code']) or '0')
+                    if 1 <= chapter <= 27:  # Materias primas (animales, vegetales, minerales)
+                        score_contexto += 20.0
+                    else:  # Penalizar capítulos de manufacturados
+                        score_contexto -= 30.0
+                
+                # Priorizar según uso_principal
+                uso = features.get('uso_principal', 'otro')
+                chapter = int(_hs_chapter(c['hs_code']) or '0')
+                
+                if uso == 'computo':
+                    if chapter in [84, 85]:  # Máquinas y aparatos eléctricos
+                        score_contexto += 30.0
+                        # Boost específico para laptops (8471300000)
+                        if '847130' in c['hs_code'] or '847130' in (c.get('title') or ''):
+                            score_contexto += 50.0
+                    else:
+                        score_contexto -= 20.0
+                
+                elif uso == 'construccion':
+                    if chapter in [25, 68, 69]:  # Materiales de construcción
+                        score_contexto += 30.0
+                    else:
+                        score_contexto -= 20.0
+                
+                elif uso == 'alimentario':
+                    if chapter in [16, 17, 18, 19, 20, 9]:  # Alimentos y café
+                        score_contexto += 25.0
+                        # Boost para café sin tostar (090111)
+                        if '0901' in c['hs_code'] or ('cafe' in title_lower and 'sin tostar' in title_lower):
+                            score_contexto += 40.0
+                    else:
+                        score_contexto -= 15.0
+                
+                elif uso == 'vestimenta':
+                    if chapter in [61, 62, 63, 64]:  # Textiles y calzado
+                        score_contexto += 25.0
+                
+                elif uso == 'agropecuario':
+                    if chapter in [1, 2, 3, 4, 5]:  # Animales vivos
+                        score_contexto += 30.0
+                    else:
+                        score_contexto -= 20.0
+                
+                elif uso == 'medico':
+                    if chapter in [30, 38, 90]:  # Farmacéuticos y aparatos médicos
+                        score_contexto += 25.0
+            # --- FIN MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
+            
             # Priorizar capítulos más relevantes (textiles=61-63, animales=01-05, etc.)
             chapter = int(_hs_chapter(c['hs_code']) or '0')
             chapter_priority = 0
@@ -635,7 +744,7 @@ def apply_rgi3(candidates: List[Candidate], steps: List[TraceStep]) -> Tuple[Lis
             else:
                 chapter_priority = 1
             
-            return (hs6_len, chapter_priority, sc, dens)
+            return (hs6_len, chapter_priority, sc, dens, score_contexto)
 
         # Escoge top-N por score para seguir (mantener algunos para RGI6)
         sorted_c = sorted(candidates, key=score, reverse=True)
@@ -700,7 +809,7 @@ def apply_rgi6(candidates: List[Candidate], steps: List[TraceStep]) -> Tuple[Lis
 
 
 # Orquestador --------------------------------------------------------------
-def apply_all(description: str, extra_texts: List[str] | None = None) -> Dict[str, Any]:
+def apply_all(description: str, extra_texts: List[str] | None = None, features: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Aplica RGI 1 -> 2 -> 3 -> 6 y retorna un dict con:
     {
@@ -708,6 +817,10 @@ def apply_all(description: str, extra_texts: List[str] | None = None) -> Dict[st
         'trace': [TraceStep, ...],
         'candidates_final': [Candidate]
     }
+    
+    --- MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
+    Ahora acepta features para priorización contextual.
+    --- FIN MEJORA CLASIFICACIÓN HS CONTEXTUAL ---
     """
     # RGI1: generar y filtrar candidatos
     cand, trace = apply_rgi1(description, extra_texts)
@@ -715,8 +828,8 @@ def apply_all(description: str, extra_texts: List[str] | None = None) -> Dict[st
     # RGI2: ajustar por incompletos/mezclas
     cand, trace = apply_rgi2(description, cand, trace)
 
-    # RGI3: resolver empates y especificidad
-    cand, trace = apply_rgi3(cand, trace)
+    # RGI3: resolver empates y especificidad (con features)
+    cand, trace = apply_rgi3(cand, trace, features=features)
 
     # RGI6: confirmar nivel de comparación
     cand, trace = apply_rgi6(cand, trace)

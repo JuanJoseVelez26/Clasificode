@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { useClassificationStore } from "@/lib/store"
 import { api } from "@/lib/api"
+import { apiClient } from "@/lib/apiClient"
 import { FileDropzone } from "@/components/file-dropzone"
 import { OcrPreview } from "@/components/ocr-preview"
 import { LangBadge } from "@/components/lang-badge"
@@ -60,7 +61,7 @@ export default function FormPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const { inputType, rawText, files, ocrText, lang, setInputType, setRawText, setFiles, setOcrText, setLang, reset } =
+  const { inputType, rawText, files, ocrText, lang, setInputType, setRawText, setFiles, setOcrText, setLang, setClassificationResult, setCaseId, setCaseData, setFlaggedLowConfidence, reset } =
     useClassificationStore()
 
   const [isProcessing, setIsProcessing] = useState(false)
@@ -177,25 +178,95 @@ export default function FormPage() {
       if (data.inputType === "text") {
         textToProcess = data.text || ""
       } else if (data.inputType === "file" && data.files) {
-        textToProcess = await processOCR(data.files)
+        // File upload no está implementado en backend aún
+        toast({
+          variant: "destructive",
+          title: "Función no disponible",
+          description: "La clasificación por archivo aún no está implementada en el servidor.",
+        })
+        setIsProcessing(false)
+        return
       }
 
-      if (!textToProcess) {
-        throw new Error("No se pudo obtener texto para procesar")
+      if (!textToProcess || textToProcess.length < 10) {
+        toast({
+          variant: "destructive",
+          title: "Descripción insuficiente",
+          description: "La descripción debe tener al menos 10 caracteres.",
+        })
+        setIsProcessing(false)
+        return
       }
 
-      // Navigate to results page
+      // PASO 1: Crear caso en el backend
+      toast({
+        title: "Creando caso...",
+        description: "Preparando la clasificación...",
+      })
+
+      const title = textToProcess.slice(0, 80)
+      const desc = textToProcess.slice(80) || textToProcess
+      
+             const caseRes = await apiClient.post("/cases", { 
+         product_title: title, 
+         product_desc: desc 
+       })
+
+       if (!caseRes.data) {
+         throw new Error("No se pudo crear el caso en el servidor")
+       }
+
+       const caseId = caseRes.data.details?.case_id || caseRes.data.details?.id || caseRes.data.case_id
+       if (!caseId) {
+         throw new Error("El servidor no devolvió un ID de caso válido")
+       }
+
+       // Guardar case ID en el store
+       setCaseId(String(caseId))
+       setCaseData(caseRes.data.details || caseRes.data)
+
+       toast({
+         title: "Clasificando producto...",
+         description: "Analizando características del producto...",
+       })
+
+       // PASO 2: Clasificar el caso
+       const classifyRes = await apiClient.post(`/api/v1/classify/${caseId}`, {})
+
+       if (!classifyRes.data) {
+         throw new Error("No se pudo clasificar el producto")
+       }
+
+       const result = classifyRes.data.details || classifyRes.data
+
+      // Guardar resultado en el store
+      setClassificationResult({
+        hs: result.national_code || result.hs || "0000.00.00",
+        title: result.title || title,
+        confidence: result.confidence || 0.5,
+        rationale: result.rationale || "Clasificación generada automáticamente",
+        topK: result.candidates?.map((c: any) => ({
+          hs: c.hs_code || c.national_code || "0000.00.00",
+          confidence: c.confidence || 0.5,
+          title: c.title,
+        })) || [],
+      })
+
+      setFlaggedLowConfidence((result.confidence || 0.5) < 0.7)
+
+      // Navegar a resultados
       router.push("/app/result")
 
       toast({
-        title: "Procesamiento iniciado",
+        title: "Clasificación completada",
         description: "Redirigiendo a los resultados...",
       })
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error en clasificación:", error)
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Error al procesar la solicitud",
+        title: "Error de clasificación",
+        description: error?.message || "No se pudo clasificar el producto. Inténtalo de nuevo.",
       })
     } finally {
       setIsProcessing(false)

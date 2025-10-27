@@ -11,7 +11,7 @@ export function Sidebar() {
 
   const handleLogout = () => {
     logout()
-    router.push('/login')
+    router.push('/')
   }
 
   return (
@@ -28,7 +28,7 @@ export function Sidebar() {
             <Button
               variant="ghost"
               className="w-full justify-start gap-3 text-left"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push('/app')}
             >
               <Home className="h-4 w-4" />
               Inicio
@@ -46,7 +46,7 @@ export function Sidebar() {
             <Button
               variant="ghost"
               className="w-full justify-start gap-3 text-left"
-              onClick={() => router.push('/new-classification')}
+              onClick={() => router.push('/app/form')}
             >
               <FilePlus className="h-4 w-4" />
               Nueva Clasificación

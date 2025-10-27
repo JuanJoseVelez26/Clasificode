@@ -1,3 +1,5 @@
+"use client"
+
 import { Sidebar } from "@/components/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
@@ -12,7 +14,7 @@ export default function DashboardLayout({
   const { isAuthenticated } = useAuthStore()
   
   if (!isAuthenticated) {
-    redirect('/login')
+    redirect('/')
   }
 
   return (

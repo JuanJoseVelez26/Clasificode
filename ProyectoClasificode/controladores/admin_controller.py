@@ -5,6 +5,7 @@ from servicios.security import require_auth, require_role
 import json
 from servicios.scraping.ingestor import DianIngestor
 from servicios.control_conexion import ControlConexion
+from servicios.learning_integration import learning_integration
 
 bp = Blueprint('admin', __name__)
 hs_item_repo = HSItemRepository()
@@ -556,5 +557,49 @@ def admin_health():
         return jsonify({
             'code': 500,
             'message': 'Error en verificación de salud',
+            'details': str(e)
+        }), 500
+
+@bp.route('/learning/stats', methods=['GET'])
+@require_auth
+def get_learning_stats():
+    """Obtener estadísticas del sistema de aprendizaje"""
+    try:
+        stats = learning_integration.get_learning_stats()
+        suggestions = learning_integration.generate_improvement_suggestions()
+        
+        return jsonify({
+            'code': 200,
+            'message': 'Estadísticas de aprendizaje obtenidas',
+            'details': {
+                'stats': stats,
+                'suggestions': suggestions
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'message': 'Error obteniendo estadísticas de aprendizaje',
+            'details': str(e)
+        }), 500
+
+@bp.route('/learning/save', methods=['POST'])
+@require_auth
+def save_learning_data():
+    """Guardar datos de aprendizaje"""
+    try:
+        learning_integration.save_learning_data()
+        
+        return jsonify({
+            'code': 200,
+            'message': 'Datos de aprendizaje guardados exitosamente',
+            'details': {}
+        }), 200
+        
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'message': 'Error guardando datos de aprendizaje',
             'details': str(e)
         }), 500

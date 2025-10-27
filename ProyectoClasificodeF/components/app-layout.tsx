@@ -60,14 +60,18 @@ export function AppLayout({ children }: AppLayoutProps) {
           <Button
             key={item.name}
             variant={isActive ? "default" : "ghost"}
-            className="w-full justify-start h-9 px-3"
+            className={`w-full justify-start h-10 px-3 transition-all ${
+              isActive 
+                ? "bg-primary text-primary-foreground shadow-sm" 
+                : "hover:bg-accent hover:text-accent-foreground"
+            }`}
             onClick={() => {
               router.push(item.href)
               setSidebarOpen(false)
             }}
           >
-            <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
-            <span className="flex-1 text-left truncate">{item.name}</span>
+            <item.icon className={`mr-3 h-5 w-5 flex-shrink-0 ${isActive ? "" : "text-muted-foreground"}`} />
+            <span className="flex-1 text-left truncate font-medium">{item.name}</span>
           </Button>
         )
       })}
@@ -91,13 +95,20 @@ export function AppLayout({ children }: AppLayoutProps) {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary/10 to-primary/5">
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
                 {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 <span className="sr-only">Menú</span>
               </Button>
-              <h1 className="text-lg font-semibold ml-2">ClasifiCode</h1>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-sm font-bold text-primary-foreground">CC</span>
+                </div>
+                <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                  ClasifiCode
+                </h1>
+              </div>
             </div>
           </div>
 
@@ -107,8 +118,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           {/* Logout button */}
-          <div className="p-4 border-t">
-            <Button variant="outline" className="w-full" onClick={handleLogout}>
+          <div className="p-4 border-t bg-muted/30">
+            <Button 
+              variant="outline" 
+              className="w-full hover:bg-destructive hover:text-destructive-foreground transition-colors" 
+              onClick={handleLogout}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Cerrar sesión
             </Button>
@@ -118,15 +133,15 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main content */}
       <div className="flex flex-col min-h-screen">
-        {/* Top bar */}
-        <header className="h-16 bg-card border-b flex items-center justify-between px-6">
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-            <Menu className="h-4 w-4" />
-          </Button>
-          <div className="ml-auto">
-            <ThemeToggle />
-          </div>
-        </header>
+              {/* Top bar */}
+      <header className="h-16 bg-gradient-to-r from-background to-card border-b flex items-center justify-between px-6 shadow-sm">
+        <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
+          <Menu className="h-5 w-5" />
+        </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+        </div>
+      </header>
 
         {/* Page content */}
         <main className="p-6 flex-1">{children}</main>

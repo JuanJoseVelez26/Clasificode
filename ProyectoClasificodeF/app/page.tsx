@@ -56,7 +56,7 @@ export default function LoginPage() {
         title: t("common.success"),
         description: `Bienvenido, ${response.user.name}`,
       })
-      router.push("/dashboard")
+      router.push("/app")
     } catch (error) {
       toast({
         variant: "destructive",

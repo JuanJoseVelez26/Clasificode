@@ -1,0 +1,14 @@
+================================================================================
+REPORTE DE MEJORAS SUGERIDAS
+================================================================================
+Total de errores analizados: 6
+Total de éxitos analizados: 24
+Precisión actual: 80.00%
+
+RECOMENDACIONES GENERALES:
+--------------------------------------------------
+1. Implementar las reglas específicas sugeridas
+2. Expandir el diccionario de sinónimos
+3. Mejorar la detección de categorías de productos
+4. Agregar más ejemplos a la base de datos
+5. Ejecutar tests periódicos para validar mejoras

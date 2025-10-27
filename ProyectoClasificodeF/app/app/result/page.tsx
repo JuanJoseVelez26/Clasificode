@@ -31,10 +31,6 @@ export default function ResultPage() {
     explanation,
     savedCaseId,
     flaggedLowConfidence,
-    setPrediction,
-    setSimilarities,
-    setExplanation,
-    setSavedCaseId,
     setFlaggedLowConfidence,
   } = useClassificationStore()
 
@@ -45,56 +41,34 @@ export default function ResultPage() {
 
   // Load classification results on mount
   useEffect(() => {
-    const loadResults = async () => {
-      try {
-        const textToClassify = inputType === "text" ? rawText : ocrText
-
-        if (!textToClassify) {
-          router.push("/app/form")
-          return
-        }
-
-        const response = await api.classify.process({ text: textToClassify })
-
-        const simplifiedResponse = {
-          hs: response.topK[0].hs,
-          confidence: response.topK[0].confidence,
-          description: response.topK[0].description,
-          topK: response.topK || [],
-        }
-
-        setPrediction(simplifiedResponse)
-        setSimilarities(response.similarities || [])
-        setExplanation(response.explanation)
-        
-        // Mostrar notificación de éxito
-        if (response.topK[0].confidence >= 0.7) {
-          toast({
-            title: "Clasificación exitosa",
-            description: `Producto clasificado con ${Math.round(response.topK[0].confidence * 100)}% de confianza`,
-            variant: "default"
-          })
-        } else {
-          toast({
-            title: "Baja confianza",
-            description: "La clasificación tiene baja confianza. Revisa los resultados cuidadosamente.",
-            variant: "destructive"
-          })
-        }
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "No se pudieron cargar los resultados de clasificación",
-        })
-        router.push("/app/form")
-      } finally {
-        setIsLoading(false)
-      }
+    // Leer resultados desde el store (ya clasificados en form/page.tsx)
+    if (!prediction) {
+      // Si no hay resultados en el store, redirigir a form
+      toast({
+        variant: "destructive",
+        title: "Sin resultados",
+        description: "No hay resultados de clasificación. Por favor, clasifica un producto primero.",
+      })
+      router.push("/app/form")
+      return
     }
 
-    loadResults()
-  }, [inputType, rawText, ocrText, router, setPrediction, setSimilarities, setExplanation, toast])
+    setIsLoading(false)
+    
+    // Mostrar notificación de éxito si hay resultados
+    if (prediction.confidence >= 0.7) {
+      toast({
+        title: "Clasificación exitosa",
+        description: `Producto clasificado con ${Math.round(prediction.confidence * 100)}% de confianza`,
+      })
+    } else {
+      toast({
+        title: "Baja confianza",
+        description: "La clasificación tiene baja confianza. Revisa los resultados cuidadosamente.",
+        variant: "destructive"
+      })
+    }
+  }, [prediction, router, toast])
 
   const handleSaveCase = async () => {
     if (!prediction) return
@@ -113,7 +87,7 @@ export default function ResultPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       const caseId = `case_${Date.now()}`
 
-      setSavedCaseId(caseId)
+      // TODO: Implementar guardado real en backend cuando esté disponible
 
       toast({
         title: "Caso guardado",
@@ -156,13 +130,46 @@ export default function ResultPage() {
 
     setIsExporting(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const textToClassify = inputType === "text" ? rawText : ocrText
+      
+      const exportData = {
+        hs_code: prediction.hs,
+        description: prediction.topK[0]?.title || prediction.title || "",
+        confidence: prediction.confidence,
+        product_description: textToClassify || "",
+        input_type: inputType,
+        explanation: explanation?.rationale || "",
+        similar_items: similarities || [],
+        top_k: prediction.topK || []
+      }
+
+      let blob: Blob
+      let filename: string
+
+      if (format === "pdf") {
+        blob = await api.export.pdf(exportData)
+        filename = `clasificacion_${prediction.hs}_${new Date().toISOString().slice(0, 10)}.html`
+      } else {
+        blob = await api.export.csv(exportData)
+        filename = `clasificacion_${prediction.hs}_${new Date().toISOString().slice(0, 10)}.csv`
+      }
+
+      // Crear URL para descarga
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
 
       toast({
         title: "Exportación completada",
         description: `Resultados exportados en formato ${format.toUpperCase()}`,
       })
     } catch (error) {
+      console.error("Error en exportación:", error)
       toast({
         variant: "destructive",
         title: "Error",
@@ -241,7 +248,7 @@ export default function ResultPage() {
                     <div className="text-left">
                       <h3 className="text-sm font-semibold text-primary mb-2 uppercase tracking-wide">Descripción del Producto</h3>
                       <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                        {prediction.topK[0]?.description || "Clasificación basada en análisis de contenido"}
+                        {prediction.topK[0]?.title || prediction.title || "Clasificación basada en análisis de contenido"}
                       </p>
                     </div>
                   </div>
@@ -311,7 +318,7 @@ export default function ResultPage() {
                   disabled={isExporting}
                 >
                   <Icons.Download />
-                  <span className="ml-2">Exportar PDF</span>
+                  <span className="ml-2">Exportar HTML</span>
                 </Button>
                 <Button
                   variant="outline"

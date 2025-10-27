@@ -25,11 +25,19 @@ export const useAuthStore = create<AuthState>()(
         token: null,
         isAuthenticated: false,
         login: (user, token) => {
-          try { if (typeof window !== "undefined") sessionStorage.setItem("token", token) } catch {}
+          try { 
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem("token", token)
+            }
+          } catch {}
           set({ user, token, isAuthenticated: true })
         },
         logout: () => {
-          try { if (typeof window !== "undefined") sessionStorage.removeItem("token") } catch {}
+          try { 
+            if (typeof window !== "undefined") {
+              sessionStorage.removeItem("token")
+            }
+          } catch {}
           set({ user: null, token: null, isAuthenticated: false })
         },
       }),
@@ -49,15 +57,28 @@ interface UploadedFile {
   url: string
 }
 
+// Tipo según respuesta real del backend Flask
+interface BackendClassificationResult {
+  hs?: string
+  title?: string
+  confidence?: number
+  rationale?: string
+  topK?: Array<{ 
+    hs: string; 
+    confidence: number;
+    title?: string;
+  }>
+}
+
 interface Prediction {
   hs: string
+  title?: string
   confidence: number
   topK: Array<{ 
     hs: string; 
     confidence: number;
-    description?: string;
+    title?: string;
   }>
-  description?: string;
 }
 
 interface Similarity {
@@ -84,6 +105,7 @@ interface ClassificationState {
   similarities?: Similarity[]
   explanation?: Explanation
   savedCaseId?: string
+  caseData?: any
   flaggedLowConfidence?: boolean
   setInputType: (type: "text" | "file") => void
   setRawText: (text: string) => void
@@ -91,40 +113,66 @@ interface ClassificationState {
   setOcrText: (text: string) => void
   setLang: (lang: "es" | "en") => void
   setPrediction: (prediction: Prediction) => void
+  setClassificationResult: (result: BackendClassificationResult) => void
+  setCaseId: (id: string) => void
+  setCaseData: (data: any) => void
   setSimilarities: (similarities: Similarity[]) => void
   setExplanation: (explanation: Explanation) => void
-  setSavedCaseId: (id: string) => void
   setFlaggedLowConfidence: (flagged: boolean) => void
   reset: () => void
 }
 
 export const useClassificationStore = create<ClassificationState>()(
-  devtools((set) => ({
-    inputType: "text",
-    setInputType: (type) => set({ inputType: type }),
-    setRawText: (text) => set({ rawText: text }),
-    setFiles: (files) => set({ files }),
-    setOcrText: (text) => set({ ocrText: text }),
-    setLang: (lang) => set({ lang }),
-    setPrediction: (prediction) => set({ prediction }),
-    setSimilarities: (similarities) => set({ similarities }),
-    setExplanation: (explanation) => set({ explanation }),
-    setSavedCaseId: (id) => set({ savedCaseId: id }),
-    setFlaggedLowConfidence: (flagged) => set({ flaggedLowConfidence: flagged }),
-    reset: () =>
-      set({
-        rawText: undefined,
-        files: undefined,
-        ocrText: undefined,
-        lang: undefined,
-        preprocessedText: undefined,
-        prediction: undefined,
-        similarities: undefined,
-        explanation: undefined,
-        savedCaseId: undefined,
-        flaggedLowConfidence: undefined,
+  devtools(
+    persist(
+      (set) => ({
+        inputType: "text",
+        setInputType: (type) => set({ inputType: type }),
+        setRawText: (text) => set({ rawText: text }),
+        setFiles: (files) => set({ files }),
+        setOcrText: (text) => set({ ocrText: text }),
+        setLang: (lang) => set({ lang }),
+        setPrediction: (prediction) => set({ prediction }),
+        setClassificationResult: (result) => {
+          const prediction: Prediction = {
+            hs: result.hs || "0000.00.00",
+            title: result.title,
+            confidence: result.confidence || 0.5,
+            topK: result.topK || [],
+          }
+          set({ 
+            prediction,
+            explanation: {
+              rationale: result.rationale || "Clasificación generada automáticamente",
+              factors: [],
+            }
+          })
+        },
+        setCaseId: (id) => set({ savedCaseId: id }),
+        setCaseData: (data) => set({ caseData: data }),
+        setSimilarities: (similarities) => set({ similarities }),
+        setExplanation: (explanation) => set({ explanation }),
+        setFlaggedLowConfidence: (flagged) => set({ flaggedLowConfidence: flagged }),
+        reset: () =>
+          set({
+            rawText: undefined,
+            files: undefined,
+            ocrText: undefined,
+            lang: undefined,
+            preprocessedText: undefined,
+            prediction: undefined,
+            similarities: undefined,
+            explanation: undefined,
+            savedCaseId: undefined,
+            caseData: undefined,
+            flaggedLowConfidence: undefined,
+          }),
       }),
-  })),
+      {
+        name: "classification-storage",
+      },
+    ),
+  ),
 )
 
 // Audit Queue State

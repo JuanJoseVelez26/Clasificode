@@ -162,5 +162,47 @@ export const api = {
   ocr: {
     // Stub para evitar errores en la UI mientras no exista endpoint en backend
     process: async (_: { file: File }) => ({ ocrText: "", lang: "es" as const }),
+  },
+  export: {
+    pdf: async (data: {
+      hs_code: string;
+      description: string;
+      confidence: number;
+      product_description: string;
+      input_type: string;
+      explanation?: string;
+      similar_items?: any[];
+      top_k?: any[];
+    }): Promise<Blob> => {
+      const response = await apiClient.post("/export/pdf", data, {
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    },
+    csv: async (data: {
+      hs_code: string;
+      description: string;
+      confidence: number;
+      product_description: string;
+      input_type: string;
+      explanation?: string;
+      similar_items?: any[];
+      top_k?: any[];
+    }): Promise<Blob> => {
+      const response = await apiClient.post("/export/csv", data, {
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    },
+    formats: async () => {
+      const response = await apiClient.get("/export/formats");
+      return response.data;
+    }
   }
 }

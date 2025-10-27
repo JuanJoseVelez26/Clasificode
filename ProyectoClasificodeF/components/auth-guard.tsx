@@ -22,7 +22,7 @@ export function AuthGuard({ children, requiredRoles = ["user"] }: AuthGuardProps
       return
     }
 
-    if (user && requiredRoles.length > 0) {
+    if (user && requiredRoles.length > 0 && user.roles) {
       const hasRequiredRole = requiredRoles.some((role) => user.roles.includes(role))
       if (!hasRequiredRole) {
         router.push("/app/form") // Redirect to default page if no required role
@@ -42,7 +42,7 @@ export function AuthGuard({ children, requiredRoles = ["user"] }: AuthGuardProps
     )
   }
 
-  if (user && requiredRoles.length > 0) {
+  if (user && requiredRoles.length > 0 && user.roles) {
     const hasRequiredRole = requiredRoles.some((role) => user.roles.includes(role))
     if (!hasRequiredRole) {
       return (

@@ -13,6 +13,7 @@ from controladores.cases_controller import bp as cases_bp
 from controladores.classify_controller import bp as classify_bp
 from controladores.admin_controller import bp as admin_bp
 from controladores.health_controller import bp as health_bp
+from controladores.export_controller import bp as export_bp
 import json
 from servicios.config_loader import load_config
 def create_app():
@@ -91,6 +92,7 @@ def create_app():
     app.register_blueprint(classify_bp, url_prefix='')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(health_bp, url_prefix='')
+    app.register_blueprint(export_bp, url_prefix='/export')
     
     # Ruta raíz
     @app.route('/')
@@ -158,6 +160,11 @@ def create_app():
                         'GET /health/simple': 'Verificación simple',
                         'GET /health/ready': 'Verificación de readiness',
                         'GET /health/live': 'Verificación de liveness'
+                    },
+                    'export': {
+                        'POST /export/pdf': 'Exportar clasificación a PDF',
+                        'POST /export/csv': 'Exportar clasificación a CSV',
+                        'GET /export/formats': 'Obtener formatos disponibles'
                     }
                 }
             }

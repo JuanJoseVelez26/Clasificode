@@ -1,0 +1,613 @@
+{
+  "error_patterns": {
+    "wrong_subchapter_8703.90.00.00_to_8703210000": [
+      {
+        "keywords": [
+          "automóvil",
+          "híbrido",
+          "gasolina",
+          "eléctrico",
+          "puertas",
+          "transmisión",
+          "automática"
+        ],
+        "expected_hs": "8703.90.00.00",
+        "predicted_hs": "8703210000",
+        "predicted_title": "Automóviles de turismo",
+        "error_type": "wrong_subchapter_8703.90.00.00_to_8703210000",
+        "description": "Automóvil híbrido gasolina-eléctrico, 5 puertas, transmisión automática."
+      }
+    ],
+    "wrong_subchapter_8711.90.00.00_to_8711200000": [
+      {
+        "keywords": [
+          "motocicleta",
+          "eléctrica",
+          "3000w",
+          "velocidad",
+          "máxima"
+        ],
+        "expected_hs": "8711.90.00.00",
+        "predicted_hs": "8711200000",
+        "predicted_title": "Motocicletas",
+        "error_type": "wrong_subchapter_8711.90.00.00_to_8711200000",
+        "description": "Motocicleta eléctrica 3000W, velocidad máxima 80 km/h."
+      }
+    ],
+    "wrong_chapter_65_to_87": [
+      {
+        "keywords": [
+          "casco",
+          "seguridad",
+          "motociclista",
+          "material",
+          "abs",
+          "visera",
+          "transparente"
+        ],
+        "expected_hs": "6506.10.00.00",
+        "predicted_hs": "8711200000",
+        "predicted_title": "Motocicletas",
+        "error_type": "wrong_chapter_65_to_87",
+        "description": "Casco de seguridad para motociclista, material ABS, visera transparente."
+      }
+    ],
+    "wrong_chapter_40_to_85": [
+      {
+        "keywords": [
+          "guantes",
+          "industriales",
+          "nitrilo",
+          "resistentes",
+          "químicos"
+        ],
+        "expected_hs": "4015.19.00.00",
+        "predicted_hs": "8518300000",
+        "predicted_title": "Micrófonos y sus soportes",
+        "error_type": "wrong_chapter_40_to_85",
+        "description": "Guantes industriales de nitrilo, resistentes a químicos."
+      }
+    ],
+    "wrong_chapter_40_to_87": [
+      {
+        "keywords": [
+          "neumático",
+          "automóvil",
+          "205",
+          "r16",
+          "sin",
+          "cámara",
+          "radial"
+        ],
+        "expected_hs": "4011.10.00.00",
+        "predicted_hs": "8703210000",
+        "predicted_title": "Automóviles de turismo",
+        "error_type": "wrong_chapter_40_to_87",
+        "description": "Neumático de automóvil 205/55 R16, sin cámara, radial."
+      }
+    ],
+    "wrong_chapter_87_to_85": [
+      {
+        "keywords": [
+          "pastillas",
+          "freno",
+          "disco",
+          "material",
+          "cerámico",
+          "juego"
+        ],
+        "expected_hs": "8708.30.00.00",
+        "predicted_hs": "8518300000",
+        "predicted_title": "Micrófonos y sus soportes",
+        "error_type": "wrong_chapter_87_to_85",
+        "description": "Pastillas de freno de disco, material cerámico, juego de 4."
+      }
+    ]
+  },
+  "success_patterns": {
+    "6105100000": [
+      {
+        "keywords": [
+          "camisa",
+          "algodón",
+          "hombre",
+          "manga",
+          "larga",
+          "botones",
+          "plásticos",
+          "tejido",
+          "punto"
+        ],
+        "predicted_hs": "6105100000",
+        "predicted_title": "Camisas de algodón para hombre",
+        "description": "Camisa de algodón para hombre, manga larga, botones plásticos, tejido de punto."
+      }
+    ],
+    "6203420000": [
+      {
+        "keywords": [
+          "pantalón",
+          "vaquero",
+          "mezclilla",
+          "azul",
+          "algodón",
+          "elastano"
+        ],
+        "predicted_hs": "6203420000",
+        "predicted_title": "Pantalones de algodón",
+        "description": "Pantalón vaquero de mezclilla azul, 98% algodón, 2% elastano."
+      }
+    ],
+    "6404190000": [
+      {
+        "keywords": [
+          "zapatos",
+          "deportivos",
+          "cuero",
+          "sintético",
+          "suela",
+          "caucho",
+          "correr"
+        ],
+        "predicted_hs": "6404190000",
+        "predicted_title": "Calzado deportivo",
+        "description": "Zapatos deportivos de cuero sintético, suela de caucho, para correr."
+      }
+    ],
+    "8418100000": [
+      {
+        "keywords": [
+          "refrigerador",
+          "doméstico",
+          "dos",
+          "puertas",
+          "300",
+          "litros",
+          "compresor",
+          "inverter"
+        ],
+        "predicted_hs": "8418100000",
+        "predicted_title": "Refrigeradores y congeladores combinados",
+        "description": "Refrigerador doméstico de dos puertas, 300 litros, compresor inverter."
+      }
+    ],
+    "8450110000": [
+      {
+        "keywords": [
+          "lavadora",
+          "automática",
+          "carga",
+          "superior",
+          "capacidad",
+          "motor",
+          "digital"
+        ],
+        "predicted_hs": "8450110000",
+        "predicted_title": "Máquinas lavadoras de ropa",
+        "description": "Lavadora automática de carga superior, capacidad 15 kg, motor digital."
+      }
+    ],
+    "8516500000": [
+      {
+        "keywords": [
+          "microondas",
+          "1000w",
+          "capacidad",
+          "litros",
+          "panel",
+          "táctil",
+          "acabado",
+          "inoxidable"
+        ],
+        "predicted_hs": "8516500000",
+        "predicted_title": "Hornos de microondas",
+        "description": "Microondas 1000W, capacidad 25 litros, panel táctil, acabado inoxidable."
+      }
+    ],
+    "8509400000": [
+      {
+        "keywords": [
+          "aspiradora",
+          "eléctrica",
+          "vertical",
+          "potencia",
+          "1600w",
+          "filtro",
+          "hepa"
+        ],
+        "predicted_hs": "8509400000",
+        "predicted_title": "Aspiradoras eléctricas",
+        "description": "Aspiradora eléctrica vertical, potencia 1600W, filtro HEPA."
+      }
+    ],
+    "8516710000": [
+      {
+        "keywords": [
+          "cafetera",
+          "eléctrica",
+          "goteo",
+          "jarra",
+          "vidrio",
+          "capacidad",
+          "litrosauro"
+        ],
+        "predicted_hs": "8516710000",
+        "predicted_title": "Cafeteras eléctricas",
+        "description": "Cafetera eléctrica de goteo, jarra de vidrio, capacidad 1,5 litrosauro."
+      }
+    ],
+    "8443320000": [
+      {
+        "keywords": [
+          "impresora",
+          "multifuncional",
+          "láser",
+          "impresión",
+          "doble",
+          "cara",
+          "conexión",
+          "wifi"
+        ],
+        "predicted_hs": "8443320000",
+        "predicted_title": "Impresoras láser",
+        "description": "Impresora multifuncional láser, impresión a doble cara, conexión WiFi."
+      }
+    ],
+    "8517120000": [
+      {
+        "keywords": [
+          "teléfono",
+          "móvil",
+          "inteligente",
+          "cámara",
+          "64mp",
+          "pantalla",
+          "amoled",
+          "batería",
+          "5000mah"
+        ],
+        "predicted_hs": "8517120000",
+        "predicted_title": "Teléfonos móviles inteligentes",
+        "description": "Teléfono móvil inteligente con cámara 64MP, pantalla AMOLED, batería 5000mAh."
+      }
+    ],
+    "8701900000": [
+      {
+        "keywords": [
+          "tractor",
+          "agrícola",
+          "tracción",
+          "4x4",
+          "cabina",
+          "cerrada"
+        ],
+        "predicted_hs": "8701900000",
+        "predicted_title": "Tractores agrícolas",
+        "description": "Tractor agrícola de 90 HP, tracción 4x4, cabina cerrada."
+      }
+    ],
+    "8429520000": [
+      {
+        "keywords": [
+          "excavadora",
+          "hidráulica",
+          "orugas",
+          "capacidad",
+          "cuchara"
+        ],
+        "predicted_hs": "8429520000",
+        "predicted_title": "Excavadoras hidráulicas",
+        "description": "Excavadora hidráulica de orugas, capacidad de cuchara 1 m³."
+      }
+    ],
+    "6211430000": [
+      {
+        "keywords": [
+          "chaleco",
+          "reflectivo",
+          "poliéster",
+          "cintas",
+          "alta",
+          "visibilidad"
+        ],
+        "predicted_hs": "6211430000",
+        "predicted_title": "Chalecos reflectivos",
+        "description": "Chaleco reflectivo de poliéster con cintas de alta visibilidad."
+      }
+    ],
+    "9004900000": [
+      {
+        "keywords": [
+          "gafas",
+          "protección",
+          "filtro",
+          "patillas",
+          "ajustables"
+        ],
+        "predicted_hs": "9004900000",
+        "predicted_title": "Gafas de protección",
+        "description": "Gafas de protección con filtro UV y patillas ajustables."
+      }
+    ],
+    "2710190000": [
+      {
+        "keywords": [
+          "aceite",
+          "hidráulico",
+          "iso",
+          "base",
+          "mineral"
+        ],
+        "predicted_hs": "2710190000",
+        "predicted_title": "Aceite hidráulico",
+        "description": "Aceite hidráulico ISO VG 46, base mineral."
+      },
+      {
+        "keywords": [
+          "grasa",
+          "lubricante",
+          "multiuso",
+          "litio",
+          "punto",
+          "goteo",
+          "190"
+        ],
+        "predicted_hs": "2710190000",
+        "predicted_title": "Grasa lubricante",
+        "description": "Grasa lubricante multiuso con litio, punto de goteo 190°C."
+      }
+    ],
+    "3506900000": [
+      {
+        "keywords": [
+          "adhesivo",
+          "epóxico",
+          "bicomponente",
+          "tiempo",
+          "curado",
+          "min"
+        ],
+        "predicted_hs": "3506900000",
+        "predicted_title": "Adhesivo epóxico",
+        "description": "Adhesivo epóxico bicomponente, tiempo de curado 5 min."
+      }
+    ],
+    "3214100000": [
+      {
+        "keywords": [
+          "sellante",
+          "silicona",
+          "transparente",
+          "cartucho",
+          "280"
+        ],
+        "predicted_hs": "3214100000",
+        "predicted_title": "Sellante de silicona",
+        "description": "Sellante de silicona transparente, cartucho 280 ml."
+      }
+    ],
+    "3402200000": [
+      {
+        "keywords": [
+          "detergente",
+          "líquido",
+          "ropa",
+          "biodegradable",
+          "aroma",
+          "floral"
+        ],
+        "predicted_hs": "3402200000",
+        "predicted_title": "Detergentes líquidos",
+        "description": "Detergente líquido para ropa, biodegradable, aroma floral."
+      }
+    ],
+    "8502200000": [
+      {
+        "keywords": [
+          "generador",
+          "eléctrico",
+          "portátil",
+          "kva",
+          "motor",
+          "gasolina"
+        ],
+        "predicted_hs": "8502200000",
+        "predicted_title": "Generador eléctrico",
+        "description": "Generador eléctrico portátil, 5 kVA, motor a gasolina."
+      }
+    ],
+    "8501530000": [
+      {
+        "keywords": [
+          "motor",
+          "eléctrico",
+          "trifásico",
+          "220",
+          "440v",
+          "carcasa",
+          "ip55"
+        ],
+        "predicted_hs": "8501530000",
+        "predicted_title": "Motor eléctrico",
+        "description": "Motor eléctrico trifásico 2 HP, 220/440V, carcasa IP55."
+      }
+    ],
+    "8504310000": [
+      {
+        "keywords": [
+          "transformador",
+          "eléctrico",
+          "kva",
+          "aceite",
+          "dieléctrico"
+        ],
+        "predicted_hs": "8504310000",
+        "predicted_title": "Transformador eléctrico",
+        "description": "Transformador eléctrico 15 kVA, aceite dieléctrico."
+      }
+    ],
+    "8541400000": [
+      {
+        "keywords": [
+          "panel",
+          "solar",
+          "fotovoltaico",
+          "400w",
+          "monocristalino",
+          "24v"
+        ],
+        "predicted_hs": "8541400000",
+        "predicted_title": "Panel solar fotovoltaico",
+        "description": "Panel solar fotovoltaico 400W, monocristalino, 24V."
+      }
+    ],
+    "8504400000": [
+      {
+        "keywords": [
+          "inversor",
+          "corriente",
+          "3000w",
+          "onda",
+          "pura",
+          "entrada",
+          "24v"
+        ],
+        "predicted_hs": "8504400000",
+        "predicted_title": "Inversor de corriente",
+        "description": "Inversor de corriente 3000W, onda pura, entrada 24V DC."
+      }
+    ]
+  },
+  "learned_rules": {
+    "automóvil_híbrido_gasolina": {
+      "hs6": "8703.9",
+      "national_code": "8703.90.00.00",
+      "title": "Producto específico: Automóvil híbrido gasolina-eléctrico, 5 puertas, t...",
+      "keywords": [
+        "automóvil",
+        "híbrido",
+        "gasolina",
+        "eléctrico",
+        "puertas",
+        "transmisión",
+        "automática"
+      ],
+      "confidence": 0.9
+    },
+    "motocicleta_eléctrica_3000w": {
+      "hs6": "8711.9",
+      "national_code": "8711.90.00.00",
+      "title": "Producto específico: Motocicleta eléctrica 3000W, velocidad máxima 80 k...",
+      "keywords": [
+        "motocicleta",
+        "eléctrica",
+        "3000w",
+        "velocidad",
+        "máxima"
+      ],
+      "confidence": 0.9
+    },
+    "casco_seguridad_motociclista": {
+      "hs6": "6506.1",
+      "national_code": "6506.10.00.00",
+      "title": "Producto específico: Casco de seguridad para motociclista, material ABS...",
+      "keywords": [
+        "casco",
+        "seguridad",
+        "motociclista",
+        "material",
+        "abs",
+        "visera",
+        "transparente"
+      ],
+      "confidence": 0.9
+    },
+    "guantes_industriales_nitrilo": {
+      "hs6": "4015.1",
+      "national_code": "4015.19.00.00",
+      "title": "Producto específico: Guantes industriales de nitrilo, resistentes a quí...",
+      "keywords": [
+        "guantes",
+        "industriales",
+        "nitrilo",
+        "resistentes",
+        "químicos"
+      ],
+      "confidence": 0.9
+    },
+    "neumático_automóvil_205": {
+      "hs6": "4011.1",
+      "national_code": "4011.10.00.00",
+      "title": "Producto específico: Neumático de automóvil 205/55 R16, sin cámara, rad...",
+      "keywords": [
+        "neumático",
+        "automóvil",
+        "205",
+        "r16",
+        "sin",
+        "cámara",
+        "radial"
+      ],
+      "confidence": 0.9
+    },
+    "pastillas_freno_disco": {
+      "hs6": "8708.3",
+      "national_code": "8708.30.00.00",
+      "title": "Producto específico: Pastillas de freno de disco, material cerámico, ju...",
+      "keywords": [
+        "pastillas",
+        "freno",
+        "disco",
+        "material",
+        "cerámico",
+        "juego"
+      ],
+      "confidence": 0.9
+    }
+  },
+  "insights": {
+    "total_errors": 6,
+    "total_successes": 24,
+    "accuracy": 80.0,
+    "common_errors": [
+      {
+        "error_type": "wrong_subchapter_8703.90.00.00_to_8703210000",
+        "count": 1,
+        "percentage": 16.666666666666664
+      },
+      {
+        "error_type": "wrong_subchapter_8711.90.00.00_to_8711200000",
+        "count": 1,
+        "percentage": 16.666666666666664
+      },
+      {
+        "error_type": "wrong_chapter_65_to_87",
+        "count": 1,
+        "percentage": 16.666666666666664
+      },
+      {
+        "error_type": "wrong_chapter_40_to_85",
+        "count": 1,
+        "percentage": 16.666666666666664
+      },
+      {
+        "error_type": "wrong_chapter_40_to_87",
+        "count": 1,
+        "percentage": 16.666666666666664
+      },
+      {
+        "error_type": "wrong_chapter_87_to_85",
+        "count": 1,
+        "percentage": 16.666666666666664
+      }
+    ],
+    "problematic_categories": [],
+    "learned_rules_count": 6,
+    "improvement_suggestions": [
+      "Implementar más reglas específicas para productos técnicos",
+      "Expandir diccionario de sinónimos",
+      "Mejorar detección de categorías de productos",
+      "Agregar más ejemplos a la base de datos"
+    ]
+  }
+}
