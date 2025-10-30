@@ -82,8 +82,19 @@ def _fetch_rgi_map(cc: ControlConexion) -> Dict[str, int]:
     return mapping
 
 
-def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50) -> List[Candidate]:
-    """Búsqueda mejorada por keywords que maneja múltiples términos y sinónimos."""
+def _keyword_candidates(cc: ControlConexion, text: str, limit: int = 50, features: Dict[str, Any] = None) -> List[Candidate]:
+    """
+    Búsqueda mejorada por keywords que maneja múltiples términos, sinónimos y validación contextual.
+    
+    Args:
+        cc: Controlador de conexión a la base de datos
+        text: Texto del producto a clasificar
+        limit: Límite de candidatos a retornar
+        features: Características extraídas del producto para validación contextual
+        
+    Returns:
+        Lista de candidatos HS con scores mejorados por validación contextual
+    """
     text = (text or '').strip().lower()
     if not text:
         return []
@@ -470,7 +481,7 @@ def _trace(steps: List[TraceStep], rgi: str, decision: str, affected: List[str],
 
 
 # RGI 1 -------------------------------------------------------------------
-def apply_rgi1(description: str, extra_texts: List[str] | None = None) -> Tuple[List[Candidate], List[TraceStep]]:
+def apply_rgi1(description: str, extra_texts: List[str] | None = None, features: Dict[str, Any] = None) -> Tuple[List[Candidate], List[TraceStep]]:
     """
     Aplica RGI 1 con apoyo en textos legales y Notas (de Sección/Capítulo/Partida).
     - Filtra candidatos por coincidencias con hs_notes y títulos del catálogo.
@@ -480,7 +491,7 @@ def apply_rgi1(description: str, extra_texts: List[str] | None = None) -> Tuple[
     steps: List[TraceStep] = []
     try:
         text = ' '.join([t for t in [description] + (extra_texts or []) if t])
-        cand = _keyword_candidates(cc, text, limit=100)
+        cand = _keyword_candidates(cc, text, limit=100, features=features or {})
         notes, links = _load_notes_links(cc)
         rgi_map = _fetch_rgi_map(cc)
 
@@ -840,3 +851,217 @@ def apply_all(description: str, extra_texts: List[str] | None = None, features: 
         'trace': trace,
         'candidates_final': cand,
     }
+
+
+def _calculate_contextual_score(hs_code: str, features: Dict[str, Any]) -> float:
+    """
+    Calcula score contextual basado en características del producto para mejorar precisión.
+    
+    Args:
+        hs_code: Código HS a evaluar
+        features: Características extraídas del producto
+        
+    Returns:
+        Score contextual entre 0.0 y 1.0
+    """
+    try:
+        contextual_score = 1.0
+        
+        # Extraer capítulo del código HS
+        hs_chapter = hs_code[:2] if len(hs_code) >= 2 else "00"
+        
+        # 1. Validar coherencia de capítulo con uso principal
+        uso_principal = features.get('uso_principal', '').lower()
+        if uso_principal:
+            chapter_usage_map = {
+                # Animales vivos y productos de origen animal (01-05)
+                '01': ['alimentacion', 'alimento', 'comida', 'nutricion', 'ganaderia'],
+                '02': ['alimentacion', 'alimento', 'comida', 'nutricion', 'carnes'],
+                '03': ['alimentacion', 'alimento', 'comida', 'nutricion', 'pescado'],
+                '04': ['alimentacion', 'alimento', 'comida', 'nutricion', 'lacteos'],
+                '05': ['alimentacion', 'alimento', 'comida', 'nutricion', 'animal'],
+                
+                # Productos vegetales (06-14)
+                '06': ['jardineria', 'jardín', 'decoracion', 'flores'],
+                '07': ['alimentacion', 'alimento', 'comida', 'nutricion', 'vegetales'],
+                '08': ['alimentacion', 'alimento', 'comida', 'nutricion', 'frutas'],
+                '09': ['alimentacion', 'alimento', 'comida', 'nutricion', 'especias'],
+                '10': ['alimentacion', 'alimento', 'comida', 'nutricion', 'cereales'],
+                '11': ['alimentacion', 'alimento', 'comida', 'nutricion', 'harinas'],
+                '12': ['alimentacion', 'alimento', 'comida', 'nutricion', 'semillas'],
+                '13': ['alimentacion', 'alimento', 'comida', 'nutricion', 'resinas'],
+                '14': ['jardineria', 'jardín', 'decoracion', 'vegetales'],
+                
+                # Grasas y aceites (15)
+                '15': ['alimentacion', 'alimento', 'comida', 'nutricion', 'aceites'],
+                
+                # Preparaciones de carne, pescado, crustáceos (16)
+                '16': ['alimentacion', 'alimento', 'comida', 'nutricion', 'conservas'],
+                
+                # Azúcares y confitería (17-18)
+                '17': ['alimentacion', 'alimento', 'comida', 'nutricion', 'azucar'],
+                '18': ['alimentacion', 'alimento', 'comida', 'nutricion', 'cacao'],
+                
+                # Preparaciones alimenticias (19-22)
+                '19': ['alimentacion', 'alimento', 'comida', 'nutricion', 'preparaciones'],
+                '20': ['alimentacion', 'alimento', 'comida', 'nutricion', 'conservas'],
+                '21': ['alimentacion', 'alimento', 'comida', 'nutricion', 'preparaciones'],
+                '22': ['alimentacion', 'alimento', 'comida', 'nutricion', 'bebidas'],
+                
+                # Residuos y desperdicios (23)
+                '23': ['alimentacion', 'alimento', 'comida', 'nutricion', 'forraje'],
+                
+                # Tabaco (24)
+                '24': ['tabaco', 'fumar', 'cigarrillos'],
+                
+                # Minerales (25-27)
+                '25': ['construccion', 'construcción', 'edificacion', 'obra', 'minerales'],
+                '26': ['construccion', 'construcción', 'edificacion', 'obra', 'minerales'],
+                '27': ['construccion', 'construcción', 'edificacion', 'obra', 'combustibles'],
+                
+                # Productos químicos (28-38)
+                '28': ['quimicos', 'químicos', 'industria', 'laboratorio'],
+                '29': ['quimicos', 'químicos', 'industria', 'laboratorio'],
+                '30': ['medicina', 'medicinal', 'farmaceutico', 'salud'],
+                '31': ['agricultura', 'fertilizantes', 'cultivo'],
+                '32': ['construccion', 'construcción', 'edificacion', 'obra', 'pinturas'],
+                '33': ['cosmetica', 'cosmética', 'perfumeria', 'higiene'],
+                '34': ['limpieza', 'detergentes', 'jabones'],
+                '35': ['textil', 'papel', 'adhesivos'],
+                '36': ['pirotecnia', 'explosivos', 'seguridad'],
+                '37': ['fotografia', 'fotografía', 'peliculas'],
+                '38': ['quimicos', 'químicos', 'industria', 'laboratorio'],
+                
+                # Plásticos y caucho (39-40)
+                '39': ['plastico', 'plástico', 'envases', 'embalaje'],
+                '40': ['caucho', 'neumaticos', 'llantas', 'automotriz'],
+                
+                # Cuero (41-43)
+                '41': ['cuero', 'calzado', 'marroquineria'],
+                '42': ['cuero', 'calzado', 'marroquineria'],
+                '43': ['cuero', 'calzado', 'marroquineria'],
+                
+                # Madera (44-46)
+                '44': ['construccion', 'construcción', 'edificacion', 'obra', 'madera'],
+                '45': ['construccion', 'construcción', 'edificacion', 'obra', 'corcho'],
+                '46': ['construccion', 'construcción', 'edificacion', 'obra', 'mimbre'],
+                
+                # Papel (47-49)
+                '47': ['papel', 'impresion', 'impresión', 'oficina'],
+                '48': ['papel', 'impresion', 'impresión', 'oficina'],
+                '49': ['papel', 'impresion', 'impresión', 'oficina'],
+                
+                # Textiles (50-63)
+                '50': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '51': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '52': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '53': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '54': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '55': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '56': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '57': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '58': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '59': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '60': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '61': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '62': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                '63': ['textil', 'ropa', 'vestimenta', 'confeccion'],
+                
+                # Calzado (64-67)
+                '64': ['calzado', 'zapatos', 'botas', 'sandalias'],
+                '65': ['sombreros', 'gorras', 'accesorios'],
+                '66': ['paraguas', 'bastones', 'accesorios'],
+                '67': ['plumas', 'flores', 'artificiales'],
+                
+                # Piedra, cerámica, vidrio (68-70)
+                '68': ['construccion', 'construcción', 'edificacion', 'obra', 'piedra'],
+                '69': ['construccion', 'construcción', 'edificacion', 'obra', 'ceramica'],
+                '70': ['construccion', 'construcción', 'edificacion', 'obra', 'vidrio'],
+                
+                # Metales preciosos (71)
+                '71': ['joyeria', 'joyería', 'metales', 'preciosos'],
+                
+                # Metales comunes (72-83)
+                '72': ['construccion', 'construcción', 'edificacion', 'obra', 'hierro'],
+                '73': ['construccion', 'construcción', 'edificacion', 'obra', 'hierro'],
+                '74': ['construccion', 'construcción', 'edificacion', 'obra', 'cobre'],
+                '75': ['construccion', 'construcción', 'edificacion', 'obra', 'niquel'],
+                '76': ['construccion', 'construcción', 'edificacion', 'obra', 'aluminio'],
+                '78': ['construccion', 'construcción', 'edificacion', 'obra', 'plomo'],
+                '79': ['construccion', 'construcción', 'edificacion', 'obra', 'zinc'],
+                '80': ['construccion', 'construcción', 'edificacion', 'obra', 'estano'],
+                '81': ['construccion', 'construcción', 'edificacion', 'obra', 'metales'],
+                '82': ['herramientas', 'ferreteria', 'ferretería', 'utensilios'],
+                '83': ['herramientas', 'ferreteria', 'ferretería', 'utensilios'],
+                
+                # Máquinas y equipos (84-85)
+                '84': ['maquinas', 'máquinas', 'equipos', 'industria', 'computo'],
+                '85': ['electronica', 'electrónica', 'electricidad', 'telecomunicaciones'],
+                
+                # Vehículos (86-89)
+                '86': ['transporte', 'ferrocarril', 'trenes'],
+                '87': ['transporte', 'automotriz', 'vehiculos', 'vehículos'],
+                '88': ['transporte', 'aereo', 'aéreo', 'aviones'],
+                '89': ['transporte', 'maritimo', 'marítimo', 'barcos'],
+                
+                # Instrumentos ópticos y médicos (90-92)
+                '90': ['medicina', 'medicinal', 'farmaceutico', 'salud', 'instrumentos'],
+                '91': ['relojes', 'cronometros', 'cronómetros'],
+                '92': ['musica', 'música', 'instrumentos'],
+                
+                # Armas (93)
+                '93': ['armas', 'militar', 'seguridad'],
+                
+                # Manufacturas diversas (94-96)
+                '94': ['muebles', 'hogar', 'decoracion', 'decoración'],
+                '95': ['juguetes', 'deportes', 'recreacion', 'recreación'],
+                '96': ['manufacturas', 'diversas', 'accesorios'],
+                
+                # Arte y antigüedades (97)
+                '97': ['arte', 'antiguedades', 'antigüedades', 'coleccion', 'colección']
+            }
+            
+            expected_usages = chapter_usage_map.get(hs_chapter, [])
+            if expected_usages and not any(usage in uso_principal for usage in expected_usages):
+                contextual_score -= 0.3  # Penalización fuerte por incoherencia
+        
+        # 2. Validar tipo de bien vs código HS
+        tipo_bien = features.get('tipo_de_bien', '').lower()
+        if tipo_bien == 'producto_terminado':
+            # Productos terminados no deberían estar en capítulos de partes
+            if hs_chapter in ['84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97']:
+                contextual_score -= 0.2  # Penalización moderada
+        
+        # 3. Validar nivel de procesamiento
+        nivel_procesamiento = features.get('nivel_procesamiento', '').lower()
+        if nivel_procesamiento == 'terminado':
+            # Productos terminados no deberían estar en capítulos de materias primas
+            if hs_chapter in ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83']:
+                contextual_score -= 0.2  # Penalización moderada
+        
+        # 4. Validar material vs código HS
+        material = features.get('material', '').lower()
+        if material:
+            material_chapter_map = {
+                'algodon': ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63'],
+                'algodón': ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63'],
+                'metal': ['72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83'],
+                'acero': ['72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83'],
+                'plastico': ['39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49'],
+                'plástico': ['39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49'],
+                'madera': ['44', '45', '46', '47', '48', '49'],
+                'ceramica': ['69', '70', '71'],
+                'cerámica': ['69', '70', '71'],
+                'vidrio': ['70', '71'],
+                'caucho': ['40', '41', '42', '43', '44', '45', '46', '47', '48', '49'],
+            }
+            
+            expected_chapters = material_chapter_map.get(material, [])
+            if expected_chapters and hs_chapter not in expected_chapters:
+                contextual_score -= 0.2  # Penalización moderada por incoherencia de material
+        
+        return max(0.1, contextual_score)  # Mínimo 0.1 para evitar scores muy bajos
+        
+    except Exception as e:
+        print(f"[ERROR] Error calculando score contextual: {e}")
+        return 0.5  # Score neutro en caso de error

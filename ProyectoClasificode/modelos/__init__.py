@@ -10,9 +10,10 @@ from .hs_note import HSNote
 from .rgi_rule import RGIRule
 from .legal_source import LegalSource
 from .embedding import Embedding
+from .system_metric import SystemMetric
 
 __all__ = [
     'Base', 'BaseModel',
     'User', 'Case', 'Candidate', 'Validation',
-    'HSItem', 'HSNote', 'RGIRule', 'LegalSource', 'Embedding'
+    'HSItem', 'HSNote', 'RGIRule', 'LegalSource', 'Embedding', 'SystemMetric'
 ]

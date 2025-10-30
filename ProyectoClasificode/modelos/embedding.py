@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, UniqueConstraint
-from sqlalchemy.dialects.postgresql import VECTOR
+from sqlalchemy import Column, String, Integer, UniqueConstraint, Text
 from .base import BaseModel
 
 class Embedding(BaseModel):
@@ -11,7 +10,7 @@ class Embedding(BaseModel):
     provider = Column(String(50), nullable=False)
     model = Column(String(50), nullable=False)
     dim = Column(Integer, nullable=False)
-    vector = Column(VECTOR, nullable=False)  # pgvector
+    vector = Column(Text, nullable=False)  # pgvector como texto para compatibilidad
     text_norm = Column(String, nullable=False)
     
     # Constraint único

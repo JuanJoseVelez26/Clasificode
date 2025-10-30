@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useTranslation } from "react-i18next"
+import { useI18n } from "@/lib/i18n"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +16,6 @@ import { useToast } from "@/hooks/use-toast"
 import { useAuthStore } from "@/lib/store"
 import { api } from "@/lib/api"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -26,7 +25,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { t } = useTranslation()
+  const { t } = useI18n()
   const router = useRouter()
   const { toast } = useToast()
   const login = useAuthStore((state) => state.login)

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useTranslation } from "react-i18next"
+import { useI18n } from "@/lib/i18n"
 import { Icons } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,7 +19,6 @@ import { api } from "@/lib/api"
 import { apiClient } from "@/lib/apiClient"
 import { FileDropzone } from "@/components/file-dropzone"
 import { OcrPreview } from "@/components/ocr-preview"
-import { LangBadge } from "@/components/lang-badge"
 
 const formSchema = z
   .object({
@@ -57,18 +56,16 @@ const productExamples = [
 type FormData = z.infer<typeof formSchema>
 
 export default function FormPage() {
-  const { t } = useTranslation()
+  const { t } = useI18n()
   const router = useRouter()
   const { toast } = useToast()
 
-  const { inputType, rawText, files, ocrText, lang, setInputType, setRawText, setFiles, setOcrText, setLang, setClassificationResult, setCaseId, setCaseData, setFlaggedLowConfidence, reset } =
+  const { inputType, rawText, files, ocrText, setInputType, setRawText, setFiles, setOcrText, setClassificationResult, setCaseId, setCaseData, setFlaggedLowConfidence, reset } =
     useClassificationStore()
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrProgress, setOcrProgress] = useState(0)
   const [ocrStep, setOcrStep] = useState<"idle" | "preprocessing" | "ocr" | "delivery" | "complete">("idle")
-  const [detectedLang, setDetectedLang] = useState<"es" | "en" | null>(null)
-  const [showTranslation, setShowTranslation] = useState(false)
 
   const {
     register,
@@ -109,9 +106,9 @@ export default function FormPage() {
       const spanishCount = spanishWords.filter((word) => lowerText.includes(word)).length
       const englishCount = englishWords.filter((word) => lowerText.includes(word)).length
 
-      const detected = spanishCount > englishCount ? "es" : "en"
-      setDetectedLang(detected)
-      setLang(detected)
+      // Sistema monolingüe - detección de idioma eliminada
+      // const detected = spanishCount > englishCount ? "es" : "en"
+      // setLang(detected) // Función eliminada para sistema monolingüe
     }
   }
 
@@ -151,7 +148,7 @@ export default function FormPage() {
 
       setOcrText(response.ocrText)
       setLang(response.lang)
-      setDetectedLang(response.lang)
+      // Sistema monolingüe - detección de idioma eliminada
       setOcrProgress(100)
       setOcrStep("complete")
 
@@ -319,7 +316,7 @@ export default function FormPage() {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Descripción del Producto</span>
-                {detectedLang && <LangBadge lang={detectedLang} />}
+                {/* Detección de idioma eliminada - sistema monolingüe */}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -337,28 +334,11 @@ export default function FormPage() {
                     {watchedText?.length || 0} caracteres
                     {(watchedText?.length || 0) < 15 && <span className="text-destructive ml-1">(mínimo 15)</span>}
                   </span>
-                  {detectedLang && detectedLang !== "es" && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowTranslation(!showTranslation)}
-                    >
-                      <Icons.Languages />
-                      <span className="ml-1">Traducir a español</span>
-                    </Button>
-                  )}
+                {/* Sistema monolingüe - traducción eliminada */}
                 </div>
               </div>
 
-              {showTranslation && (
-                <div className="p-4 bg-muted/50 rounded-lg">
-                  <Label className="text-sm font-medium">Traducción (simulada):</Label>
-                  <p className="text-sm mt-1">
-                    {watchedText ? `[Traducción simulada de: "${watchedText.substring(0, 50)}..."]` : ""}
-                  </p>
-                </div>
-              )}
+              {/* Sistema monolingüe - sección de traducción eliminada */}
 
               {errors.text && <p className="text-sm text-destructive">{errors.text.message}</p>}
             </CardContent>
@@ -396,7 +376,7 @@ export default function FormPage() {
 
                   {/* OCR Progress */}
                   {ocrStep !== "idle" && (
-                    <OcrPreview step={ocrStep} progress={ocrProgress} extractedText={ocrText} detectedLang={lang} />
+                    <OcrPreview step={ocrStep} progress={ocrProgress} extractedText={ocrText} />
                   )}
                 </div>
               )}

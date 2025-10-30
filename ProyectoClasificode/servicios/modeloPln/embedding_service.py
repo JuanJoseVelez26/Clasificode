@@ -220,17 +220,30 @@ class EmbeddingService:
             
         Returns:
             List[float]: Vector de embedding con dimensión fija
+            
+        Raises:
+            ValueError: Si el texto es insuficiente para clasificación
         """
-        if not text or not text.strip():
-            return [0.0] * self.dimension
+        # Validación robusta del texto
+        if not text:
+            raise ValueError("Descripción insuficiente para clasificación: texto vacío")
+        
+        # Limpiar y validar texto
+        text_clean = text.strip()
+        if len(text_clean) < 4:
+            raise ValueError("Descripción insuficiente para clasificación: texto muy corto")
+        
+        # Verificar que no sea solo caracteres especiales o números
+        if not any(c.isalpha() for c in text_clean):
+            raise ValueError("Descripción insuficiente para clasificación: sin contenido textual")
             
         try:
             if self.provider == 'openai':
-                embedding = self._embed_openai([text])[0]
+                embedding = self._embed_openai([text_clean])[0]
             elif self.provider == 'huggingface':
-                embedding = self._embed_huggingface([text])[0]
+                embedding = self._embed_huggingface([text_clean])[0]
             else:
-                embedding = self._embed_mock([text])[0]
+                embedding = self._embed_mock([text_clean])[0]
             
             # Asegurar que el embedding sea una lista de floats
             if isinstance(embedding, np.ndarray):
@@ -250,6 +263,7 @@ class EmbeddingService:
             
         except Exception as e:
             print(f"Error generando embedding: {str(e)}")
+            # En caso de error, devolver embedding cero en lugar de fallar
             return [0.0] * self.dimension
     
     def dim(self) -> int:

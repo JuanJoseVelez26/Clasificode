@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useTranslation } from "react-i18next"
+import { useI18n } from "@/lib/i18n"
 import { Icons } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,7 @@ import { SimilarItemsList } from "@/components/similar-items-list"
 import { HelpChat } from "@/components/help-chat"
 
 export default function ResultPage() {
-  const { t } = useTranslation()
+  const { t } = useI18n()
   const router = useRouter()
   const { toast } = useToast()
 

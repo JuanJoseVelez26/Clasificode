@@ -73,7 +73,7 @@ export const api = {
   },
   classify: {
     // High-level helper used by ResultPage
-    process: async (payload: { text: string; lang?: string }): Promise<{
+    process: async (payload: { text: string }): Promise<{
       topK: { hs: string; confidence: number; description?: string }[]
       explanation: { factors: { name: string; weight: number; note?: string }[]; rationale: string }
       similarities?: { id: string; title: string; snippet: string; hs: string; score: number }[]
@@ -125,7 +125,7 @@ export const api = {
         throw new Error(error.message || "Error al procesar la clasificación")
       }
     },
-    text: async (payload: { text: string; lang?: string }): Promise<ClassifyResponse> => {
+    text: async (payload: { text: string }): Promise<ClassifyResponse> => {
       if (enableMock) return { hs: "8471.30.00", confidence: 0.84, topK: [{hs:"8471.30.00",confidence:0.84}], explanation: { factors: [], rationale: "Mock" } }
       // Backend requiere product_title/product_desc
       const title = payload.text.slice(0, 80)
@@ -161,7 +161,7 @@ export const api = {
   health: { check: async () => (await apiClient.get("/health")).data },
   ocr: {
     // Stub para evitar errores en la UI mientras no exista endpoint en backend
-    process: async (_: { file: File }) => ({ ocrText: "", lang: "es" as const }),
+    process: async (_: { file: File }) => ({ ocrText: "" }),
   },
   export: {
     pdf: async (data: {

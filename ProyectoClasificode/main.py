@@ -13,7 +13,7 @@ from controladores.cases_controller import bp as cases_bp
 from controladores.classify_controller import bp as classify_bp
 from controladores.admin_controller import bp as admin_bp
 from controladores.health_controller import bp as health_bp
-from controladores.export_controller import bp as export_bp
+from controladores.metrics_controller import metrics_bp
 import json
 from servicios.config_loader import load_config
 def create_app():
@@ -92,7 +92,40 @@ def create_app():
     app.register_blueprint(classify_bp, url_prefix='')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(health_bp, url_prefix='')
-    app.register_blueprint(export_bp, url_prefix='/export')
+    app.register_blueprint(metrics_bp, url_prefix='/metrics')
+    
+    # Ruta de prueba sin autenticación
+    @app.route('/test-classify', methods=['POST'])
+    def test_classify():
+        """Ruta de prueba para clasificación sin autenticación"""
+        try:
+            from servicios.classifier import NationalClassifier
+            from flask import request
+            
+            data = request.get_json()
+            if not data or 'text' not in data:
+                return jsonify({'error': 'Se requiere campo "text"'}), 400
+            
+            text = data['text']
+            if not text.strip():
+                return jsonify({'error': 'El texto no puede estar vacío'}), 400
+            
+            # Crear clasificador y clasificar
+            classifier = NationalClassifier()
+            
+            # Crear un caso temporal para la clasificación
+            case_data = {
+                'id': 999,
+                'text': text,
+                'input_type': 'text'
+            }
+            
+            result = classifier.classify(case_data)
+            
+            return jsonify(result)
+            
+        except Exception as e:
+            return jsonify({'error': f'Error en clasificación: {str(e)}'}), 500
     
     # Ruta raíz
     @app.route('/')
@@ -106,6 +139,7 @@ def create_app():
                     'auth': '/auth',
                     'cases': '/cases',
                     'classify': '/classify',
+                    'test-classify': '/test-classify',
                     'admin': '/admin',
                     'health': '/health'
                 },

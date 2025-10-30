@@ -18,20 +18,43 @@ class LearningIntegration:
     
     def load_learning_data(self):
         """Carga los datos de aprendizaje existentes"""
-        if os.path.exists(self.learning_data_file):
-            self.learning_system.load_learning_data(self.learning_data_file)
-            print(f"[OK] Datos de aprendizaje cargados: {len(self.learning_system.error_patterns)} patrones de error")
-        else:
-            print("[WARN] No hay datos de aprendizaje previos")
+        # El LearningSystem ya carga automáticamente los datos en su constructor
+        print(f"[OK] Sistema de aprendizaje inicializado: {len(self.learning_system.feedback_records)} registros de feedback")
     
     def save_learning_data(self):
         """Guarda los datos de aprendizaje"""
-        self.learning_system.save_learning_data(self.learning_data_file)
+        self.learning_system.save_feedback_data()
         print("[SAVE] Datos de aprendizaje guardados")
+    
+    def register_feedback(self, case_id: int, predicted_hs: str = None, requires_review: bool = False, 
+                         original_result: Dict[str, Any] = None, user_comment: str = "auto") -> bool:
+        """
+        Registra feedback del usuario sobre una clasificación.
+        
+        Args:
+            case_id: ID del caso clasificado
+            predicted_hs: Código HS predicho por el sistema
+            requires_review: Si el caso requiere revisión humana
+            original_result: Resultado original de la clasificación
+            user_comment: Comentario del usuario sobre la corrección
+            
+        Returns:
+            True si se registró exitosamente, False en caso contrario
+        """
+        try:
+            return self.learning_system.register_feedback(
+                case_id=case_id,
+                predicted_hs=predicted_hs,
+                requires_review=requires_review,
+                original_result=original_result,
+                user_comment=user_comment
+            )
+        except Exception as e:
+            print(f"[WARNING] Error registrando feedback: {str(e)}")
+            return False
     
     def analyze_classification_result(self, case: Dict[str, Any], result: Dict[str, Any], 
                                     expected_hs: Optional[str] = None):
-        """Analiza el resultado de una clasificación para aprendizaje"""
         
         description = f"{case.get('product_title', '')} {case.get('product_desc', '')}".strip()
         predicted_hs = result.get('national_code', '')

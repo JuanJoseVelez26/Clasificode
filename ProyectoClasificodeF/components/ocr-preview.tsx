@@ -4,16 +4,14 @@ import { CheckCircle, Loader2, FileText, Zap, Send } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { LangBadge } from "@/components/lang-badge"
 
 interface OcrPreviewProps {
   step: "idle" | "preprocessing" | "ocr" | "delivery" | "complete"
   progress: number
   extractedText?: string
-  detectedLang?: "es" | "en"
 }
 
-export function OcrPreview({ step, progress, extractedText, detectedLang }: OcrPreviewProps) {
+export function OcrPreview({ step, progress, extractedText }: OcrPreviewProps) {
   const steps = [
     {
       key: "preprocessing",
@@ -114,7 +112,7 @@ export function OcrPreview({ step, progress, extractedText, detectedLang }: OcrP
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Texto extraído:</h4>
-              {detectedLang && <LangBadge lang={detectedLang} />}
+              {/* Sistema monolingüe - detección de idioma eliminada */}
             </div>
             <div className="p-4 bg-muted/50 rounded-lg">
               <p className="text-sm">

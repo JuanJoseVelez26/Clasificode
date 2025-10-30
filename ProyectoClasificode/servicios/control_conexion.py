@@ -2,6 +2,7 @@
 import os
 import json
 import pandas as pd
+import logging
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
@@ -56,7 +57,7 @@ class ControlConexion:
             
             # Solo mostrar el log la primera vez
             if not hasattr(self, '_logged_connection'):
-                print(f"Intentando abrir conexión con el proveedor: {proveedor}")
+                logging.debug(f"Intentando abrir conexión con el proveedor: {proveedor}")
                 try:
                     masked = cadena_conexion
                     if '://' in masked:
@@ -65,7 +66,7 @@ class ControlConexion:
                             creds, rest = tail.split('@', 1)
                             user = creds.split(':', 1)[0]
                             masked = f"{head}://{user}:****@{rest}"
-                    print(f"Cadena de conexión: {masked}")
+                    logging.debug(f"Cadena de conexión: {masked}")
                 except Exception:
                     print("Cadena de conexión: [oculta por seguridad]")
                 self._logged_connection = True
@@ -98,8 +99,24 @@ class ControlConexion:
             if self.engine:
                 self.engine.dispose()
                 self.engine = None
-        except Exception as ex:
-            raise ValueError(f"Error al cerrar la conexión a la base de datos: {str(ex)}")
+        except Exception as e:
+            print(f"Error cerrando conexión: {str(e)}")
+                
+    def get_session(self):
+        """
+        Context manager para obtener una sesión de base de datos.
+        
+        Returns:
+            Session: Sesión de SQLAlchemy
+            
+        Example:
+            with cc.get_session() as session:
+                result = session.query(Model).all()
+        """
+        if not self.engine:
+            self.abrir_bd()
+        
+        return Session(self.engine)
     
     def ejecutar_comando_sql(self, consulta_sql, parametros=None):
         """

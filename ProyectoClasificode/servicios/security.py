@@ -7,6 +7,27 @@ import json
 
 token_service = TokenService()
 
+class SecurityService:
+    """Servicio de seguridad para autenticación y autorización"""
+    
+    def __init__(self):
+        self.token_service = TokenService()
+    
+    def verify_token(self, token: str) -> dict:
+        """
+        Verifica un token JWT y retorna el payload si es válido
+        
+        Args:
+            token: Token JWT a verificar
+            
+        Returns:
+            dict: Payload del token si es válido, None si no
+        """
+        try:
+            return self.token_service.verify_token(token)
+        except Exception:
+            return None
+
 def hash_password(password: str) -> str:
     """Hashear contraseña usando bcrypt"""
     return bcrypt.hash(password)

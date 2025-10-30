@@ -99,7 +99,6 @@ interface ClassificationState {
   rawText?: string
   files?: UploadedFile[]
   ocrText?: string
-  lang?: "es" | "en"
   preprocessedText?: string
   prediction?: Prediction
   similarities?: Similarity[]
@@ -111,7 +110,6 @@ interface ClassificationState {
   setRawText: (text: string) => void
   setFiles: (files: UploadedFile[]) => void
   setOcrText: (text: string) => void
-  setLang: (lang: "es" | "en") => void
   setPrediction: (prediction: Prediction) => void
   setClassificationResult: (result: BackendClassificationResult) => void
   setCaseId: (id: string) => void
@@ -131,7 +129,6 @@ export const useClassificationStore = create<ClassificationState>()(
         setRawText: (text) => set({ rawText: text }),
         setFiles: (files) => set({ files }),
         setOcrText: (text) => set({ ocrText: text }),
-        setLang: (lang) => set({ lang }),
         setPrediction: (prediction) => set({ prediction }),
         setClassificationResult: (result) => {
           const prediction: Prediction = {
@@ -158,7 +155,6 @@ export const useClassificationStore = create<ClassificationState>()(
             rawText: undefined,
             files: undefined,
             ocrText: undefined,
-            lang: undefined,
             preprocessedText: undefined,
             prediction: undefined,
             similarities: undefined,
