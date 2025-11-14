@@ -44,24 +44,29 @@ Ejemplo de uso:
 """
 
 import json
+import logging
 import os
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple
 from collections import defaultdict, Counter
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 @dataclass
 class FeedbackRecord:
     """Registro de feedback del usuario sobre una clasificación"""
     case_id: int
+    input_text: str
+    predicted_hs: str
     original_hs: str
     correct_hs: str
-    user_comment: str
     confidence_original: float
     timestamp: datetime
-    validation_flags: Dict[str, Any]
-    features: Dict[str, Any]
+    validation_flags: Dict[str, Any] = field(default_factory=dict)
+    features: Dict[str, Any] = field(default_factory=dict)
+    rationale: Dict[str, Any] = field(default_factory=dict)
+    status: str = "pending"
+    requires_review: bool = False
 
 @dataclass
 class MisclassificationPattern:
@@ -96,61 +101,71 @@ class LearningSystem:
         self.feedback_records: List[FeedbackRecord] = []
         self.load_feedback_data()
     
-    def register_feedback(self, case_id: int, predicted_hs: str = None, requires_review: bool = False, 
-                         original_result: Dict[str, Any] = None, user_comment: str = "auto") -> bool:
+    def register_feedback(
+        self,
+        case_id: int,
+        input_text: str,
+        predicted_hs: str,
+        confidence: float,
+        rationale: Optional[Dict[str, Any]] = None,
+        original_result: Optional[Dict[str, Any]] = None,
+        correct_hs: Optional[str] = None,
+        requires_review: bool = False
+    ) -> None:
         """
-        Registra feedback del usuario sobre una clasificación.
+        Registra feedback del usuario o automático sobre una clasificación.
         
         Args:
             case_id: ID del caso clasificado
+            input_text: Texto original clasificado
             predicted_hs: Código HS predicho por el sistema
-            requires_review: Si el caso requiere revisión humana
-            original_result: Resultado original de la clasificación
-            user_comment: Comentario del usuario sobre la corrección
-            
-        Returns:
-            True si se registró exitosamente, False en caso contrario
+            confidence: Confianza de la predicción
+            rationale: Rationale generado por el clasificador (opcional)
+            original_result: Resultado completo de la clasificación (opcional)
+            correct_hs: Código HS correcto suministrado (opcional)
         """
         try:
-            # Si no hay resultado original, crear uno básico
-            if not original_result:
-                original_result = {
-                    'national_code': predicted_hs or '',
-                    'confidence': 0.0,
-                    'validation_flags': {},
-                    'features': {}
-                }
+            safe_confidence = float(confidence) if confidence is not None else 0.0
+            safe_rationale = rationale.copy() if isinstance(rationale, dict) else {}
+            safe_result = original_result.copy() if isinstance(original_result, dict) else {}
             
-            # Extraer información del resultado original
-            original_hs = original_result.get('national_code') or original_result.get('hs6', '')
-            confidence_original = original_result.get('confidence', 0.0)
-            validation_flags = original_result.get('validation_flags', {})
-            features = original_result.get('features', {})
+            original_hs = (
+                safe_result.get('national_code')
+                or safe_result.get('hs6')
+                or predicted_hs
+                or ''
+            )
+            validation_flags = safe_result.get('validation_flags', {})
+            features = safe_result.get('features', {})
+            status = "pending"
             
-            # Crear registro de feedback
+            resolved_correct_hs = correct_hs or safe_result.get('correct_hs') or "pending_label"
+            if resolved_correct_hs == "pending_label":
+                status = "pending_review"
+            if requires_review:
+                status = "pending_review"
+            
             feedback = FeedbackRecord(
                 case_id=case_id,
-                original_hs=original_hs,
-                correct_hs=correct_hs,
-                user_comment=user_comment,
-                confidence_original=confidence_original,
+                input_text=input_text or "",
+                predicted_hs=predicted_hs or "",
+                original_hs=original_hs or "",
+                correct_hs=resolved_correct_hs,
+                confidence_original=safe_confidence,
                 timestamp=datetime.now(),
                 validation_flags=validation_flags,
-                features=features
+                features=features,
+                rationale=safe_rationale,
+                status=status,
+                requires_review=requires_review
             )
             
-            # Agregar a la lista
             self.feedback_records.append(feedback)
-            
-            # Guardar datos
             self.save_feedback_data()
-            
-            print(f"[LEARNING] Feedback registrado para caso {case_id}: {original_hs} -> {correct_hs}")
-            return True
-            
+            logging.info(f"[LEARNING] Feedback registrado para caso {case_id}: {original_hs} -> {resolved_correct_hs}")
+        
         except Exception as e:
-            print(f"[ERROR] Error registrando feedback: {e}")
-            return False
+            logging.warning(f"[LEARNING] Error registrando feedback para caso {case_id}: {e}")
     
     def analyze_misclassifications(self, min_confidence: float = 0.6) -> List[MisclassificationPattern]:
         """
@@ -170,7 +185,8 @@ class LearningSystem:
             
             for feedback in self.feedback_records:
                 # Crear patrón de texto normalizado
-                pattern_text = self._normalize_text_pattern(feedback.user_comment)
+                base_text = feedback.rationale.get('decision') if feedback.rationale else feedback.input_text
+                pattern_text = self._normalize_text_pattern(base_text or "")
                 text_patterns[pattern_text].append(feedback)
             
             # Analizar cada patrón
@@ -183,11 +199,11 @@ class LearningSystem:
             # Ordenar por frecuencia
             patterns.sort(key=lambda p: p.frequency, reverse=True)
             
-            print(f"[LEARNING] Identificados {len(patterns)} patrones de error")
+            logging.info(f"[LEARNING] Identificados {len(patterns)} patrones de error")
             return patterns
             
         except Exception as e:
-            print(f"[ERROR] Error analizando patrones: {e}")
+            logging.error(f"[LEARNING] Error analizando patrones: {e}")
             return []
     
     def suggest_rule(self, pattern: MisclassificationPattern) -> Optional[Dict[str, str]]:
@@ -219,11 +235,11 @@ class LearningSystem:
                 'last_updated': datetime.now().isoformat()
             }
             
-            print(f"[LEARNING] Regla sugerida: {suggested_rule['pattern']} -> {suggested_rule['hs6']}")
+            logging.info(f"[LEARNING] Regla sugerida: {suggested_rule['pattern']} -> {suggested_rule['hs6']}")
             return suggested_rule
             
         except Exception as e:
-            print(f"[ERROR] Error generando sugerencia: {e}")
+            logging.error(f"[LEARNING] Error generando sugerencia: {e}")
             return None
     
     def get_learning_metrics(self) -> Dict[str, Any]:
@@ -269,7 +285,7 @@ class LearningSystem:
             }
             
         except Exception as e:
-            print(f"[ERROR] Error calculando métricas: {e}")
+            logging.error(f"[LEARNING] Error calculando métricas: {e}")
             return {}
     
     def analyze_classification_result(self, case: Dict[str, Any], result: Dict[str, Any]) -> None:
@@ -284,13 +300,13 @@ class LearningSystem:
             # Solo registrar casos con baja confianza para análisis
             confidence = result.get('confidence', 0.0)
             if confidence < 0.6:
-                print(f"[LEARNING] Caso con baja confianza detectado: {case.get('id')} (confianza: {confidence})")
+                logging.info(f"[LEARNING] Caso con baja confianza detectado: {case.get('id')} (confianza: {confidence})")
                 
                 # Registrar para análisis posterior
                 self._record_low_confidence_case(case, result)
                 
         except Exception as e:
-            print(f"[ERROR] Error en análisis de aprendizaje: {e}")
+            logging.error(f"[LEARNING] Error en análisis de aprendizaje: {e}")
     
     def _normalize_text_pattern(self, text: str) -> str:
         """Normaliza texto para crear patrones consistentes"""
@@ -340,7 +356,7 @@ class LearningSystem:
             )
             
         except Exception as e:
-            print(f"[ERROR] Error analizando patrón: {e}")
+            logging.error(f"[LEARNING] Error analizando patrón: {e}")
             return None
     
     def _extract_keywords(self, text: str) -> List[str]:
@@ -373,7 +389,7 @@ class LearningSystem:
             return late_accuracy - early_accuracy
             
         except Exception as e:
-            print(f"[ERROR] Error calculando tasa de aprendizaje: {e}")
+            logging.error(f"[LEARNING] Error calculando tasa de aprendizaje: {e}")
             return 0.0
     
     def _record_low_confidence_case(self, case: Dict[str, Any], result: Dict[str, Any]) -> None:
@@ -395,7 +411,7 @@ class LearningSystem:
             self._save_problematic_case(problematic_case)
             
         except Exception as e:
-            print(f"[ERROR] Error registrando caso problemático: {e}")
+            logging.error(f"[LEARNING] Error registrando caso problemático: {e}")
     
     def _save_problematic_case(self, case: Dict[str, Any]) -> None:
         """Guarda un caso problemático en archivo JSON"""
@@ -417,7 +433,7 @@ class LearningSystem:
                 json.dump(data, f, indent=2, ensure_ascii=False)
                 
         except Exception as e:
-            print(f"[ERROR] Error guardando caso problemático: {e}")
+            logging.error(f"[LEARNING] Error guardando caso problemático: {e}")
     
     def load_feedback_data(self):
         """Carga datos de feedback desde archivo JSON"""
@@ -431,22 +447,25 @@ class LearningSystem:
                 for record_data in data.get('feedback_records', []):
                     feedback = FeedbackRecord(
                         case_id=record_data['case_id'],
-                        original_hs=record_data['original_hs'],
-                        correct_hs=record_data['correct_hs'],
-                        user_comment=record_data['user_comment'],
-                        confidence_original=record_data['confidence_original'],
+                        input_text=record_data.get('input_text') or record_data.get('user_comment', ''),
+                        predicted_hs=record_data.get('predicted_hs', ''),
+                        original_hs=record_data.get('original_hs', ''),
+                        correct_hs=record_data.get('correct_hs', 'pending_label'),
+                        confidence_original=record_data.get('confidence_original', 0.0),
                         timestamp=datetime.fromisoformat(record_data['timestamp']),
                         validation_flags=record_data.get('validation_flags', {}),
-                        features=record_data.get('features', {})
+                        features=record_data.get('features', {}),
+                        rationale=record_data.get('rationale', {}),
+                        status=record_data.get('status', 'pending')
                     )
                     self.feedback_records.append(feedback)
                 
-                print(f"[LEARNING] Cargados {len(self.feedback_records)} registros de feedback")
+                logging.info(f"[LEARNING] Cargados {len(self.feedback_records)} registros de feedback")
             else:
-                print("[LEARNING] No se encontró archivo de feedback, iniciando vacío")
+                logging.info("[LEARNING] No se encontró archivo de feedback, iniciando vacío")
                 
         except Exception as e:
-            print(f"[ERROR] Error cargando feedback: {e}")
+            logging.error(f"[LEARNING] Error cargando feedback: {e}")
             self.feedback_records = []
     
     def save_feedback_data(self):
@@ -460,23 +479,26 @@ class LearningSystem:
             for feedback in self.feedback_records:
                 record_data = {
                     'case_id': feedback.case_id,
+                    'input_text': feedback.input_text,
+                    'predicted_hs': feedback.predicted_hs,
                     'original_hs': feedback.original_hs,
                     'correct_hs': feedback.correct_hs,
-                    'user_comment': feedback.user_comment,
                     'confidence_original': feedback.confidence_original,
                     'timestamp': feedback.timestamp.isoformat(),
                     'validation_flags': feedback.validation_flags,
-                    'features': feedback.features
+                    'features': feedback.features,
+                    'rationale': feedback.rationale,
+                    'status': feedback.status
                 }
                 data['feedback_records'].append(record_data)
             
             with open(self.feedback_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             
-            print(f"[LEARNING] Feedback guardado: {len(self.feedback_records)} registros")
+            logging.info(f"[LEARNING] Feedback guardado: {len(self.feedback_records)} registros")
             
         except Exception as e:
-            print(f"[ERROR] Error guardando feedback: {e}")
+            logging.error(f"[LEARNING] Error guardando feedback: {e}")
 
 # Instancia global del sistema de aprendizaje
 learning_system = LearningSystem()

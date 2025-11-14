@@ -4,6 +4,7 @@ Integración del sistema de aprendizaje con la aplicación principal
 """
 
 import json
+import logging
 import os
 from typing import Dict, Any, Optional, List
 from .learning_system import LearningSystem
@@ -19,39 +20,40 @@ class LearningIntegration:
     def load_learning_data(self):
         """Carga los datos de aprendizaje existentes"""
         # El LearningSystem ya carga automáticamente los datos en su constructor
-        print(f"[OK] Sistema de aprendizaje inicializado: {len(self.learning_system.feedback_records)} registros de feedback")
+        logging.info(f"[LEARNING] Sistema de aprendizaje inicializado: {len(self.learning_system.feedback_records)} registros de feedback")
     
     def save_learning_data(self):
         """Guarda los datos de aprendizaje"""
         self.learning_system.save_feedback_data()
-        print("[SAVE] Datos de aprendizaje guardados")
+        logging.info("[LEARNING] Datos de aprendizaje guardados")
     
-    def register_feedback(self, case_id: int, predicted_hs: str = None, requires_review: bool = False, 
-                         original_result: Dict[str, Any] = None, user_comment: str = "auto") -> bool:
+    def register_feedback(
+        self,
+        case_id: int,
+        input_text: str,
+        predicted_hs: str,
+        confidence: float,
+        rationale: Optional[Dict[str, Any]] = None,
+        original_result: Optional[Dict[str, Any]] = None,
+        correct_hs: Optional[str] = None,
+        requires_review: bool = False
+    ) -> None:
         """
-        Registra feedback del usuario sobre una clasificación.
-        
-        Args:
-            case_id: ID del caso clasificado
-            predicted_hs: Código HS predicho por el sistema
-            requires_review: Si el caso requiere revisión humana
-            original_result: Resultado original de la clasificación
-            user_comment: Comentario del usuario sobre la corrección
-            
-        Returns:
-            True si se registró exitosamente, False en caso contrario
+        Registra feedback en el sistema de aprendizaje sin interrumpir el flujo.
         """
         try:
-            return self.learning_system.register_feedback(
+            self.learning_system.register_feedback(
                 case_id=case_id,
+                input_text=input_text,
                 predicted_hs=predicted_hs,
-                requires_review=requires_review,
+                confidence=confidence,
+                rationale=rationale,
                 original_result=original_result,
-                user_comment=user_comment
+                correct_hs=correct_hs,
+                requires_review=requires_review
             )
         except Exception as e:
-            print(f"[WARNING] Error registrando feedback: {str(e)}")
-            return False
+            logging.warning(f"[LEARNING] Error registrando feedback (case_id={case_id}): {str(e)}")
     
     def analyze_classification_result(self, case: Dict[str, Any], result: Dict[str, Any], 
                                     expected_hs: Optional[str] = None):
@@ -68,18 +70,18 @@ class LearningIntegration:
                 self.learning_system.analyze_classification_success(
                     description, predicted_hs, predicted_title
                 )
-                print(f"[SUCCESS] Clasificación correcta analizada: {predicted_hs}")
+                logging.info(f"[LEARNING] Clasificación correcta analizada: {predicted_hs}")
             else:
                 self.learning_system.analyze_classification_error(
                     description, expected_hs, predicted_hs, predicted_title
                 )
-                print(f"[ERROR] Error de clasificación analizado: {expected_hs} -> {predicted_hs}")
+                logging.warning(f"[LEARNING] Error de clasificación analizado: {expected_hs} -> {predicted_hs}")
         else:
             # No tenemos resultado esperado - solo registrar éxito
             self.learning_system.analyze_classification_success(
                 description, predicted_hs, predicted_title
             )
-            print(f"[LOG] Clasificación registrada: {predicted_hs}")
+            logging.debug(f"[LEARNING] Clasificación registrada: {predicted_hs}")
     
     def get_learning_stats(self) -> Dict[str, Any]:
         """Obtiene estadísticas del sistema de aprendizaje"""

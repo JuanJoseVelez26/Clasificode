@@ -1,8 +1,11 @@
 import os
 import json
+import logging
 import numpy as np
 from typing import List, Dict, Any, Optional, Union
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class EmbeddingService:
     """Servicio de embeddings con adaptador para múltiples proveedores"""
@@ -64,12 +67,12 @@ class EmbeddingService:
             else:
                 # Fallback a embeddings simulados
                 self._init_mock_client()
-            # Log claro del estado
-            print(f"EmbeddingService -> provider: {self.provider}, model: {self.model}")
+            # Log claro del estado (solo una vez)
+            logger.info(f"EmbeddingService inicializado - provider={self.provider}, model={self.model}")
         except Exception as e:
-            print(f"Error inicializando cliente de embeddings: {e}")
+            logger.warning(f"Error inicializando cliente de embeddings: {e}")
             self._init_mock_client()
-            print(f"EmbeddingService -> provider: {self.provider}, model: {self.model}")
+            logger.info(f"EmbeddingService en modo mock - provider={self.provider}, model={self.model}")
     
     def _init_openai_client(self):
         """Inicializar cliente de OpenAI"""
@@ -141,7 +144,7 @@ class EmbeddingService:
         """Inicializar cliente simulado para desarrollo"""
         self.client = None
         self.provider = 'mock'
-        print("Usando embeddings simulados para desarrollo")
+        logger.debug("Usando embeddings simulados para desarrollo")
     
     def embed(self, texts: Union[str, List[str]]) -> Union[np.ndarray, List[np.ndarray]]:
         """Generar embeddings para texto(s)"""
@@ -160,7 +163,7 @@ class EmbeddingService:
                 return self._embed_mock(texts)
                 
         except Exception as e:
-            print(f"Error generando embeddings: {e}")
+            logger.warning(f"Error generando embeddings: {e}")
             return self._embed_mock(texts)
     
     def _embed_openai(self, texts: List[str]) -> np.ndarray:
@@ -253,7 +256,7 @@ class EmbeddingService:
                 
             # Asegurar la dimensión correcta
             if len(embedding) != self.dimension:
-                print(f"Advertencia: Dimensión inesperada {len(embedding)}. Ajustando a {self.dimension}.")
+                logger.debug(f"Dimensión inesperada {len(embedding)}; ajustando a {self.dimension}.")
                 if len(embedding) > self.dimension:
                     embedding = embedding[:self.dimension]
                 else:
@@ -262,7 +265,7 @@ class EmbeddingService:
             return embedding
             
         except Exception as e:
-            print(f"Error generando embedding: {str(e)}")
+            logger.warning(f"Error generando embedding: {str(e)}")
             # En caso de error, devolver embedding cero en lugar de fallar
             return [0.0] * self.dimension
     

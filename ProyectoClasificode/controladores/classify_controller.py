@@ -8,7 +8,6 @@ from servicios.agente.re_rank import HybridReRanker
 from servicios.security import require_auth
 import json
 from servicios.classifier import NationalClassifier
-from schemas.classification import ClassificationResponse, CandidateOut
 
 bp = Blueprint('classify', __name__)
 case_repo = CaseRepository()
@@ -55,11 +54,16 @@ def classify_case(case_id):
                 'case_id': case_id,
                 'hs6': result.get('hs6', ''),
                 'national_code': result.get('national_code', ''),
+                'hs': result.get('national_code', '') or result.get('hs6', ''),
                 'title': result.get('title', ''),
+                'confidence': float(result.get('confidence', 0.0) or 0.0),
+                'requires_review': bool((result.get('rationale') or {}).get('requires_review', False)),
+                'topK': result.get('topK') or result.get('candidates') or [],
+                'candidates': result.get('topK') or result.get('candidates') or [],
                 'rgi_applied': result.get('rgi_applied', []) or [],
                 'legal_notes': result.get('legal_notes', []) or [],
                 'sources': result.get('sources', []) or [],
-                'rationale': result.get('rationale', '') or ''
+                'rationale': result.get('rationale', {}) or {}
             }
         }), 200
 
@@ -96,22 +100,29 @@ def classify_case_v1(case_id):
         result = national_classifier.classify(case)
 
         # Asegurar respuesta con DTO para campos obligatorios
-        dto = ClassificationResponse(
-            case_id=case_id,
-            hs6=result.get('hs6', ''),
-            national_code=result.get('national_code', ''),
-            title=result.get('title', ''),
-            rgi_applied=result.get('rgi_applied', []) or [],
-            legal_notes=result.get('legal_notes', []) or [],
-            sources=result.get('sources', []) or [],
-            rationale=result.get('rationale', '') or '',
-            candidates=[]
-        )
+        rationale = result.get('rationale', {}) or {}
+        top_candidates = result.get('topK') or result.get('candidates') or []
+
+        dto = {
+            'case_id': case_id,
+            'hs6': result.get('hs6', ''),
+            'national_code': result.get('national_code', ''),
+            'hs': result.get('national_code', '') or result.get('hs6', ''),
+            'title': result.get('title', ''),
+            'confidence': float(result.get('confidence', 0.0) or 0.0),
+            'requires_review': bool(rationale.get('requires_review', False)),
+            'topK': top_candidates,
+            'candidates': top_candidates,
+            'rgi_applied': result.get('rgi_applied', []) or [],
+            'legal_notes': result.get('legal_notes', []) or [],
+            'sources': result.get('sources', []) or [],
+            'rationale': rationale,
+        }
 
         return jsonify({
             'code': 200,
             'message': 'Clasificación nacional completada',
-            'details': dto.to_dict()
+            'details': dto
         }), 200
     except Exception as e:
         return jsonify({

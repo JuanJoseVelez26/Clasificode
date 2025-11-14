@@ -31,6 +31,7 @@ export default function ResultPage() {
     explanation,
     savedCaseId,
     flaggedLowConfidence,
+    predictionMeta,
     setFlaggedLowConfidence,
   } = useClassificationStore()
 
@@ -38,6 +39,10 @@ export default function ResultPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
+
+  const chapterStatus = predictionMeta?.chapterCoherence
+  const suspectCode = predictionMeta?.suspectCode
+  const requiresReview = predictionMeta?.requiresReview
 
   // Load classification results on mount
   useEffect(() => {
@@ -254,7 +259,26 @@ export default function ResultPage() {
                   </div>
                 </div>
               </div>
-
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {chapterStatus && (
+                  <Badge variant={chapterStatus === "OK" ? "secondary" : "destructive"}>
+                    Capítulo {chapterStatus === "OK" ? "coherente" : "incoherente"}
+                  </Badge>
+                )}
+                {typeof suspectCode === "boolean" && (
+                  <Badge variant={suspectCode ? "destructive" : "outline"}>
+                    {suspectCode ? "Código sospechoso" : "Código habitual"}
+                  </Badge>
+                )}
+                {requiresReview && (
+                  <Badge variant="outline" className="border-amber-400 text-amber-600 dark:text-amber-300">
+                    Revisión recomendada
+                  </Badge>
+                )}
+                {typeof predictionMeta?.responseTime === "number" && (
+                  <Badge variant="outline">Tiempo respuesta: {predictionMeta.responseTime.toFixed(2)} s</Badge>
+                )}
+              </div>
 
               {isLowConfidence && (
                 <div className="p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-2xl">

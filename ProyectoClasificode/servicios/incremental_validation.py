@@ -42,13 +42,11 @@ Uso:
     >>> # Registra una clasificación
     >>> incremental_validation.record_classification(
     ...     case_id=123,
-    ...     start_time=start,
-    ...     end_time=end,
-    ...     confidence=0.85,
     ...     hs_code="0901110000",
-    ...     validation_result={"score": 0.9},
-    ...     features={"tipo": "producto_terminado"},
-    ...     method="specific_rule"
+    ...     confidence=0.85,
+    ...     validation_result={"validation_score": 0.9},
+    ...     method="specific_rule",
+    ...     duration_s=1.25
     ... )
     >>> # Obtener resumen de rendimiento
     >>> summary = incremental_validation.get_performance_summary(hours_back=24)
@@ -56,24 +54,27 @@ Uso:
 """
 
 import json
+import logging
 import threading
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from servicios.metrics_service import metrics_service
 
 @dataclass
 class ClassificationRecord:
     """Registro de una clasificación individual para análisis incremental"""
     case_id: int
-    start_time: datetime
-    end_time: datetime
-    confidence: float
     hs_code: str
-    validation_result: Dict[str, Any]
-    features: Dict[str, Any]
-    method: str  # 'specific_rule', 'rgi', 'fallback'
+    timestamp: datetime = field(default_factory=datetime.utcnow)
+    confidence: float = 0.0
+    validation_score: float = 1.0
+    validation_result: Dict[str, Any] = field(default_factory=dict)
+    method: str = "unknown"  # 'specific_rule', 'rgi', 'fallback'
+    is_suspect: bool = False
+    requires_review: bool = False
+    duration_s: float = 0.0
 
 class IncrementalValidationService:
     """
@@ -107,51 +108,74 @@ class IncrementalValidationService:
             'max_error_rate': 0.2
         }
     
-    def record_classification(self, case_id: int, start_time: datetime, end_time: datetime,
-                            confidence: float, hs_code: str, validation_result: Dict[str, Any],
-                            features: Dict[str, Any], method: str, validation_score: float = None, 
-                            requires_review: bool = False, context: Dict[str, Any] = None) -> None:
+    def record_classification(self, case_id: int, hs_code: str,
+                              confidence: Optional[float] = None,
+                              validation_score: Optional[float] = None,
+                              validation_result: Optional[Dict[str, Any]] = None,
+                              method: Optional[str] = None,
+                              is_suspect: Optional[bool] = None,
+                              requires_review: Optional[bool] = None,
+                              duration_s: Optional[float] = None) -> None:
         """
         Registra una clasificación individual para análisis incremental.
         
         Args:
             case_id: ID del caso clasificado
-            start_time: Timestamp de inicio de clasificación
-            end_time: Timestamp de fin de clasificación
-            confidence: Confianza de la clasificación
             hs_code: Código HS asignado
-            validation_result: Resultado de validación
-            features: Características extraídas
-            method: Método de clasificación usado
+            confidence: Confianza de la clasificación (opcional)
             validation_score: Score de validación (opcional)
-            requires_review: Si requiere revisión humana (opcional)
-            context: Contexto adicional (opcional)
+            validation_result: Resultado de validación (opcional)
+            method: Método de clasificación usado (opcional)
+            is_suspect: Si pertenece a lista de códigos sospechosos
+            requires_review: Si requiere revisión humana
+            duration_s: Duración de la clasificación en segundos
         """
         try:
             with self.lock:
+                safe_confidence = float(confidence) if confidence is not None else 0.0
+                safe_validation_score = (
+                    float(validation_score)
+                    if validation_score is not None
+                    else float(validation_result.get('validation_score', 1.0))
+                    if validation_result
+                    else 1.0
+                )
+                safe_validation_result = validation_result.copy() if isinstance(validation_result, dict) else {}
+                safe_method = method or safe_validation_result.get('method', 'unknown')
+                safe_requires_review = bool(requires_review)
+                safe_is_suspect = bool(is_suspect)
+                safe_duration = float(duration_s) if duration_s is not None else float(safe_validation_result.get('response_time', 0.0) or 0.0)
+                
                 # Crear registro de clasificación
                 record = ClassificationRecord(
                     case_id=case_id,
-                    start_time=start_time,
-                    end_time=end_time,
-                    confidence=confidence,
                     hs_code=hs_code,
-                    validation_result=validation_result,
-                    features=features,
-                    method=method
+                    confidence=safe_confidence,
+                    validation_score=safe_validation_score,
+                    validation_result=safe_validation_result,
+                    method=safe_method,
+                    is_suspect=safe_is_suspect,
+                    requires_review=safe_requires_review,
+                    duration_s=safe_duration
                 )
                 
                 # Agregar al buffer
                 self.classification_buffer.append(record)
                 
                 # Calcular métricas individuales
-                response_time = (end_time - start_time).total_seconds()
-                validation_score = validation_result.get('validation_score', 1.0)
+                response_time = record.duration_s
                 
                 # Registrar métricas individuales
-                metrics_service.record_classification_metrics(
-                    case_id, confidence, response_time, validation_score
-                )
+                try:
+                    metrics_service.record_classification_metrics(
+                        case_id,
+                        record.confidence,
+                        response_time,
+                        record.validation_score,
+                        requires_review=record.requires_review
+                    )
+                except Exception as metrics_error:
+                    logging.warning(f"[IncrementalValidation] Error registrando métricas individuales: {metrics_error}")
                 
                 # Verificar si es momento de calcular KPIs promediadas
                 if len(self.classification_buffer) >= self.batch_size:
@@ -161,7 +185,7 @@ class IncrementalValidationService:
                 self._check_alerts(record)
                 
         except Exception as e:
-            print(f"[WARNING] Error registrando clasificación incremental: {e}")
+            logging.warning(f"[IncrementalValidation] Error registrando clasificación incremental: {e}")
             # No lanzar excepción para no romper el flujo principal
     
     def _calculate_batch_kpis(self) -> None:
@@ -174,8 +198,8 @@ class IncrementalValidationService:
             
             # Calcular métricas del lote
             confidences = [r.confidence for r in self.classification_buffer]
-            response_times = [(r.end_time - r.start_time).total_seconds() for r in self.classification_buffer]
-            validation_scores = [r.validation_result.get('validation_score', 1.0) for r in self.classification_buffer]
+            response_times = [r.duration_s for r in self.classification_buffer]
+            validation_scores = [r.validation_score for r in self.classification_buffer]
             
             # Métricas promediadas
             avg_confidence = sum(confidences) / len(confidences)
@@ -215,10 +239,10 @@ class IncrementalValidationService:
             self.classification_buffer.clear()
             self.last_kpi_update = datetime.now()
             
-            print(f"[KPIS] KPIs calculadas para lote: confianza={avg_confidence:.3f}, tiempo={avg_response_time:.2f}s")
+            logging.info(f"[KPIS] KPIs calculadas para lote: confianza={avg_confidence:.3f}, tiempo={avg_response_time:.2f}s")
             
         except Exception as e:
-            print(f"[ERROR] Error calculando KPIs del lote: {e}")
+            logging.error(f"[KPIS] Error calculando KPIs del lote: {e}")
     
     def _calculate_method_distribution(self) -> Dict[str, float]:
         """
@@ -281,7 +305,7 @@ class IncrementalValidationService:
             })
             
         except Exception as e:
-            print(f"[ERROR] Error registrando KPIs del lote: {e}")
+            logging.error(f"[KPIS] Error registrando KPIs del lote: {e}")
     
     def _check_alerts(self, record: ClassificationRecord) -> None:
         """
@@ -303,7 +327,7 @@ class IncrementalValidationService:
                 })
             
             # Verificar tiempo de respuesta alto
-            response_time = (record.end_time - record.start_time).total_seconds()
+            response_time = record.duration_s
             if response_time > self.thresholds['max_response_time']:
                 alerts.append({
                     'type': 'slow_response',
@@ -313,7 +337,7 @@ class IncrementalValidationService:
                 })
             
             # Verificar fallo de validación
-            validation_score = record.validation_result.get('validation_score', 1.0)
+            validation_score = record.validation_score
             if validation_score < self.thresholds['min_validation_score']:
                 alerts.append({
                     'type': 'validation_failure',
@@ -327,7 +351,7 @@ class IncrementalValidationService:
                 self._register_alert(alert)
                 
         except Exception as e:
-            print(f"[ERROR] Error verificando alertas: {e}")
+            logging.error(f"[ALERT] Error verificando alertas: {e}")
     
     def _register_alert(self, alert: Dict[str, Any]) -> None:
         """
@@ -345,10 +369,10 @@ class IncrementalValidationService:
                 'timestamp': datetime.now().isoformat()
             })
             
-            print(f"[ALERT] {alert['type']}: valor={alert['value']}, umbral={alert['threshold']}, caso={alert['case_id']}")
+            logging.info(f"[ALERT] {alert['type']}: valor={alert['value']}, umbral={alert['threshold']}, caso={alert['case_id']}")
             
         except Exception as e:
-            print(f"[ERROR] Error registrando alerta: {e}")
+            logging.error(f"[ALERT] Error registrando alerta: {e}")
     
     def get_performance_summary(self, hours: int = 24) -> Dict[str, Any]:
         """
@@ -411,7 +435,7 @@ class IncrementalValidationService:
             }
             
         except Exception as e:
-            print(f"[ERROR] Error generando resumen de rendimiento: {e}")
+            logging.error(f"[KPIS] Error generando resumen de rendimiento: {e}")
             return {
                 'period_hours': hours,
                 'total_batches': 0,
@@ -429,12 +453,12 @@ class IncrementalValidationService:
             with self.lock:
                 if self.classification_buffer:
                     self._calculate_batch_kpis()
-                    print("[KPIS] Cálculo forzado de KPIs completado")
+                    logging.info("[KPIS] Cálculo forzado de KPIs completado")
                 else:
-                    print("[KPIS] No hay clasificaciones en buffer para calcular KPIs")
+                    logging.info("[KPIS] No hay clasificaciones en buffer para calcular KPIs")
                     
         except Exception as e:
-            print(f"[ERROR] Error en cálculo forzado de KPIs: {e}")
+            logging.error(f"[KPIS] Error en cálculo forzado de KPIs: {e}")
     
     def update_thresholds(self, new_thresholds: Dict[str, float]) -> None:
         """
@@ -445,10 +469,10 @@ class IncrementalValidationService:
         """
         try:
             self.thresholds.update(new_thresholds)
-            print(f"[KPIS] Umbrales actualizados: {new_thresholds}")
+            logging.info(f"[KPIS] Umbrales actualizados: {new_thresholds}")
             
         except Exception as e:
-            print(f"[ERROR] Error actualizando umbrales: {e}")
+            logging.error(f"[KPIS] Error actualizando umbrales: {e}")
 
 # Instancia global del servicio de validación incremental
 incremental_validation = IncrementalValidationService()

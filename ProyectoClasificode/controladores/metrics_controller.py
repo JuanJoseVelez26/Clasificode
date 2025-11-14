@@ -12,6 +12,7 @@ from typing import Dict, Any
 import jwt
 from servicios.incremental_validation import incremental_validation
 from servicios.security import SecurityService
+from servicios.metrics_service import metrics_service
 
 # Crear blueprint para métricas
 metrics_bp = Blueprint('metrics', __name__)
@@ -113,7 +114,8 @@ def get_latest_kpis():
         return jsonify({
             'kpis': kpis,
             'period_hours': hours,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.utcnow().isoformat(),
+            'massive_test_summary': metrics_service.get_massive_test_summary()
         })
         
     except ValueError:

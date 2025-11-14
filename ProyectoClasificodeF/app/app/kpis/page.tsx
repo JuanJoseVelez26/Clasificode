@@ -1,374 +1,330 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Download, TrendingUp, TrendingDown, FileText, CheckCircle, AlertTriangle } from "lucide-react"
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-  Area,
-  AreaChart,
-} from "recharts"
-import { useI18n } from "@/lib/i18n"
+import { useToast } from "@/hooks/use-toast"
+import { apiClient } from "@/lib/apiClient"
 
-interface KPIData {
-  totalClassifications: number
-  accuracyRate: number
-  avgConfidence: number
-  pendingAudits: number
-  dailyVolume: Array<{ date: string; count: number }>
-  confidenceDistribution: Array<{ range: string; count: number; color: string }>
-  topCategories: Array<{ category: string; count: number; percentage: number }>
-  auditStats: Array<{ status: string; count: number; color: string }>
-  monthlyTrends: Array<{ month: string; classifications: number; accuracy: number }>
+interface MetricEntry {
+  latest_value: number
+  latest_context?: Record<string, any>
+  latest_timestamp?: string
+  count: number
+}
+
+interface MassiveTestSummary {
+  total_products: number
+  success_count: number
+  errors: number
+  avg_confidence: number
+  min_confidence: number
+  max_confidence: number
+  suspicious_ratio: number
+  review_ratio: number
+  avg_response_time: number
+  top_hs_codes: Array<{ hs: string; count: number }>
+}
+
+const RANGE_TO_HOURS: Record<string, number> = {
+  "24h": 24,
+  "7d": 24 * 7,
+  "30d": 24 * 30,
+  "90d": 24 * 90,
+}
+
+type Tone = "ok" | "warn" | "danger"
+
+function formatPercent(value: number | undefined, digits = 1): string {
+  if (typeof value !== "number" || Number.isNaN(value)) return "0%"
+  return `${(value * 100).toFixed(digits)}%`
+}
+
+function formatSeconds(value: number | undefined): string {
+  if (typeof value !== "number" || Number.isNaN(value)) return "0.00 s"
+  return `${value.toFixed(2)} s`
+}
+
+function resolveTone(value: number, { ok, warn }: { ok: number; warn: number }, invert = false): Tone {
+  const normalized = Number.isFinite(value) ? value : 0
+  if (!invert) {
+    if (normalized >= ok) return "ok"
+    if (normalized >= warn) return "warn"
+    return "danger"
+  }
+  if (normalized <= ok) return "ok"
+  if (normalized <= warn) return "warn"
+  return "danger"
+}
+
+interface MetricCardProps {
+  title: string
+  value: string
+  description: string
+  tone: Tone
+}
+
+const MetricCard = ({ title, value, description, tone }: MetricCardProps) => {
+  const variantClasses: Record<Tone, string> = {
+    ok: "text-emerald-600 dark:text-emerald-400",
+    warn: "text-amber-600 dark:text-amber-400",
+    danger: "text-red-600 dark:text-red-400",
+  }
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold text-muted-foreground">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className={`text-2xl font-bold ${variantClasses[tone]}`}>{value}</div>
+        <p className="text-xs text-muted-foreground mt-1">{description}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
+const TONE_BADGE_VARIANT: Record<Tone, "default" | "secondary" | "destructive" | "outline"> = {
+  ok: "secondary",
+  warn: "default",
+  danger: "destructive",
 }
 
 export default function KPIsPage() {
-  const { t } = useI18n()
-  const [kpiData, setKpiData] = useState<KPIData | null>(null)
-  const [timeRange, setTimeRange] = useState("30d")
+  const { toast } = useToast()
+  const [timeRange, setTimeRange] = useState<string>("24h")
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [kpis, setKpis] = useState<Record<string, MetricEntry>>({})
+  const [massiveSummary, setMassiveSummary] = useState<MassiveTestSummary | null>(null)
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchKPIs = async () => {
+    const fetchMetrics = async () => {
       setLoading(true)
+      setError(null)
       try {
-        // Mock KPI data
-        const data: KPIData = {
-          totalClassifications: 2847,
-          accuracyRate: 94.2,
-          avgConfidence: 0.87,
-          pendingAudits: 23,
-          dailyVolume: Array.from({ length: 30 }, (_, i) => ({
-            date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-            count: Math.floor(Math.random() * 100) + 50,
-          })),
-          confidenceDistribution: [
-            { range: "Alta (≥0.85)", count: 1892, color: "#22c55e" },
-            { range: "Media (0.6-0.85)", count: 743, color: "#f59e0b" },
-            { range: "Baja (<0.6)", count: 212, color: "#ef4444" },
-          ],
-          topCategories: [
-            { category: "84 - Máquinas y aparatos", count: 456, percentage: 16.0 },
-            { category: "85 - Máquinas eléctricas", count: 398, percentage: 14.0 },
-            { category: "39 - Plásticos", count: 342, percentage: 12.0 },
-            { category: "73 - Manufacturas de hierro", count: 285, percentage: 10.0 },
-            { category: "90 - Instrumentos ópticos", count: 227, percentage: 8.0 },
-          ],
-          auditStats: [
-            { status: "Aprobado", count: 156, color: "#22c55e" },
-            { status: "Corregido", count: 89, color: "#f59e0b" },
-            { status: "Rechazado", count: 34, color: "#ef4444" },
-            { status: "Pendiente", count: 23, color: "#6b7280" },
-          ],
-          monthlyTrends: [
-            { month: "Ene", classifications: 2100, accuracy: 92.1 },
-            { month: "Feb", classifications: 2350, accuracy: 93.4 },
-            { month: "Mar", classifications: 2680, accuracy: 94.2 },
-            { month: "Abr", classifications: 2847, accuracy: 94.2 },
-          ],
+        const hours = RANGE_TO_HOURS[timeRange] ?? 24
+        const response = await apiClient.get("/metrics/kpis", { params: { hours } })
+        const data = response.data ?? {}
+        setKpis(data.kpis ?? {})
+
+        const summary = data.massive_test_summary
+        if (summary?.summary) {
+          setMassiveSummary(summary.summary as MassiveTestSummary)
+          setGeneratedAt(summary.generated_at ?? null)
+        } else {
+          setMassiveSummary(null)
+          setGeneratedAt(null)
         }
-        setKpiData(data)
-      } catch (error) {
-        console.error("Error fetching KPIs:", error)
+      } catch (err: any) {
+        const message = err?.message || err?.data?.error || "No se pudieron obtener las métricas"
+        setError(message)
+        toast({ variant: "destructive", title: "Error cargando métricas", description: message })
       } finally {
         setLoading(false)
       }
     }
 
-    fetchKPIs()
-  }, [timeRange])
+    fetchMetrics()
+  }, [timeRange, toast])
+
+  const avgConfidence = useMemo(() => {
+    if (massiveSummary) return massiveSummary.avg_confidence
+    return Number(kpis.classification_confidence?.latest_value ?? 0)
+  }, [kpis, massiveSummary])
+
+  const avgResponse = useMemo(() => {
+    if (massiveSummary) return massiveSummary.avg_response_time
+    return Number(kpis.response_time?.latest_value ?? 0)
+  }, [kpis, massiveSummary])
+
+  const reviewRatio = useMemo(() => {
+    if (massiveSummary) return massiveSummary.review_ratio
+    return Number(kpis.feedback_ratio?.latest_value ?? 0)
+  }, [kpis, massiveSummary])
+
+  const suspiciousRatio = useMemo(() => {
+    if (massiveSummary) return massiveSummary.suspicious_ratio
+    return Number(kpis.suspicious_ratio?.latest_value ?? 0)
+  }, [kpis, massiveSummary])
+
+  const accuracyEstimate = useMemo(() => {
+    const direct = kpis.accuracy_test_set?.latest_value
+    if (typeof direct === "number") return direct
+    if (massiveSummary) {
+      const { total_products, errors } = massiveSummary
+      if (total_products > 0) {
+        return Math.max(0, (total_products - errors) / total_products)
+      }
+    }
+    return Math.max(0, Math.min(1, avgConfidence * (1 - reviewRatio)))
+  }, [avgConfidence, reviewRatio, kpis, massiveSummary])
+
+  const totalProcessed = massiveSummary?.total_products ?? kpis.classification_event?.count ?? 0
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     )
   }
 
-  if (!kpiData) return null
-
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">KPIs y Métricas</h1>
-          <p className="text-muted-foreground">Panel de control con métricas clave del sistema de clasificación</p>
+          <h1 className="text-3xl font-bold tracking-tight">KPIs y métricas</h1>
+          <p className="text-muted-foreground">Visión operativa del clasificador y del test masivo de 50 productos</p>
         </div>
-        <div className="flex items-center gap-4">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Seleccionar período" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Últimos 7 días</SelectItem>
-              <SelectItem value="30d">Últimos 30 días</SelectItem>
-              <SelectItem value="90d">Últimos 90 días</SelectItem>
-              <SelectItem value="1y">Último año</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Exportar
-          </Button>
-        </div>
+        <Select value={timeRange} onValueChange={setTimeRange}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Seleccionar período" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="24h">Últimas 24 horas</SelectItem>
+            <SelectItem value="7d">Últimos 7 días</SelectItem>
+            <SelectItem value="30d">Últimos 30 días</SelectItem>
+            <SelectItem value="90d">Últimos 90 días</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {error && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clasificaciones</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Error al cargar métricas</CardTitle>
+            <CardDescription>{error}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.totalClassifications.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 inline mr-1" />
-              +12.5% vs período anterior
-            </p>
-          </CardContent>
         </Card>
+      )}
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Precisión Promedio</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.accuracyRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 inline mr-1" />
-              +2.1% vs período anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Confianza Promedio</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{(kpiData.avgConfidence * 100).toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 inline mr-1" />
-              +1.8% vs período anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Auditorías Pendientes</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.pendingAudits}</div>
-            <p className="text-xs text-muted-foreground">
-              <TrendingDown className="h-3 w-3 inline mr-1" />
-              -15.2% vs período anterior
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
+          title="Precisión estimada"
+          value={formatPercent(accuracyEstimate)}
+          description="Estimación basada en confianza y feedback registrado"
+          tone={resolveTone(accuracyEstimate, { ok: 0.9, warn: 0.75 })}
+        />
+        <MetricCard
+          title="Confianza promedio"
+          value={formatPercent(avgConfidence)}
+          description="Promedio ponderado de confianza en el período seleccionado"
+          tone={resolveTone(avgConfidence, { ok: 0.78, warn: 0.65 })}
+        />
+        <MetricCard
+          title="Casos sospechosos"
+          value={formatPercent(suspiciousRatio)}
+          description="Proporción de clasificaciones marcadas como código sospechoso"
+          tone={resolveTone(suspiciousRatio, { ok: 0.15, warn: 0.3 }, true)}
+        />
+        <MetricCard
+          title="Tiempo de respuesta"
+          value={formatSeconds(avgResponse)}
+          description="Promedio de generación de respuesta por caso"
+          tone={resolveTone(avgResponse, { ok: 2.5, warn: 4.0 }, true)}
+        />
       </div>
 
-      <Tabs defaultValue="volume" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="volume">Volumen</TabsTrigger>
-          <TabsTrigger value="confidence">Confianza</TabsTrigger>
-          <TabsTrigger value="categories">Categorías</TabsTrigger>
-          <TabsTrigger value="audit">Auditoría</TabsTrigger>
-        </TabsList>
+      {massiveSummary && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Test masivo 50 productos</CardTitle>
+            <CardDescription>
+              Resumen generado automáticamente{generatedAt ? ` el ${new Date(generatedAt).toLocaleString("es-ES")}` : ""}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="outline">Total: {massiveSummary.total_products}</Badge>
+              <Badge variant="outline">Éxitos: {massiveSummary.success_count}</Badge>
+              <Badge variant="outline">Errores: {massiveSummary.errors}</Badge>
+              <Badge variant={TONE_BADGE_VARIANT[resolveTone(massiveSummary.review_ratio, { ok: 0.4, warn: 0.5 }, true)]}>
+                Revisión: {formatPercent(massiveSummary.review_ratio)}
+              </Badge>
+              <Badge variant={TONE_BADGE_VARIANT[resolveTone(massiveSummary.suspicious_ratio, { ok: 0.2, warn: 0.4 }, true)]}>
+                Sospechosos: {formatPercent(massiveSummary.suspicious_ratio)}
+              </Badge>
+            </div>
 
-        <TabsContent value="volume" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Volumen Diario de Clasificaciones</CardTitle>
-                <CardDescription>Número de clasificaciones procesadas por día</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={kpiData.dailyVolume}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(value) =>
-                        new Date(value).toLocaleDateString("es-ES", { month: "short", day: "numeric" })
-                      }
-                    />
-                    <YAxis />
-                    <Tooltip
-                      labelFormatter={(value) => new Date(value).toLocaleDateString("es-ES")}
-                      formatter={(value) => [value, "Clasificaciones"]}
-                    />
-                    <Area type="monotone" dataKey="count" stroke="#004B85" fill="#004B85" fillOpacity={0.1} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Tendencias Mensuales</CardTitle>
-                <CardDescription>Evolución de clasificaciones y precisión</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={kpiData.monthlyTrends}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" />
-                    <Tooltip />
-                    <Bar yAxisId="left" dataKey="classifications" fill="#004B85" />
-                    <Line yAxisId="right" type="monotone" dataKey="accuracy" stroke="#22c55e" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="confidence" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribución de Confianza</CardTitle>
-              <CardDescription>Clasificación de casos por nivel de confianza</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={kpiData.confidenceDistribution}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ range, percentage }) => `${range}: ${percentage}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                    >
-                      {kpiData.confidenceDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="space-y-4">
-                  {kpiData.confidenceDistribution.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                        <span className="text-sm font-medium">{item.range}</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold">{item.count}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {((item.count / kpiData.totalClassifications) * 100).toFixed(1)}%
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs text-muted-foreground">Confianza promedio</p>
+                <p className="text-lg font-semibold">{formatPercent(massiveSummary.avg_confidence)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Rango {formatPercent(massiveSummary.min_confidence)} - {formatPercent(massiveSummary.max_confidence)}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs text-muted-foreground">Tiempo de respuesta</p>
+                <p className="text-lg font-semibold">{formatSeconds(massiveSummary.avg_response_time)}</p>
+              </div>
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs text-muted-foreground">Cobertura efectiva</p>
+                <p className="text-lg font-semibold">
+                  {formatPercent(massiveSummary.success_count / massiveSummary.total_products || 0)}
+                </p>
+              </div>
+            </div>
 
-        <TabsContent value="categories" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Categorías HS</CardTitle>
-              <CardDescription>Categorías más frecuentemente clasificadas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={kpiData.topCategories} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="category" type="category" width={150} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#004B85" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            <div>
+              <h3 className="text-sm font-semibold mb-2">Top códigos HS detectados</h3>
+              {massiveSummary.top_hs_codes.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No hay registros disponibles.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {massiveSummary.top_hs_codes.map((item) => (
+                    <li key={item.hs} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+                      <span className="font-mono">{item.hs}</span>
+                      <span className="text-muted-foreground">{item.count} casos</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
-        <TabsContent value="audit" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Estado de Auditorías</CardTitle>
-                <CardDescription>Distribución de casos auditados</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={kpiData.auditStats}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                      label={({ status, count }) => `${status}: ${count}`}
-                    >
-                      {kpiData.auditStats.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <p className="text-xs text-muted-foreground">
+              Los resultados del test masivo se usan para ajustar dinámicamente los pesos del motor (sin migraciones). Si el
+              ratio de sospechosos supera 60 % o la confianza promedio cae por debajo de 0.6, los pesos de embeddings se
+              penalizan y se elevan los umbrales de fallback. Para ajustes estructurales más fuertes se recomienda programar
+              una iteración adicional con validación humana.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Métricas de Auditoría</CardTitle>
-                <CardDescription>Estadísticas detalladas del proceso de auditoría</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {kpiData.auditStats.map((stat, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" style={{ borderColor: stat.color, color: stat.color }}>
-                        {stat.status}
-                      </Badge>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold">{stat.count}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {((stat.count / kpiData.auditStats.reduce((sum, s) => sum + s.count, 0)) * 100).toFixed(1)}%
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Actividad reciente</CardTitle>
+          <CardDescription>
+            Métricas individuales registradas en el periodo seleccionado (sin impacto en la respuesta del endpoint)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-xs text-muted-foreground">Eventos registrados</p>
+            <p className="text-lg font-semibold">{totalProcessed}</p>
           </div>
-        </TabsContent>
-      </Tabs>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-xs text-muted-foreground">KPIs disponibles</p>
+            <p className="text-lg font-semibold">{Object.keys(kpis).length}</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-xs text-muted-foreground">Última muestra</p>
+            <p className="text-sm text-muted-foreground">
+              {kpis.classification_event?.latest_timestamp
+                ? new Date(kpis.classification_event.latest_timestamp).toLocaleString("es-ES")
+                : "Sin registros"}
+            </p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-xs text-muted-foreground">Feedback recibido</p>
+            <p className="text-lg font-semibold">{kpis.user_feedback?.count ?? 0}</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

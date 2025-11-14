@@ -1,0 +1,4709 @@
+{
+  "generated_at": "2025-11-14T20:17:00.834167",
+  "summary": {
+    "total_products": 55,
+    "success_count": 55,
+    "errors": 0,
+    "avg_confidence": 0.5237,
+    "min_confidence": 0.0,
+    "max_confidence": 0.9,
+    "suspicious_ratio": 0.1273,
+    "review_ratio": 0.3455,
+    "avg_response_time": 0.0884,
+    "top_hs_codes": [
+      {
+        "hs": "0902200000",
+        "count": 11
+      },
+      {
+        "hs": "8471300000",
+        "count": 4
+      },
+      {
+        "hs": "8528720000",
+        "count": 4
+      },
+      {
+        "hs": "2203000000",
+        "count": 4
+      },
+      {
+        "hs": "1509100000",
+        "count": 3
+      }
+    ],
+    "suspect_counts": {
+      "8471300000": 4,
+      "1905000000": 3,
+      "0901110000": 2,
+      "2201100000": 1,
+      "7207110000": 1
+    }
+  },
+  "cases": [
+    {
+      "index": 1,
+      "case_id": 3822,
+      "description": "Laptop profesional ultraliviana con procesador Intel i7, 16GB RAM y SSD 1TB.",
+      "hs": "8471300000",
+      "title": "Máquinas automáticas para procesamiento de datos, portátiles",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.05330549999780487,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8471300000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "case_id": 3823,
+      "description": "Servidor rack 2U con 2 procesadores Xeon, 128GB RAM y 8 bahías hot-swap.",
+      "hs": "8471300000",
+      "title": "Producto clasificado bajo HS6 847130",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13984879999770783,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 8471300000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "case_id": 3824,
+      "description": "Monitor curvo gaming 34 pulgadas QHD, 165Hz, HDR y puertos HDMI/DisplayPort.",
+      "hs": "8528720000",
+      "title": "Monitores de visualización",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.03974690000177361,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8528720000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "case_id": 3825,
+      "description": "Router Wi-Fi 6 con administración en la nube, doble banda y seguridad WPA3.",
+      "hs": "8517620000",
+      "title": "Producto clasificado bajo HS6 851762",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13325879999320023,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 8517620000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "case_id": 3826,
+      "description": "Tablet industrial IP67, pantalla 10'', Android, NFC y lector de códigos.",
+      "hs": "8471300000",
+      "title": "Máquinas automáticas para procesamiento de datos, portátiles",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.04058079999231268,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8471300000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "case_id": 3827,
+      "description": "Compresor de aire industrial 5HP, tanque 200 litros, lubricado por aceite.",
+      "hs": "1509100000",
+      "title": "Aceite de oliva",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.0182139999960782,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1509100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "case_id": 3828,
+      "description": "Torno CNC de precisión para metales, control FANUC, 5 ejes, refrigeración integrada.",
+      "hs": "2203000000",
+      "title": "Producto clasificado bajo HS6 220300",
+      "confidence": 0.6124999999999999,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.06331710000813473,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.5499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.6625
+        },
+        "decision": "Se seleccionó código 2203000000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=metal"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "case_id": 3829,
+      "description": "Taladro percutor inalámbrico 20V, 2 baterías litio ion, torque ajustable.",
+      "hs": "8467210000",
+      "title": "Producto clasificado bajo HS6 846721",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.12885110000206623,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 8467210000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=FAIL",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "case_id": 3830,
+      "description": "Generador eléctrico diésel 30kVA, arranque automático, cabina insonorizada.",
+      "hs": "8501610000",
+      "title": "Producto clasificado bajo HS6 850161",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13466329999209847,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 8501610000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "case_id": 3831,
+      "description": "Pulidora angular 230mm, 2200W, mango antivibración, uso continuo.",
+      "hs": "8467190000",
+      "title": "Producto clasificado bajo HS6 846719",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13910889999533538,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 8467190000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 11,
+      "case_id": 3832,
+      "description": "Panel de yeso verde 12.5mm x 1.2m x 2.4m, resistente a la humedad para baños.",
+      "hs": "1905000000",
+      "title": "Pan y productos de panadería",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": true,
+      "requires_review": false,
+      "response_time": 0.04092800000216812,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1905000000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 12,
+      "case_id": 3833,
+      "description": "Perfil estructural galvanizado tipo C, 3 metros, calibre 14.",
+      "hs": "7216310000",
+      "title": "Producto clasificado bajo HS6 721631",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.06355779999285005,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 7216310000",
+        "factores_clave": [
+          "tipo_de_bien=material_construccion",
+          "uso_principal=construccion",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 13,
+      "case_id": 3834,
+      "description": "Adhesivo epóxico bicomponente para anclajes, cartucho 585ml.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.1464603999920655,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=adhesivo_quimico",
+          "uso_principal=adhesivos",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 14,
+      "case_id": 3835,
+      "description": "Membrana asfáltica prefabricada 4mm con refuerzo poliéster, para impermeabilización.",
+      "hs": "6807100000",
+      "title": "Producto clasificado bajo HS6 680710",
+      "confidence": 0.365,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.14337279999745078,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 6807100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "low_confidence"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 15,
+      "case_id": 3836,
+      "description": "Broca de carburo tungsteno SDS Max 20mm x 400mm.",
+      "hs": "8207500000",
+      "title": "Producto clasificado bajo HS6 820750",
+      "confidence": 0.365,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.1400162000063574,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 8207500000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "low_confidence"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 16,
+      "case_id": 3837,
+      "description": "Chaqueta impermeable outdoor con membrana transpirable, costuras termoselladas.",
+      "hs": "7323930000",
+      "title": "Producto clasificado bajo HS6 732393",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.129912600008538,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 7323930000",
+        "factores_clave": [
+          "tipo_de_bien=envase_recipient",
+          "uso_principal=envase",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 17,
+      "case_id": 3838,
+      "description": "Guantes de seguridad nivel anticorte 5, recubrimiento nitrilo en palma.",
+      "hs": "0902200001",
+      "title": "Alternativa 1 para HS6 090220",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.12979090001317672,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.6,
+          "semantic_score": 0.7000000000000001,
+          "total_score": 0.495
+        },
+        "decision": "Se seleccionó código 0902200001",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 18,
+      "case_id": 3839,
+      "description": "Botas de seguridad dieléctricas punta composite, suela antideslizante.",
+      "hs": "0902200001",
+      "title": "Alternativa 1 para HS6 090220",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.1042170000000624,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.6,
+          "semantic_score": 0.7000000000000001,
+          "total_score": 0.495
+        },
+        "decision": "Se seleccionó código 0902200001",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 19,
+      "case_id": 3840,
+      "description": "Pantalón ignífugo modacrílico para soldador, cintas reflectivas.",
+      "hs": "1905000000",
+      "title": "Pan y productos de panadería",
+      "confidence": 0.0,
+      "chapter_coherence": "FAIL",
+      "suspect_code": true,
+      "requires_review": true,
+      "response_time": 0.11916800000471994,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1905000000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 20,
+      "case_id": 3841,
+      "description": "Calcetines deportivos de compresión graduada, fibras técnicas antibacteriales.",
+      "hs": "2203000000",
+      "title": "Producto clasificado bajo HS6 220300",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.13036789999750908,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 2203000000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 21,
+      "case_id": 3842,
+      "description": "Café tostado en grano gourmet 500g, origen único, tueste medio.",
+      "hs": "0901110000",
+      "title": "Café sin tostar, sin descafeinar",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": true,
+      "requires_review": false,
+      "response_time": 0.039309299987507984,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 0901110000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 22,
+      "case_id": 3843,
+      "description": "Bebida isotónica sin azúcar 600ml, sabor cítrico, adicionada con electrolitos.",
+      "hs": "2203000000",
+      "title": "Producto clasificado bajo HS6 220300",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.029096499987645075,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 2203000000",
+        "factores_clave": [
+          "tipo_de_bien=bebida",
+          "uso_principal=bebida_listo_consumo",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 23,
+      "case_id": 3844,
+      "description": "Harina de almendra 1kg, libre de gluten, molienda fina.",
+      "hs": "1106200000",
+      "title": "Producto clasificado bajo HS6 110620",
+      "confidence": 0.365,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.12571659999957774,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 1106200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "low_confidence"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 24,
+      "case_id": 3845,
+      "description": "Chocolate oscuro artesano 80% cacao, tableta 100g, origen Ecuador.",
+      "hs": "8471300000",
+      "title": "Máquinas automáticas para procesamiento de datos, portátiles",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.040527799996198155,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8471300000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 25,
+      "case_id": 3846,
+      "description": "Conserva de atún premium en aceite de oliva extra virgen, latas 160g.",
+      "hs": "1509100000",
+      "title": "Aceite de oliva",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.04110810000565834,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1509100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 26,
+      "case_id": 3847,
+      "description": "Resina epóxica transparente para pisos autonivelantes, kit 10kg.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.0284451000043191,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 27,
+      "case_id": 3848,
+      "description": "Pintura acrílica en polvo anticorrosiva para estructuras metálicas, color gris.",
+      "hs": "3208900000",
+      "title": "Producto clasificado bajo HS6 320890",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.12475869999616407,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 3208900000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 28,
+      "case_id": 3849,
+      "description": "Detergente industrial enzimático concentrado para lavandería, bidón 20L.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.132104000003892,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=limpieza_hogar",
+          "uso_principal=limpieza",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 29,
+      "case_id": 3850,
+      "description": "Sellador poliuretánico bicomponente para juntas de dilatación, cartucho 600ml.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13622899999609217,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=parte_componente",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 30,
+      "case_id": 3851,
+      "description": "Removedor de óxido fosfatizante a base de ácido fosfórico, tambor 25L.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.06217669999750797,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 31,
+      "case_id": 3852,
+      "description": "Serum facial antioxidante vitamina C al 15%, ácido hialurónico, frasco 30ml.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.027419700010796078,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 32,
+      "case_id": 3853,
+      "description": "Protector solar mineral SPF50+, resistente al agua, 120ml.",
+      "hs": "2201100000",
+      "title": "Agua mineral",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": true,
+      "requires_review": false,
+      "response_time": 0.016328300000168383,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 2201100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 33,
+      "case_id": 3854,
+      "description": "Champú profesional con keratina para cabellos tratados, envase 1L.",
+      "hs": "3305100000",
+      "title": "Producto clasificado bajo HS6 330510",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.12994410000101198,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 3305100000",
+        "factores_clave": [
+          "tipo_de_bien=envase_recipient",
+          "uso_principal=envase",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 34,
+      "case_id": 3855,
+      "description": "Crema hidratante corporal con manteca de karité y aloe vera, 400ml.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.02694290000363253,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 35,
+      "case_id": 3856,
+      "description": "Aceite esencial de lavanda 100% puro, botella ámbar 15ml.",
+      "hs": "1509100000",
+      "title": "Aceite de oliva",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.025737299991305918,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1509100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 36,
+      "case_id": 3857,
+      "description": "Fertilizante granular NPK 14-14-14 de liberación controlada, saco 25kg.",
+      "hs": "3105200000",
+      "title": "Producto clasificado bajo HS6 310520",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.053348000001278706,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 3105200000",
+        "factores_clave": [
+          "tipo_de_bien=fertilizante",
+          "uso_principal=agricola",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 37,
+      "case_id": 3858,
+      "description": "Herbicida selectivo pos-emergente para gramíneas, concentrado 1L.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.055943299987120554,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 38,
+      "case_id": 3859,
+      "description": "Bioestimulante foliar a base de extracto de algas y aminoácidos, bidón 5L.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.060156899999128655,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 39,
+      "case_id": 3860,
+      "description": "Insecticida biológico con Bacillus thuringiensis, polvo mojable 1kg.",
+      "hs": "3808910000",
+      "title": "Producto clasificado bajo HS6 380891",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13687110001046676,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 3808910000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 40,
+      "case_id": 3861,
+      "description": "Trampa cromática adhesiva amarilla para monitoreo de plagas, paquete 50 unidades.",
+      "hs": "8528720000",
+      "title": "Monitores de visualización",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.04733899999700952,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8528720000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 41,
+      "case_id": 3862,
+      "description": "Monitor de signos vitales multiparámetro, pantalla 12 pulgadas, batería interna.",
+      "hs": "8528720000",
+      "title": "Monitores de visualización",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.034650300003704615,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8528720000",
+        "factores_clave": [
+          "tipo_de_bien=equipamiento_electronico",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 42,
+      "case_id": 3863,
+      "description": "Silla de ruedas plegable aluminio, frenos asistente y asiento acolchado.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6124999999999999,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.06743579999601934,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.5499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.6625
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=metal"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 43,
+      "case_id": 3864,
+      "description": "Termómetro infrarrojo clínico sin contacto, precisión ±0.2°C.",
+      "hs": "9025190000",
+      "title": "Producto clasificado bajo HS6 902519",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.12834749999456108,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 9025190000",
+        "factores_clave": [
+          "tipo_de_bien=producto_medico",
+          "uso_principal=medicion_medica",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 44,
+      "case_id": 3865,
+      "description": "Guantes quirúrgicos estériles látex sin polvo, par embalado, talla 7.5.",
+      "hs": "0902200001",
+      "title": "Alternativa 1 para HS6 090220",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.13306469999952242,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.6,
+          "semantic_score": 0.7000000000000001,
+          "total_score": 0.495
+        },
+        "decision": "Se seleccionó código 0902200001",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 45,
+      "case_id": 3866,
+      "description": "Oxímetro de pulso portátil con alarma de saturación y pantalla OLED.",
+      "hs": "8528720000",
+      "title": "Monitores de visualización",
+      "confidence": 0.0,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.09245830000145361,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8528720000",
+        "factores_clave": [
+          "tipo_de_bien=producto_medico",
+          "uso_principal=medicion_medica",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=FAIL",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 46,
+      "case_id": 3867,
+      "description": "Retroexcavadora compacta diésel 70HP, cabina climatizada, cuchara 0.3m³.",
+      "hs": "8429590000",
+      "title": "Producto clasificado bajo HS6 842959",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.1321167999994941,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 8429590000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 47,
+      "case_id": 3868,
+      "description": "Motor fueraborda 4 tiempos 60HP, inyección electrónica, arranque eléctrico.",
+      "hs": "8711500000",
+      "title": "Motocicletas con cilindrada superior a 125 cm³",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.04228579999471549,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 8711500000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=automotriz",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=OK",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 48,
+      "case_id": 3869,
+      "description": "Sistema de riego pivote central 400m, panel control y bomba eléctrica.",
+      "hs": "1905000000",
+      "title": "Pan y productos de panadería",
+      "confidence": 0.0,
+      "chapter_coherence": "FAIL",
+      "suspect_code": true,
+      "requires_review": true,
+      "response_time": 0.0943117999995593,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 1905000000",
+        "factores_clave": [
+          "tipo_de_bien=implemento_riego",
+          "uso_principal=agricola",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 49,
+      "case_id": 3870,
+      "description": "Carretilla elevadora eléctrica 2 toneladas, mástil triplex, batería litio.",
+      "hs": "8427100000",
+      "title": "Producto clasificado bajo HS6 842710",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.13286949999746867,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.415
+        },
+        "decision": "Se seleccionó código 8427100000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "coherencia_capitulo=FAIL",
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 50,
+      "case_id": 3871,
+      "description": "Bomba centrífuga para productos químicos, caudal 25m³/h, carcasa acero inoxidable.",
+      "hs": "7207110000",
+      "title": "Hierro o acero sin alear",
+      "confidence": 0.0,
+      "chapter_coherence": "FAIL",
+      "suspect_code": true,
+      "requires_review": true,
+      "response_time": 0.12445170000137296,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 7207110000",
+        "factores_clave": [
+          "tipo_de_bien=maquinaria_industrial",
+          "uso_principal=industrial_maquinaria",
+          "material_principal=metal"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 51,
+      "case_id": 3872,
+      "description": "Juego de sábanas microfibra hipoalergénica, cama queen, 4 piezas.",
+      "hs": "2203000000",
+      "title": "Producto clasificado bajo HS6 220300",
+      "confidence": 0.5,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13014880000264384,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 2203000000",
+        "factores_clave": [
+          "tipo_de_bien=producto_terminado",
+          "uso_principal=general",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 52,
+      "case_id": 3873,
+      "description": "Alfombra de lana natural tejida a mano, 2m x 3m, diseño geométrico.",
+      "hs": "5703300000",
+      "title": "Producto clasificado bajo HS6 570330",
+      "confidence": 0.41,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.13807600000291131,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.09999999999999998,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.45999999999999996
+        },
+        "decision": "Se seleccionó código 5703300000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=textil"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [
+          "low_evidence"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 53,
+      "case_id": 3874,
+      "description": "Bolso de cuero artesanal con forro textil y herrajes metálicos, color café.",
+      "hs": "0901110000",
+      "title": "Café sin tostar, sin descafeinar",
+      "confidence": 0.9,
+      "chapter_coherence": "OK",
+      "suspect_code": true,
+      "requires_review": false,
+      "response_time": 0.04214689999935217,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.0,
+          "lexical_score": 0.0,
+          "semantic_score": 0.0,
+          "total_score": 0.0
+        },
+        "decision": "Se seleccionó código 0901110000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": true,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 54,
+      "case_id": 3875,
+      "description": "Gorro deportivo térmico respirable con fibras sintéticas.",
+      "hs": "0902200000",
+      "title": "Producto clasificado bajo HS6 090220",
+      "confidence": 0.6575,
+      "chapter_coherence": "OK",
+      "suspect_code": false,
+      "requires_review": false,
+      "response_time": 0.05165399999532383,
+      "rationale": {
+        "chapter_coherence": "OK",
+        "confidence_factors": {
+          "contextual_score": 0.6499999999999999,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.7075
+        },
+        "decision": "Se seleccionó código 0902200000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": false,
+        "review_notes": [],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    },
+    {
+      "index": 55,
+      "case_id": 3876,
+      "description": "Bufanda tejida con fibra de alpaca, teñido natural, 180cm.",
+      "hs": "6506100000",
+      "title": "Producto clasificado bajo HS6 650610",
+      "confidence": 0.2,
+      "chapter_coherence": "FAIL",
+      "suspect_code": false,
+      "requires_review": true,
+      "response_time": 0.14232909999554977,
+      "rationale": {
+        "chapter_coherence": "FAIL",
+        "confidence_factors": {
+          "contextual_score": 0.3,
+          "lexical_score": 0.7,
+          "semantic_score": 0.8,
+          "total_score": 0.55
+        },
+        "decision": "Se seleccionó código 6506100000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "method": "rgi",
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "chapter_incoherent"
+        ],
+        "suspect_code": false,
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ]
+      }
+    }
+  ],
+  "custom_products": {
+    "generated_at": "2025-11-14T20:17:14.356137",
+    "total_items": 134,
+    "global_accuracy": 0.403,
+    "avg_confidence": 0.4979,
+    "errores": [
+      {
+        "descripcion": "Computadora portátil de 15 pulgadas con procesador Intel i7, 16GB RAM, 512GB SSD, pantalla Full HD",
+        "hs6_correcto": "847130",
+        "hs6_predicho": "852872",
+        "confidence": 0.9,
+        "diferencia_capitulo": "84 vs 85",
+        "trace_resumido": "Se seleccionó código 8528720000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Tablet iPad de 10.9 pulgadas con procesador A14 Bionic, 256GB, WiFi y celular",
+        "hs6_correcto": "847130",
+        "hs6_predicho": "851712",
+        "confidence": 0.9,
+        "diferencia_capitulo": "84 vs 85",
+        "trace_resumido": "Se seleccionó código 8517120000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Monitor LED de 27 pulgadas, resolución 4K, HDMI y USB-C",
+        "hs6_correcto": "852852",
+        "hs6_predicho": "852872",
+        "confidence": 0.9,
+        "diferencia_capitulo": "85 vs 85",
+        "trace_resumido": "Se seleccionó código 8528720000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Impresora láser multifuncional, impresión, escaneo y copia, WiFi",
+        "hs6_correcto": "844331",
+        "hs6_predicho": "844332",
+        "confidence": 0.9,
+        "diferencia_capitulo": "84 vs 84",
+        "trace_resumido": "Se seleccionó código 8443320000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Cámara digital DSLR, 24.2 megapíxeles, lente 18-55mm, grabación 4K",
+        "hs6_correcto": "852580",
+        "hs6_predicho": "090220",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "85 vs 09",
+        "trace_resumido": "Se seleccionó código 0902200000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Automóvil eléctrico de 4 puertas, autonomía 400 km, carga rápida",
+        "hs6_correcto": "870380",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "87 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Bicicleta de montaña aro 29, cuadro de aluminio, 21 velocidades, sin motor",
+        "hs6_correcto": "871200",
+        "hs6_predicho": "871150",
+        "confidence": 0.9,
+        "diferencia_capitulo": "87 vs 87",
+        "trace_resumido": "Se seleccionó código 8711500000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Scooter eléctrico plegable, velocidad máxima 25 km/h, batería de litio",
+        "hs6_correcto": "871160",
+        "hs6_predicho": "210111",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "87 vs 21",
+        "trace_resumido": "Se seleccionó código 2101110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Neumático para automóvil, medida 205/55R16, índice de velocidad H",
+        "hs6_correcto": "401110",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "40 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Batería de automóvil 12V, 60Ah, ácido-plomo, libre mantenimiento",
+        "hs6_correcto": "850710",
+        "hs6_predicho": "210111",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "85 vs 21",
+        "trace_resumido": "Se seleccionó código 2101110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Faro LED para automóvil, luz blanca, 6000K, certificado DOT",
+        "hs6_correcto": "851220",
+        "hs6_predicho": "853950",
+        "confidence": 0.5,
+        "diferencia_capitulo": "85 vs 85",
+        "trace_resumido": "Se seleccionó código 8539500000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Refrigerador de dos puertas, 350 litros, tecnología inverter, acero inoxidable",
+        "hs6_correcto": "841810",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Licuadora de 1.5 litros, motor 1000W, 6 velocidades, vaso de vidrio",
+        "hs6_correcto": "850940",
+        "hs6_predicho": "871150",
+        "confidence": 0.0,
+        "diferencia_capitulo": "85 vs 87",
+        "trace_resumido": "Se seleccionó código 8711500000 | chapter=FAIL | validations=coherencia_capitulo=FAIL, tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Pantalón vaquero de mezclilla, talla 32, corte recto, color azul oscuro",
+        "hs6_correcto": "620342",
+        "hs6_predicho": "1905",
+        "confidence": 0.0,
+        "diferencia_capitulo": "62 vs 19",
+        "trace_resumido": "Se seleccionó código 1905000000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Zapatos deportivos de cuero sintético, talla 42, suela de goma, color blanco",
+        "hs6_correcto": "640219",
+        "hs6_predicho": "640399",
+        "confidence": 0.9,
+        "diferencia_capitulo": "64 vs 64",
+        "trace_resumido": "Se seleccionó código 6403990000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Chaqueta de invierno con relleno de plumas, talla L, impermeable",
+        "hs6_correcto": "620113",
+        "hs6_predicho": "960810",
+        "confidence": 0.2,
+        "diferencia_capitulo": "62 vs 96",
+        "trace_resumido": "Se seleccionó código 9608100001 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Bolso de mano de cuero genuino, color negro, correa ajustable",
+        "hs6_correcto": "420221",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "42 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Gorra de béisbol de algodón, color rojo, logo bordado",
+        "hs6_correcto": "650500",
+        "hs6_predicho": "610910",
+        "confidence": 0.59,
+        "diferencia_capitulo": "65 vs 61",
+        "trace_resumido": "Se seleccionó código 6109100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Café en grano tostado de Colombia, 500g, tueste medio",
+        "hs6_correcto": "090121",
+        "hs6_predicho": "090111",
+        "confidence": 0.9,
+        "diferencia_capitulo": "09 vs 09",
+        "trace_resumido": "Se seleccionó código 0901110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Aceite de oliva virgen extra, 1 litro, botella de vidrio, origen España",
+        "hs6_correcto": "150910",
+        "hs6_predicho": "1905",
+        "confidence": 0.9,
+        "diferencia_capitulo": "15 vs 19",
+        "trace_resumido": "Se seleccionó código 1905000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Chocolate negro 70% cacao, 100g, tableta, sin azúcar añadido",
+        "hs6_correcto": "180632",
+        "hs6_predicho": "847130",
+        "confidence": 0.9,
+        "diferencia_capitulo": "18 vs 84",
+        "trace_resumido": "Se seleccionó código 8471300000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Miel de abeja natural, 500g, frasco de vidrio, origen local",
+        "hs6_correcto": "040900",
+        "hs6_predicho": "700100",
+        "confidence": 0.0,
+        "diferencia_capitulo": "04 vs 70",
+        "trace_resumido": "Se seleccionó código 7001000000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Té verde en bolsitas, 100 unidades, sabor natural, sin cafeína",
+        "hs6_correcto": "090220",
+        "hs6_predicho": "090111",
+        "confidence": 0.9,
+        "diferencia_capitulo": "09 vs 09",
+        "trace_resumido": "Se seleccionó código 0901110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Cemento Portland tipo I, bolsa de 50 kg, para construcción general",
+        "hs6_correcto": "252329",
+        "hs6_predicho": "252310",
+        "confidence": 0.9,
+        "diferencia_capitulo": "25 vs 25",
+        "trace_resumido": "Se seleccionó código 2523100000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Martillo de carpintero, mango de madera, cabeza de acero, 500g",
+        "hs6_correcto": "820520",
+        "hs6_predicho": "440710",
+        "confidence": 0.9,
+        "diferencia_capitulo": "82 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Cinta métrica de 5 metros, cinta de acero, carcasa de plástico",
+        "hs6_correcto": "901780",
+        "hs6_predicho": "720711",
+        "confidence": 0.9,
+        "diferencia_capitulo": "90 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Pelota de fútbol de cuero sintético, tamaño 5, peso reglamentario",
+        "hs6_correcto": "950662",
+        "hs6_predicho": "090220",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "95 vs 09",
+        "trace_resumido": "Se seleccionó código 0902200000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Juguetes y entretenimiento"
+      },
+      {
+        "descripcion": "Juego de mesa familiar, 2-6 jugadores, edad 8+, cartón y plástico",
+        "hs6_correcto": "950490",
+        "hs6_predicho": "950300",
+        "confidence": 0.815,
+        "diferencia_capitulo": "95 vs 95",
+        "trace_resumido": "Se seleccionó código 9503000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Juguetes y entretenimiento"
+      },
+      {
+        "descripcion": "Termómetro digital infrarrojo, medición sin contacto, pantalla LCD",
+        "hs6_correcto": "902519",
+        "hs6_predicho": "852872",
+        "confidence": 0.0,
+        "diferencia_capitulo": "90 vs 85",
+        "trace_resumido": "Se seleccionó código 8528720000 | chapter=FAIL | validations=coherencia_capitulo=FAIL, tipo_bien_inconsistente=FAIL",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Vendaje elástico de 10 cm x 4.5 m, algodón, color beige",
+        "hs6_correcto": "300590",
+        "hs6_predicho": "902519",
+        "confidence": 0.2,
+        "diferencia_capitulo": "30 vs 90",
+        "trace_resumido": "Se seleccionó código 9025190000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Guantes de látex desechables, talla M, caja de 100 unidades",
+        "hs6_correcto": "401519",
+        "hs6_predicho": "611610",
+        "confidence": 0.5,
+        "diferencia_capitulo": "40 vs 61",
+        "trace_resumido": "Se seleccionó código 6116100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Lápiz de grafito HB, caja de 12 unidades, madera de cedro",
+        "hs6_correcto": "960910",
+        "hs6_predicho": "440710",
+        "confidence": 0.0,
+        "diferencia_capitulo": "96 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Pintura acrílica blanca, 500ml, tubo de plástico, no tóxica",
+        "hs6_correcto": "320910",
+        "hs6_predicho": "320890",
+        "confidence": 0.5,
+        "diferencia_capitulo": "32 vs 32",
+        "trace_resumido": "Se seleccionó código 3208900000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Pincel de cerdas naturales, número 8, mango de madera",
+        "hs6_correcto": "960330",
+        "hs6_predicho": "440710",
+        "confidence": 0.0,
+        "diferencia_capitulo": "96 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Motor eléctrico trifásico, 5 HP, 1800 RPM, carcasa de hierro fundido",
+        "hs6_correcto": "850152",
+        "hs6_predicho": "871150",
+        "confidence": 0.0,
+        "diferencia_capitulo": "85 vs 87",
+        "trace_resumido": "Se seleccionó código 8711500000 | chapter=FAIL | validations=coherencia_capitulo=FAIL, tipo_bien_inconsistente=FAIL",
+        "categoria": "Industrial y maquinaria"
+      },
+      {
+        "descripcion": "Bomba centrífuga para agua, 1 HP, acero inoxidable, conexión 2 pulgadas",
+        "hs6_correcto": "841370",
+        "hs6_predicho": "220110",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs 22",
+        "trace_resumido": "Se seleccionó código 2201100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Industrial y maquinaria"
+      },
+      {
+        "descripcion": "Válvula de compuerta de acero, 4 pulgadas, presión 150 PSI",
+        "hs6_correcto": "848180",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Industrial y maquinaria"
+      },
+      {
+        "descripcion": "Transformador de distribución, 25 kVA, 13.8kV/480V, aceite mineral",
+        "hs6_correcto": "850421",
+        "hs6_predicho": "150910",
+        "confidence": 0.0,
+        "diferencia_capitulo": "85 vs 15",
+        "trace_resumido": "Se seleccionó código 1509100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Industrial y maquinaria"
+      },
+      {
+        "descripcion": "Manguera de riego de 20 metros, diámetro 1/2 pulgada, PVC",
+        "hs6_correcto": "391739",
+        "hs6_predicho": "310520",
+        "confidence": 0.2,
+        "diferencia_capitulo": "39 vs 31",
+        "trace_resumido": "Se seleccionó código 3105200000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Pala de jardín con mango de madera, hoja de acero, 30 cm",
+        "hs6_correcto": "820130",
+        "hs6_predicho": "440710",
+        "confidence": 0.0,
+        "diferencia_capitulo": "82 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Reloj de pulsera de acero inoxidable, movimiento automático, resistente al agua",
+        "hs6_correcto": "910221",
+        "hs6_predicho": "220110",
+        "confidence": 0.0,
+        "diferencia_capitulo": "91 vs 22",
+        "trace_resumido": "Se seleccionó código 2201100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Perfume de 100ml, fragancia floral, frasco de vidrio, origen Francia",
+        "hs6_correcto": "330300",
+        "hs6_predicho": "700100",
+        "confidence": 0.0,
+        "diferencia_capitulo": "33 vs 70",
+        "trace_resumido": "Se seleccionó código 7001000000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Collar de plata esterlina 925, cadena de 45 cm, cierre de seguridad",
+        "hs6_correcto": "711311",
+        "hs6_predicho": "732393",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "71 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Aceite de coco virgen extra",
+        "hs6_correcto": "151319",
+        "hs6_predicho": "150910",
+        "confidence": 0.9,
+        "diferencia_capitulo": "15 vs 15",
+        "trace_resumido": "Se seleccionó código 1509100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Café instantáneo descafeinado",
+        "hs6_correcto": "210111",
+        "hs6_predicho": "090111",
+        "confidence": 0.0,
+        "diferencia_capitulo": "21 vs 09",
+        "trace_resumido": "Se seleccionó código 0901110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Cerveza sin alcohol",
+        "hs6_correcto": "220291",
+        "hs6_predicho": "220300",
+        "confidence": 0.9,
+        "diferencia_capitulo": "22 vs 22",
+        "trace_resumido": "Se seleccionó código 2203000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Tostadora",
+        "hs6_correcto": "851672",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "85 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Cafetera espresso manual",
+        "hs6_correcto": "851671",
+        "hs6_predicho": "090111",
+        "confidence": 0.0,
+        "diferencia_capitulo": "85 vs 09",
+        "trace_resumido": "Se seleccionó código 0901110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Filtro de aceite",
+        "hs6_correcto": "842123",
+        "hs6_predicho": "150910",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs 15",
+        "trace_resumido": "Se seleccionó código 1509100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Aceite de motor sintético",
+        "hs6_correcto": "271019",
+        "hs6_predicho": "150910",
+        "confidence": 0.9,
+        "diferencia_capitulo": "27 vs 15",
+        "trace_resumido": "Se seleccionó código 1509100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Líquido refrigerante",
+        "hs6_correcto": "382000",
+        "hs6_predicho": "870830",
+        "confidence": 0.725,
+        "diferencia_capitulo": "38 vs 87",
+        "trace_resumido": "Se seleccionó código 8708300000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Chaqueta cuero genuino",
+        "hs6_correcto": "420310",
+        "hs6_predicho": "620193",
+        "confidence": 0.5,
+        "diferencia_capitulo": "42 vs 62",
+        "trace_resumido": "Se seleccionó código 6201930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Zapatos seguridad, puntera acero",
+        "hs6_correcto": "640340",
+        "hs6_predicho": "640399",
+        "confidence": 0.9,
+        "diferencia_capitulo": "64 vs 64",
+        "trace_resumido": "Se seleccionó código 6403990000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Gorra algodón orgánico",
+        "hs6_correcto": "650500",
+        "hs6_predicho": "610910",
+        "confidence": 0.59,
+        "diferencia_capitulo": "65 vs 61",
+        "trace_resumido": "Se seleccionó código 6109100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Bufanda lana merino",
+        "hs6_correcto": "611710",
+        "hs6_predicho": "650610",
+        "confidence": 0.2,
+        "diferencia_capitulo": "61 vs 65",
+        "trace_resumido": "Se seleccionó código 6506100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Guantes de trabajo cuero",
+        "hs6_correcto": "420329",
+        "hs6_predicho": "611610",
+        "confidence": 0.5,
+        "diferencia_capitulo": "42 vs 61",
+        "trace_resumido": "Se seleccionó código 6116100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Cinturón cuero genuino",
+        "hs6_correcto": "420330",
+        "hs6_predicho": "420321",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "42 vs 42",
+        "trace_resumido": "Se seleccionó código 4203210000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Cemento Portland tipo II",
+        "hs6_correcto": "252329",
+        "hs6_predicho": "252310",
+        "confidence": 0.9,
+        "diferencia_capitulo": "25 vs 25",
+        "trace_resumido": "Se seleccionó código 2523100000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Ladrillo refractario",
+        "hs6_correcto": "690220",
+        "hs6_predicho": "690410",
+        "confidence": 0.9,
+        "diferencia_capitulo": "69 vs 69",
+        "trace_resumido": "Se seleccionó código 6904100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Pintura acrílica 4L",
+        "hs6_correcto": "320910",
+        "hs6_predicho": "320890",
+        "confidence": 0.5,
+        "diferencia_capitulo": "32 vs 32",
+        "trace_resumido": "Se seleccionó código 3208900000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Arena de río lavada",
+        "hs6_correcto": "250590",
+        "hs6_predicho": "250510",
+        "confidence": 0.9,
+        "diferencia_capitulo": "25 vs 25",
+        "trace_resumido": "Se seleccionó código 2505100000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Varilla acero corrugado",
+        "hs6_correcto": "721420",
+        "hs6_predicho": "720711",
+        "confidence": 0.9,
+        "diferencia_capitulo": "72 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Tubería PVC drenaje 4\"",
+        "hs6_correcto": "391723",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "39 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Consola de videojuegos portátil, pantalla 7 pulgadas, 128GB almacenamiento, WiFi",
+        "hs6_correcto": "950450",
+        "hs6_predicho": "852872",
+        "confidence": 0.9,
+        "diferencia_capitulo": "95 vs 85",
+        "trace_resumido": "Se seleccionó código 8528720000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Monitor gaming 144Hz",
+        "hs6_correcto": "852852",
+        "hs6_predicho": "852872",
+        "confidence": 0.9,
+        "diferencia_capitulo": "85 vs 85",
+        "trace_resumido": "Se seleccionó código 8528720000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Silla gaming ergonómica",
+        "hs6_correcto": "940171",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "94 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Oxímetro digital",
+        "hs6_correcto": "901819",
+        "hs6_predicho": "901890",
+        "confidence": 0.2,
+        "diferencia_capitulo": "90 vs 90",
+        "trace_resumido": "Se seleccionó código 9018900000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Guantes de nitrilo",
+        "hs6_correcto": "401519",
+        "hs6_predicho": "611610",
+        "confidence": 0.5,
+        "diferencia_capitulo": "40 vs 61",
+        "trace_resumido": "Se seleccionó código 6116100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Vendaje cohesivo",
+        "hs6_correcto": "300590",
+        "hs6_predicho": "902519",
+        "confidence": 0.2,
+        "diferencia_capitulo": "30 vs 90",
+        "trace_resumido": "Se seleccionó código 9025190000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Pincel naturales N°12",
+        "hs6_correcto": "960330",
+        "hs6_predicho": "220300",
+        "confidence": 0.2,
+        "diferencia_capitulo": "96 vs 22",
+        "trace_resumido": "Se seleccionó código 2203000000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Papel acuarela 300 g/m²",
+        "hs6_correcto": "482390",
+        "hs6_predicho": "480100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "48 vs 48",
+        "trace_resumido": "Se seleccionó código 4801000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Pegamento termofusible",
+        "hs6_correcto": "350610",
+        "hs6_predicho": "732393",
+        "confidence": 0.2,
+        "diferencia_capitulo": "35 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Cutter profesional",
+        "hs6_correcto": "821193",
+        "hs6_predicho": "482010",
+        "confidence": 0.5,
+        "diferencia_capitulo": "82 vs 48",
+        "trace_resumido": "Se seleccionó código 4820100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Manguera riego expandible",
+        "hs6_correcto": "391739",
+        "hs6_predicho": "1905",
+        "confidence": 0.0,
+        "diferencia_capitulo": "39 vs 19",
+        "trace_resumido": "Se seleccionó código 1905000000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Reloj acero automático",
+        "hs6_correcto": "910221",
+        "hs6_predicho": "720711",
+        "confidence": 0.9,
+        "diferencia_capitulo": "91 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Collar oro 18k",
+        "hs6_correcto": "711319",
+        "hs6_predicho": "732393",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "71 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Sierra circular de mano",
+        "hs6_correcto": "846722",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Nivel láser rotativo",
+        "hs6_correcto": "901530",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "90 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Multímetro digital",
+        "hs6_correcto": "903031",
+        "hs6_predicho": "847130",
+        "confidence": 0.725,
+        "diferencia_capitulo": "90 vs 84",
+        "trace_resumido": "Se seleccionó código 8471300000 | chapter=OK | validations=coherencia_capitulo=OK, tipo_bien_inconsistente=FAIL",
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Destornillador eléctrico",
+        "hs6_correcto": "846729",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "84 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Construcción y herramientas"
+      }
+    ],
+    "aciertos": [
+      {
+        "descripcion": "Smartphone Android con pantalla táctil de 6.1 pulgadas, 128GB almacenamiento, cámara triple",
+        "hs6_correcto": "851712",
+        "hs6_predicho": "851712",
+        "confidence": 0.9,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Router inalámbrico WiFi 6, velocidad hasta 1.2 Gbps, 4 puertos Ethernet",
+        "hs6_correcto": "851762",
+        "hs6_predicho": "851762",
+        "confidence": 0.5,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Auriculares inalámbricos con cancelación de ruido, batería 30 horas",
+        "hs6_correcto": "851830",
+        "hs6_predicho": "851830",
+        "confidence": 0.0,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Teclado mecánico gaming RGB, switches azules, retroiluminación",
+        "hs6_correcto": "847160",
+        "hs6_predicho": "847160",
+        "confidence": 0.0,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Mouse inalámbrico óptico, 1600 DPI, batería recargable",
+        "hs6_correcto": "847160",
+        "hs6_predicho": "847160",
+        "confidence": 0.0,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Motocicleta de 250cc, motor monocilíndrico, frenos ABS",
+        "hs6_correcto": "871150",
+        "hs6_predicho": "871150",
+        "confidence": 0.9,
+        "categoria": "Vehículos y transporte"
+      },
+      {
+        "descripcion": "Lavadora automática de 8 kg, carga frontal, 15 programas, eficiencia A+++",
+        "hs6_correcto": "845020",
+        "hs6_predicho": "845020",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Microondas de 25 litros, potencia 800W, grill, plato giratorio",
+        "hs6_correcto": "851650",
+        "hs6_predicho": "851650",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Aspiradora robot inteligente, mapeo láser, control por app, 2.5 horas autonomía",
+        "hs6_correcto": "850910",
+        "hs6_predicho": "850910",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Aire acondicionado split de 12,000 BTU, eficiencia energética A++, WiFi",
+        "hs6_correcto": "841510",
+        "hs6_predicho": "841510",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Plancha de vapor, potencia 2400W, suela cerámica, depósito 300ml",
+        "hs6_correcto": "851640",
+        "hs6_predicho": "851640",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Camiseta de algodón 100%, talla M, color azul, manga corta",
+        "hs6_correcto": "610910",
+        "hs6_predicho": "610910",
+        "confidence": 0.59,
+        "categoria": "Textiles y ropa"
+      },
+      {
+        "descripcion": "Vino tinto reserva, 750ml, botella de vidrio, origen Chile",
+        "hs6_correcto": "220421",
+        "hs6_predicho": "220421",
+        "confidence": 0.9,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Cerveza artesanal IPA, 330ml, lata de aluminio, 6.5% alcohol",
+        "hs6_correcto": "220300",
+        "hs6_predicho": "220300",
+        "confidence": 0.9,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Ladrillo cerámico hueco, 12x20x40 cm, para muros estructurales",
+        "hs6_correcto": "690410",
+        "hs6_predicho": "690410",
+        "confidence": 0.9,
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Taladro inalámbrico de 18V, batería de litio, 13mm chuck",
+        "hs6_correcto": "846721",
+        "hs6_predicho": "846721",
+        "confidence": 0.2,
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Destornillador Phillips, mango ergonómico, punta magnética, 6mm",
+        "hs6_correcto": "820540",
+        "hs6_predicho": "820540",
+        "confidence": 0.5,
+        "categoria": "Construcción y herramientas"
+      },
+      {
+        "descripcion": "Bloques de construcción plásticos para niños mayores de 6 años, 500 piezas",
+        "hs6_correcto": "950300",
+        "hs6_predicho": "950300",
+        "confidence": 0.815,
+        "categoria": "Juguetes y entretenimiento"
+      },
+      {
+        "descripcion": "Muñeca de tela para niñas, 30 cm, cabello rubio, vestido rosa",
+        "hs6_correcto": "950300",
+        "hs6_predicho": "950300",
+        "confidence": 0.815,
+        "categoria": "Juguetes y entretenimiento"
+      },
+      {
+        "descripcion": "Puzzle de 1000 piezas, imagen de paisaje, cartón reciclado",
+        "hs6_correcto": "950300",
+        "hs6_predicho": "950300",
+        "confidence": 0.815,
+        "categoria": "Juguetes y entretenimiento"
+      },
+      {
+        "descripcion": "Mascarilla quirúrgica desechable, 3 capas, caja de 50 unidades",
+        "hs6_correcto": "630790",
+        "hs6_predicho": "630790",
+        "confidence": 0.5,
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Jeringa desechable estéril, 5ml, aguja 21G, uso médico",
+        "hs6_correcto": "901831",
+        "hs6_predicho": "901831",
+        "confidence": 0.2,
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Cuaderno de 200 hojas, rayado, tapa dura, espiral metálico",
+        "hs6_correcto": "482010",
+        "hs6_predicho": "482010",
+        "confidence": 0.5,
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Bolígrafo de tinta azul, punta 0.7mm, cuerpo de plástico",
+        "hs6_correcto": "960810",
+        "hs6_predicho": "960810",
+        "confidence": 0.5,
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Cable eléctrico de cobre, 12 AWG, 3 conductores, aislamiento PVC",
+        "hs6_correcto": "854449",
+        "hs6_predicho": "854449",
+        "confidence": 0.5725,
+        "categoria": "Industrial y maquinaria"
+      },
+      {
+        "descripcion": "Fertilizante NPK 15-15-15, bolsa de 25 kg, para uso agrícola",
+        "hs6_correcto": "310520",
+        "hs6_predicho": "310520",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Semillas de tomate híbrido, 1000 semillas, variedad cherry",
+        "hs6_correcto": "120930",
+        "hs6_predicho": "120930",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Mermelada de fresa artesanal",
+        "hs6_correcto": "200799",
+        "hs6_predicho": "200799",
+        "confidence": 0.6575,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Té negro Earl Grey",
+        "hs6_correcto": "090240",
+        "hs6_predicho": "090240",
+        "confidence": 0.6575,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Salsa de soja japonesa",
+        "hs6_correcto": "210310",
+        "hs6_predicho": "210310",
+        "confidence": 0.6575,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Vinagre balsámico",
+        "hs6_correcto": "220900",
+        "hs6_predicho": "220900",
+        "confidence": 0.6575,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Miel de eucalipto",
+        "hs6_correcto": "040900",
+        "hs6_predicho": "040900",
+        "confidence": 0.6575,
+        "categoria": "Alimentos y bebidas"
+      },
+      {
+        "descripcion": "Aspiradora sin cable",
+        "hs6_correcto": "850910",
+        "hs6_predicho": "850910",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Plancha de pelo",
+        "hs6_correcto": "851632",
+        "hs6_predicho": "851632",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Batidora de mano",
+        "hs6_correcto": "850940",
+        "hs6_predicho": "850940",
+        "confidence": 0.5,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Ventilador de techo con luz",
+        "hs6_correcto": "841451",
+        "hs6_predicho": "841451",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Purificador de aire HEPA",
+        "hs6_correcto": "842139",
+        "hs6_predicho": "842139",
+        "confidence": 0.6175,
+        "categoria": "Hogar y electrodomésticos"
+      },
+      {
+        "descripcion": "Pastillas de freno",
+        "hs6_correcto": "870830",
+        "hs6_predicho": "870830",
+        "confidence": 0.5,
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Bujía de encendido iridio",
+        "hs6_correcto": "851110",
+        "hs6_predicho": "851110",
+        "confidence": 0.46,
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Bomba de combustible eléctrica",
+        "hs6_correcto": "841330",
+        "hs6_predicho": "841330",
+        "confidence": 0.6175,
+        "categoria": "Automotriz y repuestos"
+      },
+      {
+        "descripcion": "Auriculares gaming con micrófono",
+        "hs6_correcto": "851830",
+        "hs6_predicho": "851830",
+        "confidence": 0.9,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Teclado mecánico 60%",
+        "hs6_correcto": "847160",
+        "hs6_predicho": "847160",
+        "confidence": 0.0,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Mouse gaming óptico",
+        "hs6_correcto": "847160",
+        "hs6_predicho": "847160",
+        "confidence": 0.9,
+        "categoria": "Electrónica y computación"
+      },
+      {
+        "descripcion": "Tensiómetro digital",
+        "hs6_correcto": "901890",
+        "hs6_predicho": "901890",
+        "confidence": 0.2,
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Termómetro infrarrojo",
+        "hs6_correcto": "902519",
+        "hs6_predicho": "902519",
+        "confidence": 0.2,
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Mascarilla N95",
+        "hs6_correcto": "630790",
+        "hs6_predicho": "630790",
+        "confidence": 0.5,
+        "categoria": "Médico y farmacéutico"
+      },
+      {
+        "descripcion": "Lápices de colores 72 unidades",
+        "hs6_correcto": "960910",
+        "hs6_predicho": "960910",
+        "confidence": 0.5,
+        "categoria": "Arte y oficina"
+      },
+      {
+        "descripcion": "Semillas tomate cherry",
+        "hs6_correcto": "120930",
+        "hs6_predicho": "120930",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Fertilizante NPK 8-3-5",
+        "hs6_correcto": "310520",
+        "hs6_predicho": "310520",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Maceta terracota",
+        "hs6_correcto": "691490",
+        "hs6_predicho": "691490",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Tijeras de podar",
+        "hs6_correcto": "820150",
+        "hs6_predicho": "820150",
+        "confidence": 0.6575,
+        "categoria": "Agrícola y jardín"
+      },
+      {
+        "descripcion": "Perfume masculino",
+        "hs6_correcto": "330300",
+        "hs6_predicho": "330300",
+        "confidence": 0.5,
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Gafas de sol polarizadas",
+        "hs6_correcto": "900410",
+        "hs6_predicho": "900410",
+        "confidence": 0.5,
+        "categoria": "Lujo y accesorios"
+      },
+      {
+        "descripcion": "Taladro percutor inalámbrico",
+        "hs6_correcto": "846721",
+        "hs6_predicho": "846721",
+        "confidence": 0.5,
+        "categoria": "Construcción y herramientas"
+      }
+    ],
+    "resumen_por_capitulo": [
+      {
+        "chapter": "04",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "70",
+            "count": 1
+          },
+          {
+            "chapter": "04",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "09",
+        "total": 3,
+        "aciertos": 1,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "09",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "chapter": "12",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "12",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "15",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "19",
+            "count": 1
+          },
+          {
+            "chapter": "15",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "18",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "84",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "20",
+        "total": 1,
+        "aciertos": 1,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "20",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "21",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "09",
+            "count": 1
+          },
+          {
+            "chapter": "21",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "22",
+        "total": 4,
+        "aciertos": 3,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "22",
+            "count": 4
+          }
+        ]
+      },
+      {
+        "chapter": "25",
+        "total": 3,
+        "aciertos": 0,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "25",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "chapter": "27",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "15",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "30",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "90",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "31",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "31",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "32",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "32",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "33",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "70",
+            "count": 1
+          },
+          {
+            "chapter": "33",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "35",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "73",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "38",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "87",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "39",
+        "total": 3,
+        "aciertos": 0,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "31",
+            "count": 1
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          },
+          {
+            "chapter": "19",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "40",
+        "total": 3,
+        "aciertos": 0,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "61",
+            "count": 2
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "42",
+        "total": 4,
+        "aciertos": 0,
+        "errores": 4,
+        "predicciones": [
+          {
+            "chapter": "--",
+            "count": 1
+          },
+          {
+            "chapter": "62",
+            "count": 1
+          },
+          {
+            "chapter": "61",
+            "count": 1
+          },
+          {
+            "chapter": "42",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "48",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "48",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "61",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "61",
+            "count": 1
+          },
+          {
+            "chapter": "65",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "62",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "19",
+            "count": 1
+          },
+          {
+            "chapter": "96",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "63",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "63",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "64",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "64",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "65",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "61",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "69",
+        "total": 3,
+        "aciertos": 2,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "69",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "chapter": "71",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "73",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "72",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "72",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "82",
+        "total": 5,
+        "aciertos": 2,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "44",
+            "count": 2
+          },
+          {
+            "chapter": "82",
+            "count": 2
+          },
+          {
+            "chapter": "48",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "84",
+        "total": 20,
+        "aciertos": 11,
+        "errores": 9,
+        "predicciones": [
+          {
+            "chapter": "84",
+            "count": 12
+          },
+          {
+            "chapter": "85",
+            "count": 2
+          },
+          {
+            "chapter": "72",
+            "count": 2
+          },
+          {
+            "chapter": "--",
+            "count": 2
+          },
+          {
+            "chapter": "22",
+            "count": 1
+          },
+          {
+            "chapter": "15",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "85",
+        "total": 22,
+        "aciertos": 12,
+        "errores": 10,
+        "predicciones": [
+          {
+            "chapter": "85",
+            "count": 15
+          },
+          {
+            "chapter": "09",
+            "count": 2
+          },
+          {
+            "chapter": "87",
+            "count": 2
+          },
+          {
+            "chapter": "21",
+            "count": 1
+          },
+          {
+            "chapter": "15",
+            "count": 1
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "87",
+        "total": 5,
+        "aciertos": 2,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "87",
+            "count": 3
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          },
+          {
+            "chapter": "21",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "90",
+        "total": 9,
+        "aciertos": 4,
+        "errores": 5,
+        "predicciones": [
+          {
+            "chapter": "90",
+            "count": 5
+          },
+          {
+            "chapter": "72",
+            "count": 1
+          },
+          {
+            "chapter": "85",
+            "count": 1
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          },
+          {
+            "chapter": "84",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "91",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "22",
+            "count": 1
+          },
+          {
+            "chapter": "72",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "94",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "--",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "95",
+        "total": 6,
+        "aciertos": 3,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "95",
+            "count": 4
+          },
+          {
+            "chapter": "09",
+            "count": 1
+          },
+          {
+            "chapter": "85",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "96",
+        "total": 5,
+        "aciertos": 2,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "44",
+            "count": 2
+          },
+          {
+            "chapter": "96",
+            "count": 2
+          },
+          {
+            "chapter": "22",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "monopolios_predichos": [
+      {
+        "hs6": "852872",
+        "errores": 5
+      },
+      {
+        "hs6": "720711",
+        "errores": 5
+      },
+      {
+        "hs6": "090111",
+        "errores": 4
+      },
+      {
+        "hs6": "440710",
+        "errores": 4
+      },
+      {
+        "hs6": "150910",
+        "errores": 4
+      }
+    ],
+    "fallos_por_categoria": [
+      {
+        "categoria": "Agrícola y jardín",
+        "total": 9,
+        "errores": 3,
+        "aciertos": 6,
+        "accuracy": 0.6667
+      },
+      {
+        "categoria": "Alimentos y bebidas",
+        "total": 15,
+        "errores": 8,
+        "aciertos": 7,
+        "accuracy": 0.4667
+      },
+      {
+        "categoria": "Arte y oficina",
+        "total": 10,
+        "errores": 7,
+        "aciertos": 3,
+        "accuracy": 0.3
+      },
+      {
+        "categoria": "Automotriz y repuestos",
+        "total": 6,
+        "errores": 3,
+        "aciertos": 3,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Construcción y herramientas",
+        "total": 17,
+        "errores": 13,
+        "aciertos": 4,
+        "accuracy": 0.2353
+      },
+      {
+        "categoria": "Electrónica y computación",
+        "total": 16,
+        "errores": 8,
+        "aciertos": 8,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Hogar y electrodomésticos",
+        "total": 14,
+        "errores": 4,
+        "aciertos": 10,
+        "accuracy": 0.7143
+      },
+      {
+        "categoria": "Industrial y maquinaria",
+        "total": 5,
+        "errores": 4,
+        "aciertos": 1,
+        "accuracy": 0.2
+      },
+      {
+        "categoria": "Juguetes y entretenimiento",
+        "total": 5,
+        "errores": 2,
+        "aciertos": 3,
+        "accuracy": 0.6
+      },
+      {
+        "categoria": "Lujo y accesorios",
+        "total": 7,
+        "errores": 5,
+        "aciertos": 2,
+        "accuracy": 0.2857
+      },
+      {
+        "categoria": "Médico y farmacéutico",
+        "total": 11,
+        "errores": 6,
+        "aciertos": 5,
+        "accuracy": 0.4545
+      },
+      {
+        "categoria": "Textiles y ropa",
+        "total": 12,
+        "errores": 11,
+        "aciertos": 1,
+        "accuracy": 0.0833
+      },
+      {
+        "categoria": "Vehículos y transporte",
+        "total": 7,
+        "errores": 6,
+        "aciertos": 1,
+        "accuracy": 0.1429
+      }
+    ],
+    "label": "custom_products"
+  },
+  "custom_products_v2": {
+    "generated_at": "2025-11-14T20:17:19.255311",
+    "total_items": 50,
+    "global_accuracy": 0.44,
+    "avg_confidence": 0.5227,
+    "errores": [
+      {
+        "descripcion": "Detergente en polvo para ropa 1kg",
+        "hs6_correcto": "340220",
+        "hs6_predicho": "610910",
+        "confidence": 0.0,
+        "diferencia_capitulo": "34 vs 61",
+        "trace_resumido": "Se seleccionó código 6109100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Limpieza"
+      },
+      {
+        "descripcion": "Esponja de cocina doble capa",
+        "hs6_correcto": "392410",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "39 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Olla de acero inoxidable 20cm",
+        "hs6_correcto": "732393",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "73 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Sartén antiadherente aluminio 24cm",
+        "hs6_correcto": "761510",
+        "hs6_predicho": "090220",
+        "confidence": 0.2,
+        "diferencia_capitulo": "76 vs 09",
+        "trace_resumido": "Se seleccionó código 0902200000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Plato de cerámica blanco 25cm",
+        "hs6_correcto": "691110",
+        "hs6_predicho": "732393",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "69 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Vaso de vidrio templado 300ml",
+        "hs6_correcto": "701349",
+        "hs6_predicho": "700100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "70 vs 70",
+        "trace_resumido": "Se seleccionó código 7001000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Cuchillo de cocina acero inoxidable",
+        "hs6_correcto": "821192",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "82 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Papel higiénico doble hoja 12 rollos",
+        "hs6_correcto": "481810",
+        "hs6_predicho": "480100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "48 vs 48",
+        "trace_resumido": "Se seleccionó código 4801000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Toallas de papel 6 rollos",
+        "hs6_correcto": "481820",
+        "hs6_predicho": "480100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "48 vs 48",
+        "trace_resumido": "Se seleccionó código 4801000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Rodillera deportiva neopreno",
+        "hs6_correcto": "630790",
+        "hs6_predicho": "950662",
+        "confidence": 0.815,
+        "diferencia_capitulo": "63 vs 95",
+        "trace_resumido": "Se seleccionó código 9506620000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Deportes"
+      },
+      {
+        "descripcion": "Tapete de baño antideslizante",
+        "hs6_correcto": "570500",
+        "hs6_predicho": "090220",
+        "confidence": 0.2,
+        "diferencia_capitulo": "57 vs 09",
+        "trace_resumido": "Se seleccionó código 0902200000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Baño"
+      },
+      {
+        "descripcion": "Estante metálico organizador",
+        "hs6_correcto": "732399",
+        "hs6_predicho": "090220",
+        "confidence": 0.2,
+        "diferencia_capitulo": "73 vs 09",
+        "trace_resumido": "Se seleccionó código 0902200000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL | review_notes=low_evidence, chapter_incoherent",
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Paraguas plegable tela poliéster",
+        "hs6_correcto": "660191",
+        "hs6_predicho": "220110",
+        "confidence": 0.0,
+        "diferencia_capitulo": "66 vs 22",
+        "trace_resumido": "Se seleccionó código 2201100000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Accesorios"
+      },
+      {
+        "descripcion": "Pulsera acero inoxidable",
+        "hs6_correcto": "711711",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "71 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Accesorios"
+      },
+      {
+        "descripcion": "Sombrero de paja natural",
+        "hs6_correcto": "650400",
+        "hs6_predicho": "660191",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "65 vs 66",
+        "trace_resumido": "Se seleccionó código 6601910000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Ropa/Accesorios"
+      },
+      {
+        "descripcion": "Jarrón decorativo vidrio 30cm",
+        "hs6_correcto": "701399",
+        "hs6_predicho": "700100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "70 vs 70",
+        "trace_resumido": "Se seleccionó código 7001000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Decoración"
+      },
+      {
+        "descripcion": "Portarretratos madera 20x25cm",
+        "hs6_correcto": "441400",
+        "hs6_predicho": "440710",
+        "confidence": 0.9,
+        "diferencia_capitulo": "44 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Decoración"
+      },
+      {
+        "descripcion": "Pintura en aerosol color negro 400ml",
+        "hs6_correcto": "320820",
+        "hs6_predicho": "320890",
+        "confidence": 0.5,
+        "diferencia_capitulo": "32 vs 32",
+        "trace_resumido": "Se seleccionó código 3208900000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Pinturas"
+      },
+      {
+        "descripcion": "Perforadora de papel 2 huecos",
+        "hs6_correcto": "847290",
+        "hs6_predicho": "480100",
+        "confidence": 0.9,
+        "diferencia_capitulo": "84 vs 48",
+        "trace_resumido": "Se seleccionó código 4801000000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Oficina"
+      },
+      {
+        "descripcion": "Carpetas plásticas tamaño carta",
+        "hs6_correcto": "482030",
+        "hs6_predicho": "SIN_PREDICCION",
+        "confidence": 0.0,
+        "diferencia_capitulo": "48 vs --",
+        "trace_resumido": "Sin trazas",
+        "categoria": "Oficina"
+      },
+      {
+        "descripcion": "Termo acero inoxidable 1L",
+        "hs6_correcto": "732393",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "73 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Espátula de cocina silicona",
+        "hs6_correcto": "392410",
+        "hs6_predicho": "732393",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "39 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Colador metálico de malla fina",
+        "hs6_correcto": "732410",
+        "hs6_predicho": "732393",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "73 vs 73",
+        "trace_resumido": "Se seleccionó código 7323930000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Agujas de coser acero",
+        "hs6_correcto": "731990",
+        "hs6_predicho": "720711",
+        "confidence": 0.0,
+        "diferencia_capitulo": "73 vs 72",
+        "trace_resumido": "Se seleccionó código 7207110000 | chapter=FAIL | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Mercería"
+      },
+      {
+        "descripcion": "Hilo poliéster 100m",
+        "hs6_correcto": "550810",
+        "hs6_predicho": "960720",
+        "confidence": 0.6575,
+        "diferencia_capitulo": "55 vs 96",
+        "trace_resumido": "Se seleccionó código 9607200000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Mercería"
+      },
+      {
+        "descripcion": "Lámpara de escritorio LED",
+        "hs6_correcto": "940520",
+        "hs6_predicho": "853950",
+        "confidence": 0.6175,
+        "diferencia_capitulo": "94 vs 85",
+        "trace_resumido": "Se seleccionó código 8539500000 | chapter=OK | validations=coherencia_capitulo=FAIL, tipo_bien_inconsistente=FAIL",
+        "categoria": "Iluminación"
+      },
+      {
+        "descripcion": "Silla para comedor madera",
+        "hs6_correcto": "940161",
+        "hs6_predicho": "440710",
+        "confidence": 0.9,
+        "diferencia_capitulo": "94 vs 44",
+        "trace_resumido": "Se seleccionó código 4407100000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Muebles"
+      },
+      {
+        "descripcion": "Caja de herramientas metálica",
+        "hs6_correcto": "732690",
+        "hs6_predicho": "820559",
+        "confidence": 0.5,
+        "diferencia_capitulo": "73 vs 82",
+        "trace_resumido": "Se seleccionó código 8205590000 | chapter=OK | validations=tipo_bien_inconsistente=FAIL",
+        "categoria": "Herramientas"
+      }
+    ],
+    "aciertos": [
+      {
+        "descripcion": "Cepillo de dientes manual, cerdas suaves, mango plástico",
+        "hs6_correcto": "960321",
+        "hs6_predicho": "960321",
+        "confidence": 0.6575,
+        "categoria": "Higiene"
+      },
+      {
+        "descripcion": "Pasta dental fluorada 120g",
+        "hs6_correcto": "330610",
+        "hs6_predicho": "330610",
+        "confidence": 0.6575,
+        "categoria": "Higiene"
+      },
+      {
+        "descripcion": "Jabón líquido antibacterial 500ml",
+        "hs6_correcto": "340130",
+        "hs6_predicho": "340130",
+        "confidence": 0.6575,
+        "categoria": "Limpieza"
+      },
+      {
+        "descripcion": "Tijeras multiusos 20cm",
+        "hs6_correcto": "821300",
+        "hs6_predicho": "821300",
+        "confidence": 0.5,
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Botella deportiva plástico 750ml",
+        "hs6_correcto": "392330",
+        "hs6_predicho": "392330",
+        "confidence": 0.6575,
+        "categoria": "Deportes"
+      },
+      {
+        "descripcion": "Balón de baloncesto tamaño 7",
+        "hs6_correcto": "950662",
+        "hs6_predicho": "950662",
+        "confidence": 0.815,
+        "categoria": "Deportes"
+      },
+      {
+        "descripcion": "Linterna LED mano, batería AA",
+        "hs6_correcto": "851310",
+        "hs6_predicho": "851310",
+        "confidence": 0.6175,
+        "categoria": "Iluminación"
+      },
+      {
+        "descripcion": "Bombillo LED E27 12W",
+        "hs6_correcto": "854370",
+        "hs6_predicho": "854370",
+        "confidence": 0.6175,
+        "categoria": "Iluminación"
+      },
+      {
+        "descripcion": "Cortina de baño PVC 180x200cm",
+        "hs6_correcto": "392490",
+        "hs6_predicho": "392490",
+        "confidence": 0.7475,
+        "categoria": "Baño"
+      },
+      {
+        "descripcion": "Caja plástica organizadora 20L",
+        "hs6_correcto": "392310",
+        "hs6_predicho": "392310",
+        "confidence": 0.6575,
+        "categoria": "Hogar"
+      },
+      {
+        "descripcion": "Mochila nylon 20L, cremalleras",
+        "hs6_correcto": "420292",
+        "hs6_predicho": "420292",
+        "confidence": 0.6575,
+        "categoria": "Accesorios"
+      },
+      {
+        "descripcion": "Cinturón sintético hebilla metálica",
+        "hs6_correcto": "420321",
+        "hs6_predicho": "420321",
+        "confidence": 0.6575,
+        "categoria": "Ropa/Accesorios"
+      },
+      {
+        "descripcion": "Adhesivo instantáneo cianoacrilato",
+        "hs6_correcto": "350610",
+        "hs6_predicho": "350610",
+        "confidence": 0.6575,
+        "categoria": "Adhesivos"
+      },
+      {
+        "descripcion": "Cinta adhesiva transparente 50m",
+        "hs6_correcto": "391910",
+        "hs6_predicho": "391910",
+        "confidence": 0.365,
+        "categoria": "Oficina"
+      },
+      {
+        "descripcion": "Grapadora metálica de escritorio",
+        "hs6_correcto": "847290",
+        "hs6_predicho": "847290",
+        "confidence": 0.2,
+        "categoria": "Oficina"
+      },
+      {
+        "descripcion": "Lupa de mano 3x",
+        "hs6_correcto": "901380",
+        "hs6_predicho": "901380",
+        "confidence": 0.6575,
+        "categoria": "Precisión"
+      },
+      {
+        "descripcion": "Cuerda de salto algodón",
+        "hs6_correcto": "560749",
+        "hs6_predicho": "560749",
+        "confidence": 0.2,
+        "categoria": "Deportes"
+      },
+      {
+        "descripcion": "Bandeja horneado aluminio",
+        "hs6_correcto": "761510",
+        "hs6_predicho": "761510",
+        "confidence": 0.7475,
+        "categoria": "Cocina"
+      },
+      {
+        "descripcion": "Cierre (cremallera) nylon 40cm",
+        "hs6_correcto": "960720",
+        "hs6_predicho": "960720",
+        "confidence": 0.6575,
+        "categoria": "Mercería"
+      },
+      {
+        "descripcion": "Mesa plegable de plástico",
+        "hs6_correcto": "940370",
+        "hs6_predicho": "940370",
+        "confidence": 0.815,
+        "categoria": "Muebles"
+      },
+      {
+        "descripcion": "Llave inglesa ajustable 8\"",
+        "hs6_correcto": "820412",
+        "hs6_predicho": "820412",
+        "confidence": 0.6575,
+        "categoria": "Herramientas"
+      },
+      {
+        "descripcion": "Pegamento escolar barra 20g",
+        "hs6_correcto": "350610",
+        "hs6_predicho": "350610",
+        "confidence": 0.6575,
+        "categoria": "Oficina"
+      }
+    ],
+    "resumen_por_capitulo": [
+      {
+        "chapter": "32",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "32",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "33",
+        "total": 1,
+        "aciertos": 1,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "33",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "34",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "34",
+            "count": 1
+          },
+          {
+            "chapter": "61",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "35",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "35",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "39",
+        "total": 6,
+        "aciertos": 4,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "39",
+            "count": 4
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          },
+          {
+            "chapter": "73",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "42",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "42",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "44",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "44",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "48",
+        "total": 3,
+        "aciertos": 0,
+        "errores": 3,
+        "predicciones": [
+          {
+            "chapter": "48",
+            "count": 2
+          },
+          {
+            "chapter": "--",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "55",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "96",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "56",
+        "total": 1,
+        "aciertos": 1,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "56",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "57",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "09",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "63",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "95",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "65",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "66",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "66",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "22",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "69",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "73",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "70",
+        "total": 2,
+        "aciertos": 0,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "70",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "71",
+        "total": 1,
+        "aciertos": 0,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "72",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "73",
+        "total": 6,
+        "aciertos": 0,
+        "errores": 6,
+        "predicciones": [
+          {
+            "chapter": "72",
+            "count": 3
+          },
+          {
+            "chapter": "09",
+            "count": 1
+          },
+          {
+            "chapter": "73",
+            "count": 1
+          },
+          {
+            "chapter": "82",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "76",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "09",
+            "count": 1
+          },
+          {
+            "chapter": "76",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "82",
+        "total": 3,
+        "aciertos": 2,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "82",
+            "count": 2
+          },
+          {
+            "chapter": "72",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "84",
+        "total": 2,
+        "aciertos": 1,
+        "errores": 1,
+        "predicciones": [
+          {
+            "chapter": "84",
+            "count": 1
+          },
+          {
+            "chapter": "48",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "85",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "85",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "chapter": "90",
+        "total": 1,
+        "aciertos": 1,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "90",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "94",
+        "total": 3,
+        "aciertos": 1,
+        "errores": 2,
+        "predicciones": [
+          {
+            "chapter": "85",
+            "count": 1
+          },
+          {
+            "chapter": "94",
+            "count": 1
+          },
+          {
+            "chapter": "44",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "95",
+        "total": 1,
+        "aciertos": 1,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "95",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "chapter": "96",
+        "total": 2,
+        "aciertos": 2,
+        "errores": 0,
+        "predicciones": [
+          {
+            "chapter": "96",
+            "count": 2
+          }
+        ]
+      }
+    ],
+    "monopolios_predichos": [
+      {
+        "hs6": "720711",
+        "errores": 5
+      },
+      {
+        "hs6": "090220",
+        "errores": 3
+      },
+      {
+        "hs6": "732393",
+        "errores": 3
+      },
+      {
+        "hs6": "480100",
+        "errores": 3
+      },
+      {
+        "hs6": "700100",
+        "errores": 2
+      }
+    ],
+    "fallos_por_categoria": [
+      {
+        "categoria": "Accesorios",
+        "total": 3,
+        "errores": 2,
+        "aciertos": 1,
+        "accuracy": 0.3333
+      },
+      {
+        "categoria": "Adhesivos",
+        "total": 1,
+        "errores": 0,
+        "aciertos": 1,
+        "accuracy": 1.0
+      },
+      {
+        "categoria": "Baño",
+        "total": 2,
+        "errores": 1,
+        "aciertos": 1,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Cocina",
+        "total": 8,
+        "errores": 7,
+        "aciertos": 1,
+        "accuracy": 0.125
+      },
+      {
+        "categoria": "Decoración",
+        "total": 2,
+        "errores": 2,
+        "aciertos": 0,
+        "accuracy": 0.0
+      },
+      {
+        "categoria": "Deportes",
+        "total": 4,
+        "errores": 1,
+        "aciertos": 3,
+        "accuracy": 0.75
+      },
+      {
+        "categoria": "Herramientas",
+        "total": 2,
+        "errores": 1,
+        "aciertos": 1,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Higiene",
+        "total": 2,
+        "errores": 0,
+        "aciertos": 2,
+        "accuracy": 1.0
+      },
+      {
+        "categoria": "Hogar",
+        "total": 7,
+        "errores": 5,
+        "aciertos": 2,
+        "accuracy": 0.2857
+      },
+      {
+        "categoria": "Iluminación",
+        "total": 3,
+        "errores": 1,
+        "aciertos": 2,
+        "accuracy": 0.6667
+      },
+      {
+        "categoria": "Limpieza",
+        "total": 2,
+        "errores": 1,
+        "aciertos": 1,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Mercería",
+        "total": 3,
+        "errores": 2,
+        "aciertos": 1,
+        "accuracy": 0.3333
+      },
+      {
+        "categoria": "Muebles",
+        "total": 2,
+        "errores": 1,
+        "aciertos": 1,
+        "accuracy": 0.5
+      },
+      {
+        "categoria": "Oficina",
+        "total": 5,
+        "errores": 2,
+        "aciertos": 3,
+        "accuracy": 0.6
+      },
+      {
+        "categoria": "Pinturas",
+        "total": 1,
+        "errores": 1,
+        "aciertos": 0,
+        "accuracy": 0.0
+      },
+      {
+        "categoria": "Precisión",
+        "total": 1,
+        "errores": 0,
+        "aciertos": 1,
+        "accuracy": 1.0
+      },
+      {
+        "categoria": "Ropa/Accesorios",
+        "total": 2,
+        "errores": 1,
+        "aciertos": 1,
+        "accuracy": 0.5
+      }
+    ],
+    "label": "custom_products_v2"
+  }
+}

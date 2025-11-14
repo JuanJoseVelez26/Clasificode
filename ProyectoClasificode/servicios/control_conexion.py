@@ -4,7 +4,10 @@ import json
 import pandas as pd
 import logging
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
+
+_ENGINE_CACHE: dict[str, dict[str, any]] = {}
+_LOGGED_CONNECTIONS: set[str] = set()
 
 class ControlConexion:
     """
@@ -37,14 +40,13 @@ class ControlConexion:
         self.entorno = entorno
         self.engine = None
         self.session = None
+        self.session_factory = None
     
     def abrir_bd(self):
         """Método para abrir la base de datos usando SQLAlchemy."""
         try:
-            # Si ya hay una conexión activa, no crear otra
-            if self.engine and self.session:
-                return True
-                
+            connection_key = None
+            
             # Obtener el proveedor desde la configuración
             proveedor = self.configuracion.get("DatabaseProvider")
             if not proveedor:
@@ -55,9 +57,11 @@ class ControlConexion:
             if not cadena_conexion:
                 raise ValueError("La cadena de conexión es nula o vacía")
             
+            connection_key = f"{proveedor}:{cadena_conexion}"
+            
             # Solo mostrar el log la primera vez
-            if not hasattr(self, '_logged_connection'):
-                logging.debug(f"Intentando abrir conexión con el proveedor: {proveedor}")
+            if connection_key not in _LOGGED_CONNECTIONS:
+                logging.debug(f"[DB] Intentando abrir conexión con el proveedor: {proveedor}")
                 try:
                     masked = cadena_conexion
                     if '://' in masked:
@@ -66,27 +70,40 @@ class ControlConexion:
                             creds, rest = tail.split('@', 1)
                             user = creds.split(':', 1)[0]
                             masked = f"{head}://{user}:****@{rest}"
-                    logging.debug(f"Cadena de conexión: {masked}")
+                    logging.debug(f"[DB] Cadena de conexión: {masked}")
                 except Exception:
-                    print("Cadena de conexión: [oculta por seguridad]")
-                self._logged_connection = True
+                    logging.debug("[DB] Cadena de conexión: [oculta por seguridad]")
+                _LOGGED_CONNECTIONS.add(connection_key)
             
-            # Crear el motor de SQLAlchemy con configuración mejorada
-            self.engine = create_engine(
-                cadena_conexion, 
-                echo=False,
-                pool_size=5,
-                max_overflow=10,
-                pool_pre_ping=True,
-                pool_recycle=3600
-            )
+            if connection_key in _ENGINE_CACHE:
+                cache_entry = _ENGINE_CACHE[connection_key]
+                self.engine = cache_entry['engine']
+                self.session_factory = cache_entry['session_factory']
+            else:
+                engine = create_engine(
+                    cadena_conexion,
+                    echo=False,
+                    pool_size=5,
+                    max_overflow=10,
+                    pool_pre_ping=True,
+                    pool_recycle=3600
+                )
+                session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+                _ENGINE_CACHE[connection_key] = {
+                    'engine': engine,
+                    'session_factory': session_factory
+                }
+                self.engine = engine
+                self.session_factory = session_factory
             
-            # Crear una sesión
-            self.session = Session(self.engine)
+            if not self.engine or not self.session_factory:
+                raise ValueError("No se pudo inicializar el motor de base de datos")
             
+            if not self.session or not self.session.is_active:
+                self.session = self.session_factory()
             return True
         except Exception as ex:
-            print(f"Ocurrió una excepción: {str(ex)}")
+            logging.error(f"[DB] Ocurrió una excepción al abrir la conexión: {str(ex)}")
             raise ValueError(f"Error al abrir la conexión a la base de datos: {str(ex)}")
     
     def cerrar_bd(self):
@@ -96,11 +113,9 @@ class ControlConexion:
                 self.session.close()
                 self.session = None
             
-            if self.engine:
-                self.engine.dispose()
-                self.engine = None
+            # No cerramos el engine global para permitir reutilización
         except Exception as e:
-            print(f"Error cerrando conexión: {str(e)}")
+            logging.warning(f"[DB] Error cerrando conexión: {str(e)}")
                 
     def get_session(self):
         """
@@ -113,10 +128,10 @@ class ControlConexion:
             with cc.get_session() as session:
                 result = session.query(Model).all()
         """
-        if not self.engine:
+        if not self.engine or not self.session_factory:
             self.abrir_bd()
         
-        return Session(self.engine)
+        return self.session_factory()
     
     def ejecutar_comando_sql(self, consulta_sql, parametros=None):
         """
@@ -130,51 +145,35 @@ class ControlConexion:
             int: Número de filas afectadas.
         """
         try:
-            if not self.session or not self.engine:
-                # Intento de apertura perezosa
+            if not self.engine or not self.session_factory:
                 self.abrir_bd()
             
-            # Crear un objeto de consulta SQLAlchemy
             sql = text(consulta_sql)
-            
-            # Preparar parámetros
             params = {}
+            consulta_modificada = consulta_sql
+            
             if parametros:
-                if isinstance(parametros, tuple) or isinstance(parametros, list):
-                    # Convertir lista de valores a diccionario
+                if isinstance(parametros, (tuple, list)):
                     for i, valor in enumerate(parametros):
                         params[f"p{i}"] = valor
-                    
-                    # Modificar la consulta para usar parámetros nombrados
-                    consulta_modificada = consulta_sql
-                    # Reemplazar placeholders tipo '?' primero
                     for i in range(consulta_modificada.count('?')):
                         consulta_modificada = consulta_modificada.replace('?', f":p{i}", 1)
-                    # Luego reemplazar placeholders tipo '%s'
-                    # Nota: usamos un índice adicional continuando el conteo
-                    start_idx = consulta_modificada.count(":p")  # aproximación, pero a falta de parser estricto
-                    # Mejor calculamos basado en len(parametros)
-                    # Reiniciamos y reemplazamos %s secuencialmente
                     idx = 0
                     tmp = consulta_modificada
                     while '%s' in tmp:
                         tmp = tmp.replace('%s', f":p{idx}", 1)
                         idx += 1
                     consulta_modificada = tmp
-                    
                     sql = text(consulta_modificada)
                 else:
                     params = parametros
             
-            # Ejecutar la consulta
-            result = self.session.execute(sql, params)
-            self.session.commit()
-            
-            # Devolver el número de filas afectadas
-            return result.rowcount
+            with self.session_factory() as session:
+                result = session.execute(sql, params)
+                session.commit()
+                return result.rowcount
         except Exception as ex:
-            self.session.rollback()
-            print(f"Error al ejecutar comando SQL: {str(ex)}")
+            logging.error(f"[DB] Error al ejecutar comando SQL: {str(ex)}")
             raise
 
     def ejecutar_escalares(self, consulta_sql, parametros=None):
@@ -192,11 +191,11 @@ class ControlConexion:
         for attempt in range(max_retries):
             try:
                 # Crear nueva sesión para evitar problemas de estado
-                if not self.engine:
+                if not self.engine or not self.session_factory:
                     self.abrir_bd()
                 
                 # Usar una nueva sesión para cada operación
-                with Session(self.engine) as session:
+                with self.session_factory() as session:
                     sql = text(consulta_sql)
 
                     params = {}
@@ -228,7 +227,7 @@ class ControlConexion:
                     time.sleep(0.1 * (attempt + 1))  # Esperar un poco más en cada intento
                     continue
                 
-                print(f"Error al ejecutar consulta escalar (intento {attempt + 1}): {str(ex)}")
+                logging.error(f"[DB] Error al ejecutar consulta escalar (intento {attempt + 1}): {str(ex)}")
                 if attempt == max_retries - 1:
                     raise
     
@@ -273,7 +272,7 @@ class ControlConexion:
             df = pd.read_sql(text(consulta_sql), self.engine, params=params)
             return df
         except Exception as ex:
-            print(f"Error al ejecutar consulta SQL: {str(ex)}")
+            logging.error(f"[DB] Error al ejecutar consulta SQL: {str(ex)}")
             raise
     
     def crear_parametro(self, nombre, valor):
