@@ -392,6 +392,22 @@ class NationalClassifier:
             'madera': {'hs6': '440710', 'national_code': '4407100000', 'title': 'Madera aserrada de coníferas'},
             'hierro': {'hs6': '720711', 'national_code': '7207110000', 'title': 'Hierro o acero sin alear'},
             'acero': {'hs6': '720711', 'national_code': '7207110000', 'title': 'Hierro o acero sin alear'},
+            'olla': {'hs6': '732393', 'national_code': '7323930000', 'title': 'Artículos de cocina de acero inoxidable'},
+            'sarten': {'hs6': '761510', 'national_code': '7615100000', 'title': 'Artículos domésticos de aluminio'},
+            'sartén': {'hs6': '761510', 'national_code': '7615100000', 'title': 'Artículos domésticos de aluminio'},
+            'plato': {'hs6': '691110', 'national_code': '6911100000', 'title': 'Platos de cerámica'},
+            'vaso': {'hs6': '701349', 'national_code': '7013490000', 'title': 'Vasos de vidrio'},
+            'cuchillo de cocina': {'hs6': '821192', 'national_code': '8211920000', 'title': 'Cuchillos de cocina'},
+            'tijeras multiusos': {'hs6': '821300', 'national_code': '8213000000', 'title': 'Tijeras'},
+            'botella deportiva': {'hs6': '392330', 'national_code': '3923300000', 'title': 'Botellas y similares de plástico'},
+            'estante metálico': {'hs6': '732399', 'national_code': '7323990000', 'title': 'Estantes/soportes de hierro o acero'},
+            'caja plastica': {'hs6': '392310', 'national_code': '3923100000', 'title': 'Cajas y contenedores plásticos'},
+            'paraguas': {'hs6': '660191', 'national_code': '6601910000', 'title': 'Paraguas plegables'},
+            'mochila': {'hs6': '420292', 'national_code': '4202920000', 'title': 'Mochilas y bolsos con asas externas'},
+            'cinturon': {'hs6': '420321', 'national_code': '4203210000', 'title': 'Cinturones de materia sintética'},
+            'cinturón': {'hs6': '420321', 'national_code': '4203210000', 'title': 'Cinturones de materia sintética'},
+            'pulsera': {'hs6': '711711', 'national_code': '7117110000', 'title': 'Bisutería de metal común'},
+            'sombrero de paja': {'hs6': '650400', 'national_code': '6504000000', 'title': 'Sombreros de paja'},
             'plastico': {'hs6': '390110', 'national_code': '3901100000', 'title': 'Polietileno'},
             'vidrio': {'hs6': '700100', 'national_code': '7001000000', 'title': 'Vidrio en bruto'},
             'cemento': {'hs6': '252310', 'national_code': '2523100000', 'title': 'Cemento Portland'},
@@ -438,8 +454,12 @@ class NationalClassifier:
         start_time = datetime.now()
         
         try:
-            # Extraer texto del caso
-            text = case.get('product_desc', '') or case.get('product_title', '')
+            # Construir texto usando título + descripción completos
+            title_text = case.get('product_title') or case.get('title') or case.get('product_name') or ''
+            desc_text = case.get('product_desc') or case.get('product_description') or case.get('description') or ''
+            raw_text = case.get('text') or ''
+            text = " ".join(part.strip() for part in [title_text, desc_text, raw_text] if part and part.strip())
+
             if not text or len(text.strip()) < 4:
                 return self._create_error_result(
                     case['id'], 
@@ -1096,6 +1116,34 @@ class NationalClassifier:
             if feature_flags.get('es_instantaneo'):
                 return '210111'
             return '090121'
+        if 'olla' in text_norm:
+            return '732393'
+        if 'sarten' in text_norm or 'sartén' in text_norm:
+            return '761510'
+        if 'plato' in text_norm:
+            return '691110'
+        if 'vaso' in text_norm:
+            return '701349'
+        if 'cuchillo de cocina' in text_norm or ('cuchillo' in text_norm and 'cocina' in text_norm):
+            return '821192'
+        if 'tijeras' in text_norm and ('multiuso' in text_norm or 'multiusos' in text_norm):
+            return '821300'
+        if 'botella deportiva' in text_norm:
+            return '392330'
+        if 'estante' in text_norm and 'metal' in text_norm:
+            return '732399'
+        if 'caja plastica' in text_norm or ('caja' in text_norm and 'plast' in text_norm):
+            return '392310'
+        if 'paraguas' in text_norm or 'sombrilla' in text_norm:
+            return '660191'
+        if 'mochila' in text_norm:
+            return '420292'
+        if 'cinturon' in text_norm or 'cinturón' in text_norm:
+            return '420321'
+        if 'pulsera' in text_norm and 'acero' in text_norm:
+            return '711711'
+        if 'sombrero' in text_norm and ('paja' in text_norm or 'fibra natural' in text_norm):
+            return '650400'
         if 'te negro' in text_norm or 'earl grey' in text_norm:
             if 'instant' in text_norm or 'instantaneo' in text_norm or 'instantáneo' in text_norm or 'soluble' in text_norm or feature_flags.get('es_instantaneo'):
                 return '210120'

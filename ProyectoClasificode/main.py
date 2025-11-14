@@ -14,6 +14,7 @@ from controladores.classify_controller import bp as classify_bp
 from controladores.admin_controller import bp as admin_bp
 from controladores.health_controller import bp as health_bp
 from controladores.metrics_controller import metrics_bp
+from controladores.export_controller import bp as export_bp
 import json
 from servicios.config_loader import load_config
 def create_app():
@@ -93,6 +94,7 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(health_bp, url_prefix='')
     app.register_blueprint(metrics_bp, url_prefix='/metrics')
+    app.register_blueprint(export_bp)
     
     # Ruta de prueba sin autenticación
     @app.route('/test-classify', methods=['POST'])

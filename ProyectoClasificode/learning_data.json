@@ -75310,7 +75310,630 @@
         "review_notes": []
       },
       "status": "pending_review"
+    },
+    {
+      "case_id": 4062,
+      "input_text": "licuadora de 1 5 litros motor 1000w 6 velocidades vaso de vidrio",
+      "predicted_hs": "8711500000",
+      "original_hs": "8711500000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T15:35:32.392140",
+      "validation_flags": {
+        "validation_score": 0.8,
+        "flags": {
+          "coherencia_capitulo": false,
+          "tipo_bien_inconsistente": false,
+          "validation_score": 0.8
+        }
+      },
+      "features": [
+        "tipo_de_bien=electrodomestico",
+        "uso_principal=hogar_electrico",
+        "material_principal=vidrio"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 8711500000",
+        "factores_clave": [
+          "tipo_de_bien=electrodomestico",
+          "uso_principal=hogar_electrico",
+          "material_principal=vidrio"
+        ],
+        "validations": [
+          "coherencia_capitulo=FAIL",
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": false,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4067,
+      "input_text": "refrigerador de dos puertas 350 litros tecnologi a inverter acero inoxidable",
+      "predicted_hs": "7207110000",
+      "original_hs": "7207110000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T15:37:02.694451",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=electrodomestico",
+        "uso_principal=hogar_electrico",
+        "material_principal=metal"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 7207110000",
+        "factores_clave": [
+          "tipo_de_bien=electrodomestico",
+          "uso_principal=hogar_electrico",
+          "material_principal=metal"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4070,
+      "input_text": "la piz de grafito hb caja de 12 unidades madera de cedro",
+      "predicted_hs": "4407100000",
+      "original_hs": "4407100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T15:37:58.652652",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=papeleria",
+        "uso_principal=escritura",
+        "material_principal=madera"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 4407100000",
+        "factores_clave": [
+          "tipo_de_bien=papeleria",
+          "uso_principal=escritura",
+          "material_principal=madera"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": false,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4071,
+      "input_text": "eloj de pulsera de acero inoxidable movimiento automa tico resistente al agua",
+      "predicted_hs": "2201100000",
+      "original_hs": "2201100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T15:38:16.288046",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=accesorio_personal",
+        "uso_principal=accesorios",
+        "material_principal=metal"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 2201100000",
+        "factores_clave": [
+          "tipo_de_bien=accesorio_personal",
+          "uso_principal=accesorios",
+          "material_principal=metal"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4072,
+      "input_text": "perfume de 100ml fragancia floral frasco de vidrio origen francia",
+      "predicted_hs": "7001000000",
+      "original_hs": "7001000000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T15:38:28.570744",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=perfume_cosmetico",
+        "uso_principal=cuidado_personal",
+        "material_principal=vidrio"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 7001000000",
+        "factores_clave": [
+          "tipo_de_bien=perfume_cosmetico",
+          "uso_principal=cuidado_personal",
+          "material_principal=vidrio"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4073,
+      "input_text": "icamente",
+      "predicted_hs": "2940000000",
+      "original_hs": "2940000000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.365,
+      "timestamp": "2025-11-14T15:38:45.141110",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=alimento_bebida",
+        "uso_principal=consumo_humano",
+        "material_principal=no_especificado"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 2940000000",
+        "factores_clave": [
+          "tipo_de_bien=alimento_bebida",
+          "uso_principal=consumo_humano",
+          "material_principal=no_especificado"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.8,
+          "lexical_score": 0.7,
+          "contextual_score": 0.0,
+          "total_score": 0.415
+        },
+        "chapter_coherence": "OK",
+        "suspect_code": false,
+        "requires_review": true,
+        "review_notes": [
+          "low_evidence",
+          "low_confidence"
+        ]
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4078,
+      "input_text": "Camiseta de algodón 100%, talla M, color azul, manga corta",
+      "predicted_hs": "6109100000",
+      "original_hs": "6109100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.59,
+      "timestamp": "2025-11-14T16:53:36.349186",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=ropa_textil",
+        "uso_principal=vestir",
+        "material_principal=textil"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 6109100000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=textil"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.8,
+          "lexical_score": 0.7,
+          "contextual_score": 0.5,
+          "total_score": 0.64
+        },
+        "chapter_coherence": "OK",
+        "suspect_code": false,
+        "requires_review": false,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4082,
+      "input_text": "termo metro digital infrarrojo medicio n sin contacto pantalla lcd",
+      "predicted_hs": "8528720000",
+      "original_hs": "8528720000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T16:54:25.819518",
+      "validation_flags": {
+        "validation_score": 0.8,
+        "flags": {
+          "coherencia_capitulo": false,
+          "tipo_bien_inconsistente": false,
+          "validation_score": 0.8
+        }
+      },
+      "features": [
+        "tipo_de_bien=producto_medico",
+        "uso_principal=medicion_medica",
+        "material_principal=no_especificado"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 8528720000",
+        "factores_clave": [
+          "tipo_de_bien=producto_medico",
+          "uso_principal=medicion_medica",
+          "material_principal=no_especificado"
+        ],
+        "validations": [
+          "coherencia_capitulo=FAIL",
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": false,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4083,
+      "input_text": "bomba centri fuga para agua 1 hp acero inoxidable conexio n 2 pulgadas",
+      "predicted_hs": "2201100000",
+      "original_hs": "2201100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T16:54:43.424291",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=maquinaria_industrial",
+        "uso_principal=industrial_maquinaria",
+        "material_principal=metal"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 2201100000",
+        "factores_clave": [
+          "tipo_de_bien=maquinaria_industrial",
+          "uso_principal=industrial_maquinaria",
+          "material_principal=metal"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4088,
+      "input_text": "refrigerador de dos puertas 350 litros tecnologi a inverter acero inoxidable refrigerador de dos puertas 350 litros tecnologi a inverter acero inoxidable",
+      "predicted_hs": "7207110000",
+      "original_hs": "7207110000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T17:10:30.604638",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=electrodomestico",
+        "uso_principal=hogar_electrico",
+        "material_principal=metal"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 7207110000",
+        "factores_clave": [
+          "tipo_de_bien=electrodomestico",
+          "uso_principal=hogar_electrico",
+          "material_principal=metal"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4089,
+      "input_text": "microondas de 25 litros potencia 800w grill plato giratorio microondas de 25 litros potencia 800w grill plato giratorio",
+      "predicted_hs": "6911100000",
+      "original_hs": "6911100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T17:10:57.623270",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=electrodomestico",
+        "uso_principal=hogar_electrico",
+        "material_principal=no_especificado"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 6911100000",
+        "factores_clave": [
+          "tipo_de_bien=electrodomestico",
+          "uso_principal=hogar_electrico",
+          "material_principal=no_especificado"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": false,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4090,
+      "input_text": "Camiseta de algodón 100%, talla M, color azul, manga corta Camiseta de algodón 100%, talla M, color azul, manga corta",
+      "predicted_hs": "6109100000",
+      "original_hs": "6109100000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.59,
+      "timestamp": "2025-11-14T17:11:14.837223",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=ropa_textil",
+        "uso_principal=vestir",
+        "material_principal=textil"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 6109100000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=textil"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.8,
+          "lexical_score": 0.7,
+          "contextual_score": 0.5,
+          "total_score": 0.64
+        },
+        "chapter_coherence": "OK",
+        "suspect_code": false,
+        "requires_review": false,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4098,
+      "input_text": "pantalo n vaquero de mezclilla talla 32 corte recto color azul oscuro pantalo n vaquero de mezclilla talla 32 corte recto color azul oscuro",
+      "predicted_hs": "1905000000",
+      "original_hs": "1905000000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T17:34:33.151696",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=ropa_textil",
+        "uso_principal=vestir",
+        "material_principal=no_especificado"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 1905000000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
+    },
+    {
+      "case_id": 4103,
+      "input_text": "pantalo n vaquero de mezclilla talla 32 corte recto color azul oscuro pantalo n vaquero de mezclilla talla 32 corte recto color azul oscuro",
+      "predicted_hs": "1905000000",
+      "original_hs": "1905000000",
+      "correct_hs": "pending_label",
+      "confidence_original": 0.0,
+      "timestamp": "2025-11-14T17:41:41.369167",
+      "validation_flags": {
+        "validation_score": 1.0,
+        "flags": {
+          "tipo_bien_inconsistente": false,
+          "validation_score": 1.0
+        }
+      },
+      "features": [
+        "tipo_de_bien=ropa_textil",
+        "uso_principal=vestir",
+        "material_principal=no_especificado"
+      ],
+      "rationale": {
+        "decision": "Se seleccionó código 1905000000",
+        "factores_clave": [
+          "tipo_de_bien=ropa_textil",
+          "uso_principal=vestir",
+          "material_principal=no_especificado"
+        ],
+        "validations": [
+          "tipo_bien_inconsistente=FAIL"
+        ],
+        "method": "rgi",
+        "confidence_factors": {
+          "semantic_score": 0.0,
+          "lexical_score": 0.0,
+          "contextual_score": 0.0,
+          "total_score": 0.0
+        },
+        "chapter_coherence": "FAIL",
+        "suspect_code": true,
+        "requires_review": true,
+        "review_notes": []
+      },
+      "status": "pending_review"
     }
   ],
-  "last_updated": "2025-11-14T15:17:19.069773"
+  "last_updated": "2025-11-14T17:41:41.369167"
 }

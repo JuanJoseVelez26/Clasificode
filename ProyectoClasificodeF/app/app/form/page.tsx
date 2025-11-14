@@ -251,6 +251,14 @@ export default function FormPage() {
 
       setFlaggedLowConfidence((result.confidence || 0.5) < 0.7)
 
+      // Limpiar campos para la siguiente clasificación
+      setRawText("")
+      setValue("text", "")
+      if ((files?.length || 0) > 0) {
+        setFiles([])
+        setValue("files", [])
+      }
+
       // Navegar a resultados
       router.push("/app/result")
 

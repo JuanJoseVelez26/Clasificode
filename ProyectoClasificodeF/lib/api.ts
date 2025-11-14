@@ -102,8 +102,16 @@ export const api = {
         }
         
         const d = classifyRes.data?.details || classifyRes.data || {}
-        const national = d.national_code || d.hs6 || "0000000000"
-        const conf = d.confidence || 0.85
+        const rawCode = d.national_code || d.hs6 || d.hs || ""
+        const national = rawCode || "SIN-CODIGO"
+        const conf = rawCode ? (d.confidence || 0.85) : 0
+        const warnings: string[] = []
+        if (conf < 0.7) {
+          warnings.push("Clasificación de baja confianza")
+        }
+        if (!rawCode) {
+          warnings.push(d?.rationale?.error || "El sistema no devolvió un código HS válido")
+        }
         
         return {
           topK: [
@@ -118,7 +126,7 @@ export const api = {
             factors: (d.legal_notes || []).map((ln: any) => ({ name: ln?.title || "Nota", weight: 0.5, note: ln?.text || ln })),
           },
           similarities: [],
-          warnings: conf < 0.7 ? ["Clasificación de baja confianza"] : [],
+          warnings,
         }
       } catch (error: any) {
         console.error("Error en clasificación:", error)
